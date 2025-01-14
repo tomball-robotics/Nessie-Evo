@@ -23,6 +23,7 @@ public class SwerveModule {
     private CANcoder angleEncoder;
 
     private SwerveModuleState currentState;
+    private SwerveModuleState desiredState;
 
     private SwerveModulePosition currentPosition;
     
@@ -65,10 +66,11 @@ public class SwerveModule {
             Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble())
         );
 
+        desiredState = new SwerveModuleState(0, new Rotation2d());
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle); 
+        desiredState.optimize(getState().angle); 
         mAngleMotor.setControl(anglePosition.withPosition(desiredState.angle.getRotations()));
         setSpeed(desiredState, isOpenLoop);
     }
@@ -110,10 +112,17 @@ public class SwerveModule {
 
     public void setTargetState(SwerveModuleState targetState) {
         // Optimize the state
-        currentState = SwerveModuleState.optimize(targetState, currentState.angle);
+        currentState.optimize(currentState.angle);
   
         currentPosition = new SwerveModulePosition(currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02), currentState.angle);
       }
     
+    public SwerveModuleState getDesiredState() {
+        return desiredState;
+    }
+
+    public void setDesiredState(SwerveModuleState desiredState) {
+        this.desiredState = desiredState;
+    }
       
 }

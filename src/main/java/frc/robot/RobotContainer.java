@@ -46,6 +46,7 @@ public class RobotContainer {
 
     /* Controllers */
     private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.baseDriverControllerPort);
+    @SuppressWarnings("unused")
     private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.operatorDriverControllerPort);
 
     /* Drive Controls */
