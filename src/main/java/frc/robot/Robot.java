@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.Elastic;
+import frc.lib.Elastic.Notification;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -45,6 +48,15 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
+    /* elastic low voltage warning (<11.5v) */
+    if(RobotController.getBatteryVoltage() < 11.5) {
+      Elastic.sendNotification(new Notification(
+        Elastic.Notification.NotificationLevel.WARNING, 
+        "Battery Voltage Low", 
+        "Battery Voltage is below 11.5V"));
+    }
+
     CommandScheduler.getInstance().run();
   }
 

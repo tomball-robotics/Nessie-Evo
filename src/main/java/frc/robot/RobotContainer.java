@@ -34,7 +34,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,17 +52,13 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
     /* Controllers */
-    private final CommandXboxController baseDriver = new CommandXboxController(0);
-    private final CommandXboxController armDriver = new CommandXboxController(1);
+    private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.baseDriverControllerPort);
+    private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.operatorDriverControllerPort);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-    /* Driver Buttons */
-    //private final JoystickButton zeroGyro = new JoystickButton(baseDriver, XboxController.Button.kY.value);
-    //private final JoystickButton robotCentric = new JoystickButton(baseDriver, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -72,10 +67,8 @@ public class RobotContainer {
     private final SlowMode slowMode;
     private final FastMode fastMode;
 
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        CameraServer.startAutomaticCapture();
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
@@ -86,11 +79,6 @@ public class RobotContainer {
             )
         );
 
-        /*groundIntake.setDefaultCommand(
-            new ManualPivotIntake(
-                groundIntake, 
-               () -> armDriver.getRawAxis(translationAxis)));
-*/
         slowMode = new SlowMode(s_Swerve);
         slowMode.addRequirements(s_Swerve);
         fastMode = new FastMode(s_Swerve);
@@ -101,26 +89,6 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
-        
-      
-/* 
-        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() ->{
-            Pose2d currentPose = s_Swerve.getPose();
-
-            Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-            Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2,0)), new Rotation2d());
-            List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-
-            PathPlannerPath path = new PathPlannerPath(
-            bezierPoints,
-             new PathConstraints(3, 3, 2*Math.PI, 4*Math.PI),
-             new GoalEndState(0, Rotation2d.fromDegrees(0))
-            );
-            path.preventFlipping = true;
-
-            AutoBuilder.followPath(path).schedule();
-        }));
-        */
     }
 
     /**
@@ -133,7 +101,7 @@ public class RobotContainer {
         baseDriver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
          baseDriver.b().onTrue(slowMode);
          baseDriver.b().onTrue(fastMode);
-      }
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
