@@ -20,7 +20,10 @@ public final class Constants {
         public static final double stickDeadband = 0.1;
     }
 
-    
+    public static final class NotificationConstants {
+        public static final double BATTERY_LOW_THRESHOLD = 11.5;
+        public static final double BATTERY_LOW_DURATION = 5.0;
+    }
 
     public static final class Swerve {
         public static final int pigeonID = 1;

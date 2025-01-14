@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.Elastic;
@@ -23,6 +24,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private double batteryLowStartTime = -1;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -50,11 +53,21 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
 
     /* elastic low voltage warning (<11.5v) */
-    if(RobotController.getBatteryVoltage() < 11.5) {
-      Elastic.sendNotification(new Notification(
-        Elastic.Notification.NotificationLevel.WARNING, 
-        "Battery Voltage Low", 
-        "Battery Voltage is below 11.5V"));
+    if (RobotController.getBatteryVoltage() < Constants.NotificationConstants.BATTERY_LOW_THRESHOLD) {
+      if (batteryLowStartTime == -1) {
+          batteryLowStartTime = Timer.getFPGATimestamp();
+      }
+      if (Timer.getFPGATimestamp() - batteryLowStartTime >= Constants.NotificationConstants.BATTERY_LOW_DURATION) {
+          Elastic.sendNotification(new Notification(
+              Elastic.Notification.NotificationLevel.WARNING,
+              "Battery Voltage Low",
+              "Battery Voltage is below " + 
+              Constants.NotificationConstants.BATTERY_LOW_THRESHOLD + 
+              "V for " + Constants.NotificationConstants.BATTERY_LOW_DURATION + " seconds"));
+          batteryLowStartTime = -1;
+      }
+    } else {
+        batteryLowStartTime = -1;
     }
 
     CommandScheduler.getInstance().run();
