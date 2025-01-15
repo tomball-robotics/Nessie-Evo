@@ -29,7 +29,6 @@ public class Swerve extends SubsystemBase {
     public double speedMultiplier;
 
     public Swerve() {
-
         odometry = new Field2d();
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
@@ -80,7 +79,6 @@ public class Swerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.AutoConstants.kMaxSpeedMetersPerSecond);
         setModuleStates(states);
     }
-
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -140,7 +138,6 @@ public class Swerve extends SubsystemBase {
                 setHeading(new Rotation2d(Units.degreesToRadians(angle)));
              }
          }
-        
     }
 
     public Rotation2d getGyroYaw() {
@@ -154,15 +151,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setX(){
-
       mSwerveMods[0].setDesiredState(new SwerveModuleState(0.0, Rotation2d.fromDegrees(45.0)),true);
       mSwerveMods[1].setDesiredState(new SwerveModuleState(0.0, Rotation2d.fromDegrees(315.0)),true);
       mSwerveMods[2].setDesiredState(new SwerveModuleState(0.0, Rotation2d.fromDegrees(315.0)),true);
       mSwerveMods[3].setDesiredState(new SwerveModuleState(0.0, Rotation2d.fromDegrees(45.0)),true);
-
     }
-
-    
 
     @Override
     public void periodic(){
@@ -180,4 +173,5 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("heading", getHeading().getDegrees());
         }
     }
+
 }
