@@ -28,6 +28,22 @@ public class Swerve extends SubsystemBase {
     public static Field2d odometry;
     public double speedMultiplier;
 
+    /*
+    private DoubleSupplier frontLeftAngle = () -> mSwerveMods[0].getPosition().angle.getDegrees();
+    private DoubleSupplier frontLeftVelocity = () -> mSwerveMods[0].getState().speedMetersPerSecond;
+
+    private DoubleSupplier frontRightAngle = () -> mSwerveMods[1].getPosition().angle.getDegrees();
+    private DoubleSupplier frontRightVelocity = () -> mSwerveMods[1].getState().speedMetersPerSecond;
+
+    private DoubleSupplier backLeftAngle = () -> mSwerveMods[2].getPosition().angle.getDegrees();
+    private DoubleSupplier backLeftVelocity = () -> mSwerveMods[2].getState().speedMetersPerSecond;
+
+    private DoubleSupplier backRightAngle = () -> mSwerveMods[3].getPosition().angle.getDegrees();
+    private DoubleSupplier backRightVelocity = () -> mSwerveMods[3].getState().speedMetersPerSecond;
+    
+    private DoubleSupplier robotAngle = () -> getHeading().getRadians();
+    */
+
     public Swerve() {
         odometry = new Field2d();
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
@@ -172,6 +188,31 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putBoolean("slow mode", speedMultiplier == .5);    
             SmartDashboard.putNumber("heading", getHeading().getDegrees());
         }
-    }
 
+        /* wont friggin work
+        SmartDashboard.putData("Swerve Drive", new Sendable() {
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.setSmartDashboardType("SwerveDrive");
+
+            builder.addDoubleProperty("Front Left Angle", frontLeftAngle, null);
+            builder.addDoubleProperty("Front Left Velocity", frontLeftVelocity, null);
+
+            builder.addDoubleProperty("Front Right Angle", frontRightAngle, null);
+            builder.addDoubleProperty("Front Right Velocity", frontRightVelocity, null);
+
+            builder.addDoubleProperty("Back Left Angle", backLeftAngle, null);
+            builder.addDoubleProperty("Back Left Velocity", backLeftVelocity, null);
+
+            builder.addDoubleProperty("Back Right Angle", backRightAngle, null);
+            builder.addDoubleProperty("Back Right Velocity", backRightVelocity, null);
+
+            builder.addDoubleProperty("Robot Angle", robotAngle, null);
+            }
+        });
+        */
+        
+    }
 }
+
+/* RIP sebas 2006 - 2025 */

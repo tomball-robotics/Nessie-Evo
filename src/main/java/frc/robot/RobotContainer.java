@@ -58,8 +58,6 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
 
     /* Commands */
-    private final SlowMode slowMode;
-    private final FastMode fastMode;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -73,11 +71,6 @@ public class RobotContainer {
             )
         );
 
-        slowMode = new SlowMode(s_Swerve);
-        slowMode.addRequirements(s_Swerve);
-        fastMode = new FastMode(s_Swerve);
-        fastMode.addRequirements(s_Swerve);
-
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -85,10 +78,6 @@ public class RobotContainer {
     private void configureButtonBindings() { 
         /* zero robot heading when y is pressed on base driver controller */
         baseDriver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-
-        /* press b to toggle between slowmode, 50% swerve power, and fastmode, 100% swerve power */
-         baseDriver.b().onTrue(slowMode);
-         baseDriver.b().onTrue(fastMode);
     }
 
     /**
