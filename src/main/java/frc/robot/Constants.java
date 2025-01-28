@@ -42,7 +42,7 @@ public final class Constants {
     }
 
     public static final class EndEffectorConstants {
-        public static final int endEffectorID = 0; //TODO assign motor ID
+        public static final int endEffectorID = 0; //TODO assign id
         public static final double coralIntakeSpeed = 0.5;
         public static final double coralOuttakeSpeed = -0.5;
         public static final double algaeIntakeSpeed = 0.5;
@@ -50,8 +50,9 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final int elevatorMasterID = 0; //TODO assign motor ID
-        public static final int elevatorSlaveID = 0; //TODO assign motor ID
+        public static final int elevatorMasterID = 0; //TODO assign id
+        public static final int elevatorSlaveID = 0; //TODO assign id
+        public static final int canCoderID = 0; //TODO assign id
         public static final double p = 1.6; 
         public static final double i = 0.001;
         public static final double d = 0;
@@ -62,12 +63,12 @@ public final class Constants {
     }
 
     public static final class ClimberConstants {
-        public static final int climberMotorID = 0; //TODO assign motor ID
+        public static final int climberMotorID = 0; //TODO assign id
     }
 
     public static final class ElbowConstants{
-        public static final int elbowPivotID = 0; //TODO assign motor ID
-        public static final int elbowCancoderID = 0; //TODO assign motor id
+        public static final int elbowPivotID = 0; //TODO assign id
+        public static final int elbowCancoderID = 0; //TODO assign id
         public static final double p = 1.6; 
         public static final double i = 0.001;
         public static final double d = 0;
@@ -78,8 +79,8 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final int wristPivotID = 0; //TODO assign motor ID
-        public static final int wristCancoderID = 0; //TODO assign motor id
+        public static final int wristPivotID = 0; //TODO assign id
+        public static final int wristCancoderID = 0; //TODO assign id
         public static final double p = 1.6; 
         public static final double i = 0.001;
         public static final double d = 0;
@@ -92,12 +93,12 @@ public final class Constants {
     public static final class Swerve {
         public static final int pigeonID = 1;
 
-        public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
+        public static final COTSTalonFXSwerveConstants chosenModule =
         COTSTalonFXSwerveConstants.SDS.MK4i.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.LMatthew);
      
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(24.75); //TODO: This must be tuned to specific robot
-        public static final double wheelBase = Units.inchesToMeters(24.75); //TODO: This must be tuned to specific robot
+        public static final double trackWidth = Units.inchesToMeters(24.75);
+        public static final double wheelBase = Units.inchesToMeters(24.75);
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /* Swerve Kinematics 
@@ -141,19 +142,19 @@ public final class Constants {
         public static final double angleKD = 0.0;
 
         /* Drive Motor PID Values*/
-        public static final double driveKP = 1; //TODO: This must be tuned to specific robot
+        public static final double driveKP = 1;
         public static final double driveKI = 0.01;
         public static final double driveKD = 0.01;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.53114; //TODO: This must be tuned to specific robot
+        public static final double driveKS = 0.53114; // TODO tune
         public static final double driveKV = 2.3423;
         public static final double driveKA = 0.12817;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 4.5; //TODO tune
         /** Radians per Second */
         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
 

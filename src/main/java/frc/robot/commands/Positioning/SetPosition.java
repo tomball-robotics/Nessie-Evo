@@ -49,7 +49,7 @@ public class SetPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return elbowPivot.elbowAtSetpoint() && wristPivot.wristAtSetpoint() && elevator.elevatorAtSetpoint();
+    return elbowPivot.elbowAtSetpoint() && wristPivot.wristAtSetpoint() && elevator.atSetpoint();
   }
   
 }
