@@ -1,3 +1,111 @@
+package frc.robot;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Climber.ClimberDown;
+import frc.robot.commands.Climber.ClimberUp;
+import frc.robot.commands.EndEffector.EffectEnd;
+import frc.robot.commands.Positioning.SetPosition;
+import frc.robot.commands.Swerve.*;
+import frc.robot.subsystems.*;
+
+public class RobotContainer {
+
+    /* Controllers */
+    private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.baseDriverControllerPort);
+    private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.operatorDriverControllerPort);
+
+    /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+    /* Subsystems */
+    private final Swerve s_Swerve = new Swerve();
+    private final WristPivot wristPivot = new WristPivot();
+    private final ElbowPivot elbowPivot = new ElbowPivot();
+    private final Elevator elevator = new Elevator();
+    private final EndEffector endEffector = new EndEffector();
+    private final Climber climber = new Climber();
+
+    /* Commands */
+    private final ClimberUp climberUp;
+    private final ClimberDown climberDown;
+
+    /* Autos */
+    private final SendableChooser<Command> autoChooser;
+    public static boolean isAlgae = false;
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -baseDriver.getRawAxis(translationAxis), 
+                () -> -baseDriver.getRawAxis(strafeAxis), 
+                () -> -baseDriver.getRawAxis(rotationAxis), 
+                () -> baseDriver.leftBumper().getAsBoolean()
+            )
+        );
+
+        climberUp = new ClimberUp(climber);
+        climberUp.addRequirements(climber);
+        climberDown = new ClimberDown(climber);
+        climberDown.addRequirements(climber);
+
+        // Build an auto chooser. This will use Commands.none() as the default option.
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        // Configure the button bindings
+        configureButtonBindings();
+    }
+
+    private void configureButtonBindings() { 
+        /* zero robot heading when y is pressed on base driver controller */
+        baseDriver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        baseDriver.leftTrigger().onTrue(climberDown);
+        baseDriver.rightTrigger().onTrue(climberUp);
+
+        /* coral positions */
+        armDriver.a().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l1CoralPosition));
+        armDriver.b().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l2CoralPosition));
+        armDriver.y().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l3CoralPosition));
+        armDriver.x().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l4CoralPosition));
+
+        /* intake */
+        armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
+        armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
+        armDriver.rightBumper().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.humanCoralIntakePosition));
+        armDriver.leftBumper().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.deepCagePosition));
+
+        /* algae positions */
+        armDriver.povDown().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.groundAlgaeIntakePosition));
+        armDriver.povUp().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.processorPosition));
+        armDriver.povLeft().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.topAlgaePosition));
+        armDriver.povRight().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.bottomAlgaePosition));
+        armDriver.povUpLeft().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.algaeShootingPosition));
+        armDriver.povUpRight().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.startPosition));
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return autoChooser.getSelected();
+    }
+
+}
+
 /*
  * Hey future T3 :) Before I leave I just wanted to thank 
  * this team for giving me the experiences it did.
@@ -30,77 +138,3 @@
  * Thank you for everything,
  * Akshita Santra 
  */
-
-
-package frc.robot;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import frc.robot.commands.Swerve.*;
-import frc.robot.subsystems.*;
-
-public class RobotContainer {
-
-    /* Controllers */
-    private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.baseDriverControllerPort);
-    @SuppressWarnings("unused")
-    private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.operatorDriverControllerPort);
-
-    /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-
-    /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
-
-    /* Commands */
-
-    /* Autos */
-    private final SendableChooser<Command> autoChooser;
-
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve, 
-                () -> -baseDriver.getRawAxis(translationAxis), 
-                () -> -baseDriver.getRawAxis(strafeAxis), 
-                () -> -baseDriver.getRawAxis(rotationAxis), 
-                () -> baseDriver.leftBumper().getAsBoolean()
-            )
-        );
-
-        
-
-        // Build an auto chooser. This will use Commands.none() as the default option.
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        // Configure the button bindings
-        configureButtonBindings();
-    }
-
-    private void configureButtonBindings() { 
-        /* zero robot heading when y is pressed on base driver controller */
-        baseDriver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-    }
-
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-    }
-
-}

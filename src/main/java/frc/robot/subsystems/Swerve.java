@@ -30,30 +30,12 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
     public static Field2d odometry;
-    public double speedMultiplier;
-
-    /*
-    private DoubleSupplier frontLeftAngle = () -> mSwerveMods[0].getPosition().angle.getDegrees();
-    private DoubleSupplier frontLeftVelocity = () -> mSwerveMods[0].getState().speedMetersPerSecond;
-
-    private DoubleSupplier frontRightAngle = () -> mSwerveMods[1].getPosition().angle.getDegrees();
-    private DoubleSupplier frontRightVelocity = () -> mSwerveMods[1].getState().speedMetersPerSecond;
-
-    private DoubleSupplier backLeftAngle = () -> mSwerveMods[2].getPosition().angle.getDegrees();
-    private DoubleSupplier backLeftVelocity = () -> mSwerveMods[2].getState().speedMetersPerSecond;
-
-    private DoubleSupplier backRightAngle = () -> mSwerveMods[3].getPosition().angle.getDegrees();
-    private DoubleSupplier backRightVelocity = () -> mSwerveMods[3].getState().speedMetersPerSecond;
-    
-    private DoubleSupplier robotAngle = () -> getHeading().getRadians();
-    */
 
     public Swerve() {
         odometry = new Field2d();
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(180);
-        speedMultiplier = 1.0;
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -68,7 +50,6 @@ public class Swerve extends SubsystemBase {
         try{
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
-            // Handle exception as needed
             e.printStackTrace();
         }
 
@@ -84,15 +65,15 @@ public class Swerve extends SubsystemBase {
                 ),
                 config, // The robot configuration
                 () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
                 },
                 this // Reference to this subsystem to set requirements
         );
@@ -102,26 +83,21 @@ public class Swerve extends SubsystemBase {
 
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX() * speedMultiplier, 
-                                    translation.getY() * speedMultiplier, 
-                                    rotation * speedMultiplier, 
+                                    translation.getX(), 
+                                    translation.getY(), 
+                                    rotation, 
                                     getHeading()
                                 )
                                 : new ChassisSpeeds(
-                                    translation.getX() * speedMultiplier, 
-                                    translation.getY() * speedMultiplier, 
-                                    rotation * speedMultiplier));
+                                    translation.getX(), 
+                                    translation.getY(), 
+                                    rotation));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }    
-
-    //trying slow mode - maybe take out
-    public void setSpeedMultiplier(double speedMultiplier){
-        this.speedMultiplier = speedMultiplier;
-    }
 
     public ChassisSpeeds getRobotRelativeSpeeds(){
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
@@ -215,66 +191,41 @@ public class Swerve extends SubsystemBase {
         odometry.setRobotPose(swerveOdometry.getPoseMeters());
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
-        SmartDashboard.putData("field", odometry);
+        SmartDashboard.putData("Field", odometry);
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Desired Angle", mod.getDesiredState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond); 
-            SmartDashboard.putBoolean("slow mode", speedMultiplier == .5);    
-            SmartDashboard.putNumber("heading", getHeading().getDegrees());
+            SmartDashboard.putNumber("Heading", getHeading().getDegrees());
         }
-
-        /* wont friggin work
-        SmartDashboard.putData("Swerve Drive", new Sendable() {
-        @Override
-        public void initSendable(SendableBuilder builder) {
-            builder.setSmartDashboardType("SwerveDrive");
-
-            builder.addDoubleProperty("Front Left Angle", frontLeftAngle, null);
-            builder.addDoubleProperty("Front Left Velocity", frontLeftVelocity, null);
-
-            builder.addDoubleProperty("Front Right Angle", frontRightAngle, null);
-            builder.addDoubleProperty("Front Right Velocity", frontRightVelocity, null);
-
-            builder.addDoubleProperty("Back Left Angle", backLeftAngle, null);
-            builder.addDoubleProperty("Back Left Velocity", backLeftVelocity, null);
-
-            builder.addDoubleProperty("Back Right Angle", backRightAngle, null);
-            builder.addDoubleProperty("Back Right Velocity", backRightVelocity, null);
-
-            builder.addDoubleProperty("Robot Angle", robotAngle, null);
-            }
-        });
-        */
-        
     }
+
 }
 
-/* RIP sebas 2006 - 2025 */
 /*
-                                 _____  _____
-                                <     `/     |
-                                 >          (
-                                |   _     _  |
-                                |  |_) | |_) |
-                                |  | \ | |   |
-                                |            |
-                 ______.______%_|            |__________  _____
-               _/                                       \|     |
-              |                    S E B A S                   <
-              |_____.-._________              ____/|___________|
-                                |    2006    |
-                                |    2025    |
-                                |            |
-                                |            |
-                                |   _        <
-                                |__/         |
-                                 / `--.      |
-                               %|            |%
-                           |/.%%|          -< @%%%
-                           `\%`@|     v      |@@%@%%    - mfj
-                         .%%%@@@|%    |    % @@@%%@%%%%
-                    _.%%%%%%@@@@@@%%_/%\_%@@%%@@@@@@@%%%%%%
+                    _____  _____
+                <     `/     |
+                    >          (
+                |   _     _  |
+                |  |_) | |_) |
+                |  | \ | |   |
+                |            |
+    ______.______%_|            |__________  _____
+_/                                       \|     |
+|                   S E B A S                    <
+|_____.-._________              ____/|___________|
+                |    2006    |
+                |    2025    |
+                |            |
+                |            |
+                |   _        <
+                |__/         |
+                    / `--.      |
+                %|            |%
+            |/.%%|          -< @%%%
+            `\%`@|     v      |@@%@%%
+            .%%%@@@|%    |    % @@@%%@%%%%
+    _.%%%%%%@@@@@@%%_/%\_%@@%%@@@@@@@%%%%%%
  */

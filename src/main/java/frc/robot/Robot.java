@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {
+  public void robotPeriodic() {       
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -67,11 +67,12 @@ public class Robot extends TimedRobot {
               "V for " + Constants.NotificationConstants.BATTERY_LOW_DURATION + " seconds"));
           batteryLowStartTime = -1;
       }
-    } else {
+    }
+    else {
         batteryLowStartTime = -1;
     }
-    SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
 
+    SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     CommandScheduler.getInstance().run();
   }
 

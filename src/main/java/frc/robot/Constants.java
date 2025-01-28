@@ -25,6 +25,70 @@ public final class Constants {
         public static final double BATTERY_LOW_DURATION = 5.0;
     }
 
+    public static final class PositionConstants {
+        // (elevator, elbow, wrist angles, algae or coal (1 for coral, 0 for algae))
+        public static final double[] startPosition = {0, 0, 0, 1};
+        public static final double[] l1CoralPosition = {10, 30, 15, 1};
+        public static final double[] l2CoralPosition = {20, 45, 25, 1};
+        public static final double[] l3CoralPosition = {30, 60, 35, 1};
+        public static final double[] l4CoralPosition = {40, 75, 45, 1};
+        public static final double[] bottomAlgaePosition = {5, 15, -10, 0};
+        public static final double[] topAlgaePosition = {35, 50, 40, 0};
+        public static final double[] humanCoralIntakePosition = {15, 20, 0, 1};
+        public static final double[] deepCagePosition = {22, 5, -25, 1};
+        public static final double[] processorPosition = {18, 35, 10, 0};
+        public static final double[] groundAlgaeIntakePosition = {22, 5, -25, 0};
+        public static final double[] algaeShootingPosition = {22, 5, -25, 1};
+    }
+
+    public static final class EndEffectorConstants {
+        public static final int endEffectorID = 0; //TODO assign motor ID
+        public static final double coralIntakeSpeed = 0.5;
+        public static final double coralOuttakeSpeed = -0.5;
+        public static final double algaeIntakeSpeed = 0.5;
+        public static final double algaeOuttakeSpeed = -0.5;
+    }
+
+    public static final class ElevatorConstants {
+        public static final int elevatorMasterID = 0; //TODO assign motor ID
+        public static final int elevatorSlaveID = 0; //TODO assign motor ID
+        public static final double p = 1.6; 
+        public static final double i = 0.001;
+        public static final double d = 0;
+        public static final double tolerance = .01;
+        public static final int forwardSoftLimit = 50;
+        public static final int reverseSoftLimit = -50;
+        public static final int supplyCurrentLimit = 30;
+    }
+
+    public static final class ClimberConstants {
+        public static final int climberMotorID = 0; //TODO assign motor ID
+    }
+
+    public static final class ElbowConstants{
+        public static final int elbowPivotID = 0; //TODO assign motor ID
+        public static final int elbowCancoderID = 0; //TODO assign motor id
+        public static final double p = 1.6; 
+        public static final double i = 0.001;
+        public static final double d = 0;
+        public static final double tolerance = .01;
+        public static final int forwardSoftLimit = 50;
+        public static final int reverseSoftLimit = -50;
+        public static final int smartCurrentLimit = 30;
+    }
+
+    public static final class WristConstants {
+        public static final int wristPivotID = 0; //TODO assign motor ID
+        public static final int wristCancoderID = 0; //TODO assign motor id
+        public static final double p = 1.6; 
+        public static final double i = 0.001;
+        public static final double d = 0;
+        public static final double tolerance = .01;
+        public static final int forwardSoftLimit = 50;
+        public static final int reverseSoftLimit = -50;
+        public static final int smartCurrentLimit = 30;
+    }
+
     public static final class Swerve {
         public static final int pigeonID = 1;
 
@@ -154,4 +218,5 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
 }
