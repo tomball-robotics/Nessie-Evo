@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,7 +14,6 @@ public class Elevator extends SubsystemBase {
   private TalonFX elevatorMaster;
   private TalonFX elevatorSlave;
   private CANcoder absoluteEncoder;
-  private CANcoderConfiguration canCoderConfig;
   private PIDController elevatorPID;
 
   public Elevator() {
