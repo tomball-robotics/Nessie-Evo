@@ -18,8 +18,6 @@ public class Climber extends SubsystemBase {
     climberMotor.setNeutralMode(NeutralModeValue.Brake);
 
     climberConfig = new TalonFXConfiguration();
-    climberConfig.CurrentLimits.SupplyCurrentLimit = 20.0;
-    climberConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     climberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     climberMotor.getConfigurator().apply(climberConfig);
   }

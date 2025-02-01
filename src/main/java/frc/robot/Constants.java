@@ -67,7 +67,7 @@ public final class Constants {
     }
 
     public static final class ElbowConstants{
-        public static final int elbowPivotID = 0; //TODO assign id
+        public static final int elbowMotorID = 0; //TODO assign id
         public static final int elbowCancoderID = 0; //TODO assign id
         public static final double p = 1.6; 
         public static final double i = 0.001;
@@ -79,15 +79,13 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final int wristPivotID = 0; //TODO assign id
-        public static final int wristCancoderID = 0; //TODO assign id
-        public static final double p = 1.6; 
+        public static final int wristMotorID = 12; //TODO assign motor ID
+        public static final double p = .001; 
         public static final double i = 0.001;
         public static final double d = 0;
         public static final double tolerance = .01;
         public static final int forwardSoftLimit = 50;
         public static final int reverseSoftLimit = -50;
-        public static final int smartCurrentLimit = 30;
     }
 
     public static final class Swerve {

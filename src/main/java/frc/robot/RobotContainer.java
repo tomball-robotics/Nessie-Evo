@@ -28,8 +28,8 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
-    private final WristPivot wristPivot = new WristPivot();
-    private final ElbowPivot elbowPivot = new ElbowPivot();
+    private final Wrist wrist = new Wrist();
+    private final Elbow elbow = new Elbow();
     private final Elevator elevator = new Elevator();
     private final EndEffector endEffector = new EndEffector();
     private final Climber climber = new Climber();
@@ -75,24 +75,24 @@ public class RobotContainer {
         baseDriver.rightTrigger().onTrue(climberUp);
 
         /* coral positions */
-        armDriver.a().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l1CoralPosition));
-        armDriver.b().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l2CoralPosition));
-        armDriver.y().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l3CoralPosition));
-        armDriver.x().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.l4CoralPosition));
+        armDriver.a().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l1CoralPosition));
+        armDriver.b().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l2CoralPosition));
+        armDriver.y().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l3CoralPosition));
+        armDriver.x().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l4CoralPosition));
 
         /* intake */
         armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
         armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
-        armDriver.rightBumper().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.humanCoralIntakePosition));
-        armDriver.leftBumper().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.deepCagePosition));
+        armDriver.rightBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.humanCoralIntakePosition));
+        armDriver.leftBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.deepCagePosition));
 
         /* algae positions */
-        armDriver.povDown().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.groundAlgaeIntakePosition));
-        armDriver.povUp().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.processorPosition));
-        armDriver.povLeft().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.topAlgaePosition));
-        armDriver.povRight().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.bottomAlgaePosition));
-        armDriver.povUpLeft().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.algaeShootingPosition));
-        armDriver.povUpRight().onTrue(new SetPosition(elevator, elbowPivot, wristPivot, Constants.PositionConstants.startPosition));
+        armDriver.povDown().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.groundAlgaeIntakePosition));
+        armDriver.povUp().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.processorPosition));
+        armDriver.povLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.topAlgaePosition));
+        armDriver.povRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.bottomAlgaePosition));
+        armDriver.povUpLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.algaeShootingPosition));
+        armDriver.povUpRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.startPosition));
     }
 
     /**
