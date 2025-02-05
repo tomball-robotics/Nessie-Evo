@@ -54,17 +54,17 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
 
     /* elastic low voltage warning (<11.5v) */
-    if (RobotController.getBatteryVoltage() < Constants.NotificationConstants.BATTERY_LOW_THRESHOLD) {
+    if (RobotController.getBatteryVoltage() < Constants.NotificationConstants.batteryLowVoltage) {
       if (batteryLowStartTime == -1) {
           batteryLowStartTime = Timer.getFPGATimestamp();
       }
-      if (Timer.getFPGATimestamp() - batteryLowStartTime >= Constants.NotificationConstants.BATTERY_LOW_DURATION) {
+      if (Timer.getFPGATimestamp() - batteryLowStartTime >= Constants.NotificationConstants.batteryLowDuration) {
           Elastic.sendNotification(new Notification(
               Elastic.Notification.NotificationLevel.WARNING,
               "Battery Voltage Low",
               "Battery Voltage is below " + 
-              Constants.NotificationConstants.BATTERY_LOW_THRESHOLD + 
-              "V for " + Constants.NotificationConstants.BATTERY_LOW_DURATION + " seconds"));
+              Constants.NotificationConstants.batteryLowVoltage + 
+              "V for " + Constants.NotificationConstants.batteryLowDuration + " seconds"));
           batteryLowStartTime = -1;
       }
     }

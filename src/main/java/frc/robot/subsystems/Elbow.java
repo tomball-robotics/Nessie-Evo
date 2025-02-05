@@ -61,14 +61,18 @@ public class Elbow extends SubsystemBase {
     elbowMotor.stopMotor();
   }
 
+  public double getPositionInDegrees() {
+    return relativeEncoder.getPosition() * 10;
+  }
+
   public boolean atSetpoint() {
     return pidController.atSetpoint();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elbow Position (Degrees)", relativeEncoder.getPosition() * 10);
-    SmartDashboard.putBoolean("Elbow at Setpoint", pidController.atSetpoint());
+    SmartDashboard.putNumber("Elbow Position", getPositionInDegrees());
+    SmartDashboard.putBoolean("Elbow at Setpoint", atSetpoint());
   }
 
 }

@@ -14,7 +14,7 @@ public class Climber extends SubsystemBase {
   private TalonFXConfiguration climberConfig;
 
   public Climber() {
-    climberMotor = new TalonFX(Constants.ClimberConstants.climberMotorID);
+    climberMotor = new TalonFX(Constants.ClimberConstants.climberMotorID, "rio");
     climberMotor.setNeutralMode(NeutralModeValue.Brake);
 
     climberConfig = new TalonFXConfiguration();
@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Climber Current Limit", climberConfig.CurrentLimits.SupplyCurrentLimit);
+    SmartDashboard.putNumber("Climber Relative Position", climberMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Climber Velocity", climberMotor.getVelocity().getValueAsDouble());
   }
 

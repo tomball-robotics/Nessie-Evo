@@ -21,71 +21,73 @@ public final class Constants {
     }
 
     public static final class NotificationConstants {
-        public static final double BATTERY_LOW_THRESHOLD = 11.5;
-        public static final double BATTERY_LOW_DURATION = 5.0;
+        public static final double batteryLowVoltage = 11.5;
+        public static final double batteryLowDuration = 5.0;
     }
 
     public static final class PositionConstants {
-        // (elevator, elbow, wrist angles, algae or coal (1 for coral, 0 for algae))
-        public static final double[] startPosition = {0, 0, 0, 1};
-        public static final double[] l1CoralPosition = {10, 30, 15, 1};
-        public static final double[] l2CoralPosition = {20, 45, 25, 1};
-        public static final double[] l3CoralPosition = {30, 60, 35, 1};
-        public static final double[] l4CoralPosition = {40, 75, 45, 1};
-        public static final double[] bottomAlgaePosition = {5, 15, -10, 0};
-        public static final double[] topAlgaePosition = {35, 50, 40, 0};
-        public static final double[] humanCoralIntakePosition = {15, 20, 0, 1};
-        public static final double[] deepCagePosition = {22, 5, -25, 1};
-        public static final double[] processorPosition = {18, 35, 10, 0};
-        public static final double[] groundAlgaeIntakePosition = {22, 5, -25, 0};
-        public static final double[] algaeShootingPosition = {22, 5, -25, 1};
+        /* 0. Elevator Position
+         * 1. Elbow Position
+         * 2. Wrist Angle
+         * 3. Intake Speed -> "0" for coral, "1" for algae
+         */
+        public static final double[] startPosition = {0, 0, 0, 1}; //TODO tune
+        public static final double[] l1CoralPosition = {10, 30, 15, 1}; //TODO tune
+        public static final double[] l2CoralPosition = {20, 45, 25, 1}; //TODO tune
+        public static final double[] l3CoralPosition = {30, 60, 35, 1}; //TODO tune
+        public static final double[] l4CoralPosition = {40, 75, 45, 1}; //TODO tune
+        public static final double[] bottomAlgaePosition = {5, 15, -10, 0}; //TODO tune
+        public static final double[] topAlgaePosition = {35, 50, 40, 0}; //TODO tune
+        public static final double[] humanCoralIntakePosition = {15, 20, 0, 1}; //TODO tune
+        public static final double[] deepCagePosition = {22, 5, -25, 1}; //TODO tune
+        public static final double[] processorPosition = {18, 35, 10, 0}; //TODO tune
+        public static final double[] groundAlgaeIntakePosition = {22, 5, -25, 0}; //TODO tune
+        public static final double[] algaeShootingPosition = {22, 5, -25, 1}; //TODO tune
     }
 
     public static final class EndEffectorConstants {
-        public static final int endEffectorID = 0; //TODO assign id
-        public static final double coralIntakeSpeed = 0.5;
-        public static final double coralOuttakeSpeed = -0.5;
-        public static final double algaeIntakeSpeed = 0.5;
-        public static final double algaeOuttakeSpeed = -0.5;
+        public static final int endEffectorID = 0; //TODO tune
+        public static final double coralIntakeSpeed = 0.5; //TODO tune
+        public static final double coralOuttakeSpeed = -0.5; //TODO tune
+        public static final double algaeIntakeSpeed = 0.5; //TODO tune
+        public static final double algaeOuttakeSpeed = -0.5; //TODO tune
     }
 
     public static final class ElevatorConstants {
-        public static final int elevatorMasterID = 0; //TODO assign id
-        public static final int elevatorSlaveID = 0; //TODO assign id
-        public static final int canCoderID = 0; //TODO assign id
-        public static final double p = 1.6; 
-        public static final double i = 0.001;
-        public static final double d = 0;
+        public static final int elevatorMasterID = 0; //TODO tune
+        public static final int elevatorSlaveID = 0; //TODO tune
+        public static final int canCoderID = 0; //TODO tune
+        public static final double p = 1.6; //TODO tune
+        public static final double i = 0.001; //TODO tune
+        public static final double d = 0; //TODO tune
         public static final double tolerance = .01;
-        public static final int forwardSoftLimit = 50;
-        public static final int reverseSoftLimit = -50;
-        public static final int supplyCurrentLimit = 30;
+        public static final int forwardSoftLimit = 50; //TODO tune
+        public static final int reverseSoftLimit = -50; //TODO tune
     }
 
     public static final class ClimberConstants {
-        public static final int climberMotorID = 0; //TODO assign id
+        public static final int climberMotorID = 0; //TODO tune
     }
 
     public static final class ElbowConstants{
-        public static final int elbowMotorID = 0; //TODO assign id
-        public static final int elbowCancoderID = 0; //TODO assign id
-        public static final double p = 1.6; 
-        public static final double i = 0.001;
-        public static final double d = 0;
+        public static final int elbowMotorID = 0; //TODO tune
+        public static final int elbowCancoderID = 0; //TODO tune
+        public static final double p = 1.6; //TODO tune
+        public static final double i = 0.001; //TODO tune
+        public static final double d = 0; //TODO tune
         public static final double tolerance = .01;
-        public static final int forwardSoftLimit = 50;
-        public static final int reverseSoftLimit = -50;
-        public static final int smartCurrentLimit = 30;
+        public static final int forwardSoftLimit = 50; //TODO tune
+        public static final int reverseSoftLimit = -50; //TODO tune
     }
 
     public static final class WristConstants {
-        public static final int wristMotorID = 12; //TODO assign motor ID
-        public static final double p = .001; 
-        public static final double i = 0.001;
-        public static final double d = 0;
+        public static final int wristMotorID = 12; //TODO tune
+        public static final double p = .001; //TODO tune
+        public static final double i = 0.001; //TODO tune
+        public static final double d = 0; //TODO tune
         public static final double tolerance = .01;
-        public static final int forwardSoftLimit = 50;
-        public static final int reverseSoftLimit = -50;
+        public static final int forwardSoftLimit = 50; //TODO tune
+        public static final int reverseSoftLimit = -50; //TODO tune
     }
 
     public static final class Swerve {
@@ -146,15 +148,15 @@ public final class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.53114; // TODO tune
-        public static final double driveKV = 2.3423;
-        public static final double driveKA = 0.12817;
+        public static final double driveKS = 0.53114; //TODO tune
+        public static final double driveKV = 2.3423; //TODO tune
+        public static final double driveKA = 0.12817; //TODO tune
 
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double maxSpeed = 4.5; //TODO tune
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 10.0; //TODO tune
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
@@ -162,57 +164,56 @@ public final class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
-        public static final class Mod0 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 7;
-            public static final int angleMotorID = 8;
-            public static final int canCoderID = 4;
+        public static final class Mod0 {
+            public static final int driveMotorID = 7; //TODO tune
+            public static final int angleMotorID = 8; //TODO tune
+            public static final int canCoderID = 4; //TODO tune
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-107.753906);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Front Right Module - Module 1 */
-        public static final class Mod1 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 3;
-            public static final int angleMotorID = 4;
-            public static final int canCoderID = 2;
+        public static final class Mod1 {
+            public static final int driveMotorID = 3; //TODO tune
+            public static final int angleMotorID = 4; //TODO tune
+            public static final int canCoderID = 2; //TODO tune
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(67.500000);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
         
         /* Back Left Module - Module 2 */
-        public static final class Mod2 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 1;
-            public static final int angleMotorID = 2;
-            public static final int canCoderID = 1;
+        public static final class Mod2 {
+            public static final int driveMotorID = 1; //TODO tune
+            public static final int angleMotorID = 2; //TODO tune
+            public static final int canCoderID = 1; //TODO tune
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.062500);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Back Right Module - Module 3 */
-        public static final class Mod3 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 5;
-            public static final int angleMotorID = 6;
-            public static final int canCoderID = 3;
+        public static final class Mod3 {
+            public static final int driveMotorID = 5; //TODO tune
+            public static final int angleMotorID = 6; //TODO tune
+            public static final int canCoderID = 3; //TODO tune
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-60.468750);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
 
-    public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 3.85; //used to be 3
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3.85;
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = 3.85; //TODO tune
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.85; //TODO tune
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
     
-        public static final double kPXController = .12;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
+        public static final double kPXController = .12; //TODO tune
+        public static final double kPYController = 1; //TODO tune
+        public static final double kPThetaController = 1; //TODO tune
     
-         //Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);

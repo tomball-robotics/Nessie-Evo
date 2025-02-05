@@ -49,8 +49,8 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator Position (Absolute Degrees)", absoluteEncoder.getAbsolutePosition().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator Velocity (Absolute Degrees/Second)", absoluteEncoder.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Position", absoluteEncoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Velocity", absoluteEncoder.getVelocity().getValueAsDouble());
     SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
   }
 }

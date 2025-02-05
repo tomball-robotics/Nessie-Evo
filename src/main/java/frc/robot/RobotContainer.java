@@ -27,7 +27,7 @@ public class RobotContainer {
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve Swerve = new Swerve();
     private final Wrist wrist = new Wrist();
     private final Elbow elbow = new Elbow();
     private final Elevator elevator = new Elevator();
@@ -45,9 +45,9 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
-        s_Swerve.setDefaultCommand(
+        Swerve.setDefaultCommand(
             new TeleopSwerve(
-                s_Swerve, 
+                Swerve, 
                 () -> -baseDriver.getRawAxis(translationAxis), 
                 () -> -baseDriver.getRawAxis(strafeAxis), 
                 () -> -baseDriver.getRawAxis(rotationAxis), 
@@ -70,7 +70,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() { 
         /* zero robot heading when y is pressed on base driver controller */
-        baseDriver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        baseDriver.y().onTrue(new InstantCommand(() -> Swerve.zeroHeading()));
         baseDriver.leftTrigger().onTrue(climberDown);
         baseDriver.rightTrigger().onTrue(climberUp);
 
