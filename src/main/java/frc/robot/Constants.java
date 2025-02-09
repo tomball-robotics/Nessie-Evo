@@ -47,6 +47,7 @@ public final class Constants {
 
     public static final class EndEffectorConstants {
         public static final int endEffectorID = 0; //TODO tune
+        public static final double endEffectorCurrentLimit = 30;
         public static final double coralIntakeSpeed = 0.5; //TODO tune
         public static final double coralOuttakeSpeed = -0.5; //TODO tune
         public static final double algaeIntakeSpeed = 0.5; //TODO tune
@@ -56,6 +57,7 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int elevatorMasterID = 0; //TODO tune
         public static final int elevatorSlaveID = 0; //TODO tune
+        public static final int elevatorCurrentLimit = 30;
         public static final int canCoderID = 0; //TODO tune
         public static final double p = 1.6; //TODO tune
         public static final double i = 0.001; //TODO tune
@@ -67,11 +69,12 @@ public final class Constants {
 
     public static final class ClimberConstants {
         public static final int climberMotorID = 0; //TODO tune
+        public static final double climberCurrentLimit = 30;
     }
 
     public static final class ElbowConstants{
         public static final int elbowMotorID = 0; //TODO tune
-        public static final int elbowCancoderID = 0; //TODO tune
+        public static final int elbowCurrentLimit = 30;
         public static final double p = 1.6; //TODO tune
         public static final double i = 0.001; //TODO tune
         public static final double d = 0; //TODO tune
@@ -82,6 +85,7 @@ public final class Constants {
 
     public static final class WristConstants {
         public static final int wristMotorID = 12; //TODO tune
+        public static final int wristCurrentLimit = 30;
         public static final double p = .001; //TODO tune
         public static final double i = 0.001; //TODO tune
         public static final double d = 0; //TODO tune

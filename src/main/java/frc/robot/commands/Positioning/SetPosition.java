@@ -42,7 +42,7 @@ public class SetPosition extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    elevator.stopElevator();
+    elevator.stop();
     elbow.stop();
     wrist.stop();
   }

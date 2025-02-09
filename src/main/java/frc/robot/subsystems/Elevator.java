@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,6 +14,7 @@ public class Elevator extends SubsystemBase {
 
   private TalonFX elevatorMaster;
   private TalonFX elevatorSlave;
+  private TalonFXConfiguration elevatorConfig;
   private CANcoder absoluteEncoder;
   private PIDController elevatorPID;
 
@@ -21,8 +23,17 @@ public class Elevator extends SubsystemBase {
     elevatorSlave = new TalonFX(Constants.ElevatorConstants.elevatorSlaveID);
     absoluteEncoder = new CANcoder(Constants.ElevatorConstants.canCoderID);
 
-    elevatorMaster.setNeutralMode(NeutralModeValue.Brake);
-    elevatorSlave.setNeutralMode(NeutralModeValue.Brake);
+    elevatorConfig = new TalonFXConfiguration();
+    elevatorConfig.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.elevatorCurrentLimit;
+    elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    elevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    elevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    elevatorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.forwardSoftLimit;
+    elevatorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.ElevatorConstants.reverseSoftLimit;
+
+    elevatorMaster.getConfigurator().apply(elevatorConfig);
+    elevatorSlave.getConfigurator().apply(elevatorConfig);
 
     elevatorPID = new PIDController(
       Constants.ElevatorConstants.p,
@@ -39,7 +50,11 @@ public class Elevator extends SubsystemBase {
       elevatorMaster.set(elevatorPID.calculate(currentPosition, targetPosition));
   }
 
-  public void stopElevator(){
+  public void setSpeed(double desiredSpeed){
+    elevatorMaster.set(desiredSpeed);
+  }
+
+  public void stop(){
     elevatorMaster.stopMotor();
   }
 
@@ -53,4 +68,5 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Velocity", absoluteEncoder.getVelocity().getValueAsDouble());
     SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
   }
+
 }

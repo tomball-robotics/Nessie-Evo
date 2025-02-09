@@ -11,7 +11,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Climber.ClimberDown;
 import frc.robot.commands.Climber.ClimberUp;
 import frc.robot.commands.EndEffector.EffectEnd;
-import frc.robot.commands.Positioning.SetPosition;
+import frc.robot.commands.Positioning.ElbowDown;
+import frc.robot.commands.Positioning.ElbowUp;
+import frc.robot.commands.Positioning.ElevatorDown;
+import frc.robot.commands.Positioning.ElevatorUp;
+import frc.robot.commands.Positioning.WristDown;
+import frc.robot.commands.Positioning.WristUp;
 import frc.robot.commands.Swerve.*;
 import frc.robot.subsystems.*;
 
@@ -37,6 +42,14 @@ public class RobotContainer {
     /* Commands */
     private final ClimberUp climberUp;
     private final ClimberDown climberDown;
+    private final ElbowDown elbowDown;
+    private final ElbowUp elbowUp;
+    private final WristDown wristDown;
+    private final WristUp wristUp;
+    private final ElevatorDown elevatorDown;
+    private final ElevatorUp elevatorUp;
+
+
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -59,6 +72,18 @@ public class RobotContainer {
         climberUp.addRequirements(climber);
         climberDown = new ClimberDown(climber);
         climberDown.addRequirements(climber);
+        elbowDown = new ElbowDown(elbow);
+        elbowDown.addRequirements(elbow);
+        elbowUp = new ElbowUp(elbow);
+        elbowUp.addRequirements(elbow);
+        wristDown = new WristDown(wrist);
+        wristDown.addRequirements(wrist);
+        wristUp = new WristUp(wrist);
+        wristUp.addRequirements(wrist);
+        elevatorDown = new ElevatorDown(elevator);
+        elevatorDown.addRequirements(elevator);
+        elevatorUp = new ElevatorUp(elevator);
+        elevatorUp.addRequirements(elevator);
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -74,25 +99,39 @@ public class RobotContainer {
         baseDriver.leftTrigger().onTrue(climberDown);
         baseDriver.rightTrigger().onTrue(climberUp);
 
+        /* TEMP/TESTING CONTROLS */
+        armDriver.a().onTrue(elevatorDown);
+        armDriver.y().onTrue(elevatorUp);
+        armDriver.b().onTrue(elbowUp);
+        armDriver.x().onTrue(elbowDown);
+
+        armDriver.povUp().onTrue(wristUp);
+        armDriver.povDown().onTrue(wristDown);
+
+        armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
+        armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
+
+        /* FINAL CONTROLS */
+
         /* coral positions */
-        armDriver.a().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l1CoralPosition));
-        armDriver.b().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l2CoralPosition));
-        armDriver.y().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l3CoralPosition));
-        armDriver.x().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l4CoralPosition));
+        //armDriver.a().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l1CoralPosition));
+        //armDriver.b().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l2CoralPosition));
+        //armDriver.y().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l3CoralPosition));
+        //armDriver.x().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l4CoralPosition));
 
         /* intake */
-        armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
-        armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
-        armDriver.rightBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.humanCoralIntakePosition));
-        armDriver.leftBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.deepCagePosition));
+        //armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
+        //armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
+        //armDriver.rightBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.humanCoralIntakePosition));
+        //armDriver.leftBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.deepCagePosition));
 
         /* algae positions */
-        armDriver.povDown().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.groundAlgaeIntakePosition));
-        armDriver.povUp().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.processorPosition));
-        armDriver.povLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.topAlgaePosition));
-        armDriver.povRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.bottomAlgaePosition));
-        armDriver.povUpLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.algaeShootingPosition));
-        armDriver.povUpRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.startPosition));
+        //armDriver.povDown().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.groundAlgaeIntakePosition));
+        //armDriver.povUp().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.processorPosition));
+        //armDriver.povLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.topAlgaePosition));
+        //armDriver.povRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.bottomAlgaePosition));
+        //armDriver.povUpLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.algaeShootingPosition));
+        //armDriver.povUpRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.startPosition));
     }
 
     /**
