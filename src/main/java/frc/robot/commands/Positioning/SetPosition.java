@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
+import frc.lib.Elastic;
+import frc.lib.Elastic.Notification;
+import frc.lib.Elastic.Notification.NotificationLevel;
 import frc.robot.RobotContainer;
 
 public class SetPosition extends Command {
@@ -45,6 +48,10 @@ public class SetPosition extends Command {
     elevator.stop();
     elbow.stop();
     wrist.stop();
+    Elastic.sendNotification(new Notification(
+      NotificationLevel.INFO,
+      "Superstructure In Position",
+      "The elbow, wrist, and elevator have each reached their desired positions of " + positions[0] + ", " + positions[1] + ", and " + positions[2] + " respectivly."));
   }
 
   @Override
