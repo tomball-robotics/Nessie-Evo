@@ -46,7 +46,7 @@ public final class Constants {
     }
 
     public static final class EndEffectorConstants {
-        public static final int endEffectorID = 0; //TODO tune
+        public static final int endEffectorID = 9; //TODO tune
         public static final double endEffectorCurrentLimit = 30;
         public static final double coralIntakeSpeed = 0.5; //TODO tune
         public static final double coralOuttakeSpeed = -0.5; //TODO tune
@@ -55,25 +55,25 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final int elevatorMasterID = 0; //TODO tune
-        public static final int elevatorSlaveID = 0; //TODO tune
+        public static final int elevatorMasterID = 10; //TODO tune
+        public static final int elevatorSlaveID = 11; //TODO tune
         public static final int elevatorCurrentLimit = 30;
-        public static final int canCoderID = 0; //TODO tune
+        public static final int CanandmagID = 15; //TODO tune
         public static final double p = 1.6; //TODO tune
         public static final double i = 0.001; //TODO tune
         public static final double d = 0; //TODO tune
-        public static final double tolerance = .01;
-        public static final int forwardSoftLimit = 50; //TODO tune
-        public static final int reverseSoftLimit = -50; //TODO tune
+        public static final double tolerance = .005;
+        public static final double forwardSoftLimit = 3.15;
+        public static final double reverseSoftLimit = 0;
     }
 
     public static final class ClimberConstants {
-        public static final int climberMotorID = 0; //TODO tune
+        public static final int climberMotorID = 12; //TODO tune
         public static final double climberCurrentLimit = 30;
     }
 
     public static final class ElbowConstants{
-        public static final int elbowMotorID = 0; //TODO tune
+        public static final int elbowMotorID = 13; //TODO tune
         public static final int elbowCurrentLimit = 30;
         public static final double p = 1.6; //TODO tune
         public static final double i = 0.001; //TODO tune
@@ -84,7 +84,7 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final int wristMotorID = 12; //TODO tune
+        public static final int wristMotorID = 14; //TODO tune
         public static final int wristCurrentLimit = 30;
         public static final double p = .001; //TODO tune
         public static final double i = 0.001; //TODO tune
@@ -95,7 +95,7 @@ public final class Constants {
     }
 
     public static final class Swerve {
-        public static final int pigeonID = 1;
+        public static final int pigeonID = 0;
 
         public static final COTSTalonFXSwerveConstants chosenModule =
         COTSTalonFXSwerveConstants.SDS.MK4i.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.LMatthew);
@@ -172,7 +172,7 @@ public final class Constants {
             public static final int driveMotorID = 1; //TODO tune
             public static final int angleMotorID = 2; //TODO tune
             public static final int canCoderID = 1; //TODO tune
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-107.753906);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-57.656250);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -182,17 +182,17 @@ public final class Constants {
             public static final int driveMotorID = 3; //TODO tune
             public static final int angleMotorID = 4; //TODO tune
             public static final int canCoderID = 2; //TODO tune
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(67.500000);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(163.564453);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-        
+
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
             public static final int driveMotorID = 5; //TODO tune
             public static final int angleMotorID = 6; //TODO tune
             public static final int canCoderID = 3; //TODO tune
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.062500);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(66.533203);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -202,7 +202,7 @@ public final class Constants {
             public static final int driveMotorID = 7; //TODO tune
             public static final int angleMotorID = 8; //TODO tune
             public static final int canCoderID = 4; //TODO tune
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-60.468750);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-165.673828);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

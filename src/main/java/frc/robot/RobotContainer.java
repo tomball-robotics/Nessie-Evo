@@ -96,8 +96,8 @@ public class RobotContainer {
     private void configureButtonBindings() { 
         /* zero robot heading when y is pressed on base driver controller */
         baseDriver.y().onTrue(new InstantCommand(() -> Swerve.zeroHeading()));
-        baseDriver.leftTrigger().onTrue(climberDown);
-        baseDriver.rightTrigger().onTrue(climberUp);
+        baseDriver.leftTrigger().whileTrue(climberDown);
+        baseDriver.rightTrigger().whileTrue(climberUp);
 
         /* TEMP/TESTING CONTROLS */
         armDriver.a().onTrue(elevatorDown);

@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -14,11 +13,11 @@ public class Climber extends SubsystemBase {
   private TalonFXConfiguration climberConfig;
 
   public Climber() {
-    climberMotor = new TalonFX(Constants.ClimberConstants.climberMotorID, "rio");
-    climberMotor.setNeutralMode(NeutralModeValue.Brake);
+    climberMotor = new TalonFX(Constants.ClimberConstants.climberMotorID);
 
     climberConfig = new TalonFXConfiguration();
     climberConfig.CurrentLimits.SupplyCurrentLimit = Constants.ClimberConstants.climberCurrentLimit;
+    climberConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     climberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     climberMotor.getConfigurator().apply(climberConfig);
   }
@@ -32,9 +31,6 @@ public class Climber extends SubsystemBase {
   }   
 
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Climber Relative Position", climberMotor.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Climber Velocity", climberMotor.getVelocity().getValueAsDouble());
-  }
+  public void periodic() {}
 
 }

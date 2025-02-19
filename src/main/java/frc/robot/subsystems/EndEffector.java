@@ -4,14 +4,13 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class EndEffector extends SubsystemBase {
 
-  TalonFX endEffector;
-  TalonFXConfiguration endEffectorConfig;
+  private TalonFX endEffector;
+  private TalonFXConfiguration endEffectorConfig;
 
   public EndEffector() {
     endEffector = new TalonFX(Constants.EndEffectorConstants.endEffectorID);
@@ -31,8 +30,6 @@ public class EndEffector extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("End Effector Velocity", endEffector.getVelocity().getValueAsDouble());
-  }
+  public void periodic() {}
 
 }
