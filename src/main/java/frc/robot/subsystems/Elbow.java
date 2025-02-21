@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -17,53 +18,51 @@ import frc.robot.Constants;
 
 public class Elbow extends SubsystemBase {
 
-  private SparkMax motor;
-  private SparkMaxConfig motorConfig;
-  private SparkLimitSwitch forwardLimitSwitch;
-  private SparkLimitSwitch reverseLimitSwitch;
-  private PIDController pidController;
-  private RelativeEncoder encoder;
+  private static SparkMax motor;
+  private static SparkMaxConfig config;
+  private static PIDController controller;
+  private static RelativeEncoder relativeEncoder;
+  private static AbsoluteEncoder absoluteEncoder;
+  private static SparkLimitSwitch forwardLimitSwitch;
+  private static SparkLimitSwitch reverseLimitSwitch;
+  private static double desiredPosition = 0;
 
   public Elbow() {
-    motor = new SparkMax(Constants.ElbowConstants.elbowMotorID, MotorType.kBrushless);
+    motor = new SparkMax(Constants.ElbowConstants.MOTOR_ID, MotorType.kBrushless);
+    config = new SparkMaxConfig();
     forwardLimitSwitch = motor.getForwardLimitSwitch();
     reverseLimitSwitch = motor.getReverseLimitSwitch();
-    encoder = motor.getEncoder();
+    absoluteEncoder = motor.getAbsoluteEncoder();
+    relativeEncoder = motor.getEncoder();
 
-    motorConfig = new SparkMaxConfig();
+    relativeEncoder.setPosition(absoluteEncoder.getPosition());
 
-    motorConfig.idleMode(IdleMode.kBrake);
+    config.idleMode(IdleMode.kBrake);
+    config.smartCurrentLimit(Constants.ElbowConstants.CURRENT_LIMIT);
+    
+    config.limitSwitch
+      .forwardLimitSwitchType(Type.kNormallyOpen)
+      .forwardLimitSwitchEnabled(true)
+      .reverseLimitSwitchType(Type.kNormallyOpen)
+      .reverseLimitSwitchEnabled(true);
 
-    // Enable limit switches to stop the motor when they are closed
-    motorConfig.limitSwitch
-        .forwardLimitSwitchType(Type.kNormallyOpen)
-        .forwardLimitSwitchEnabled(true)
-        .reverseLimitSwitchType(Type.kNormallyOpen)
-        .reverseLimitSwitchEnabled(true);
+    config.softLimit
+      .forwardSoftLimit(Constants.ElbowConstants.FORWARD_LIMIT)
+      .forwardSoftLimitEnabled(true)
+      .reverseSoftLimit(Constants.ElbowConstants.REVERSE_LIMIT)
+      .reverseSoftLimitEnabled(true);
 
-    // Set the soft limits to stop the motor at -50 and 50 rotations
-    motorConfig.softLimit
-        .forwardSoftLimit(Constants.ElbowConstants.forwardSoftLimit)
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimit(Constants.ElbowConstants.reverseSoftLimit)
-        .reverseSoftLimitEnabled(true);
-      
-    motorConfig.smartCurrentLimit(Constants.ElbowConstants.elbowCurrentLimit);
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-    pidController = new PIDController(
-      Constants.ElbowConstants.p, 
-      Constants.ElbowConstants.i, 
-      Constants.ElbowConstants.d);
-    pidController.setTolerance(Constants.ElbowConstants.tolerance);
-
-    encoder.setPosition(0);
+    controller = new PIDController(
+      Constants.ElbowConstants.P,
+      Constants.ElbowConstants.I,
+      Constants.ElbowConstants.D);
+    controller.setTolerance(Constants.ElbowConstants.PID_TOLERANCE);
   }
 
   public void setRotation(double desiredPosition) {
-    SmartDashboard.putNumber("Elbow Setpoint", desiredPosition);
-    motor.set(pidController.calculate(encoder.getPosition(), desiredPosition));
+    Elbow.desiredPosition = desiredPosition;
   }
 
   public void setSpeed(double speed) {
@@ -75,13 +74,22 @@ public class Elbow extends SubsystemBase {
   }
 
   public boolean atSetpoint() {
-    return pidController.atSetpoint();
+    return controller.atSetpoint();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elbow Position", encoder.getPosition());
+    if(!Constants.ControlConstants.TEST_MODE) {
+      double currentPosition = relativeEncoder.getPosition();
+      double out = controller.calculate(currentPosition, desiredPosition);
+      motor.set(out);
+    }
+
+    SmartDashboard.putNumber("Elbow Position", relativeEncoder.getPosition());
     SmartDashboard.putBoolean("Elbow at Setpoint", atSetpoint());
+    SmartDashboard.putNumber("Elbow Setpoint", controller.getSetpoint());
+    SmartDashboard.putNumber("Elbow Forward Limit", Constants.ElbowConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Elbow Reverse Limit", Constants.ElbowConstants.REVERSE_LIMIT);
     SmartDashboard.putBoolean("Elbow at Forward Limit", forwardLimitSwitch.isPressed());
     SmartDashboard.putBoolean("Elbow at Reverse Limit", reverseLimitSwitch.isPressed());
   }

@@ -13,9 +13,9 @@ public class EndEffector extends SubsystemBase {
   private TalonFXConfiguration endEffectorConfig;
 
   public EndEffector() {
-    endEffector = new TalonFX(Constants.EndEffectorConstants.endEffectorID);
+    endEffector = new TalonFX(Constants.EndEffectorConstants.MOTOR_ID);
     endEffectorConfig = new TalonFXConfiguration();
-    endEffectorConfig.CurrentLimits.SupplyCurrentLimit = Constants.EndEffectorConstants.endEffectorCurrentLimit;
+    endEffectorConfig.CurrentLimits.SupplyCurrentLimit = Constants.EndEffectorConstants.CURRENT_LIMIT;
     endEffectorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     endEffector.setNeutralMode(NeutralModeValue.Brake);
     endEffector.getConfigurator().apply(endEffectorConfig);

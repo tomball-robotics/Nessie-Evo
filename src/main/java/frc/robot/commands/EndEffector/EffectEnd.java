@@ -21,15 +21,15 @@ public class EffectEnd extends Command {
   public void initialize() {
     if (intake) {
       if(RobotContainer.isAlgae) {
-        speed = Constants.EndEffectorConstants.algaeIntakeSpeed;
+        speed = Constants.EndEffectorConstants.ALGAE_INTAKE_SPEED;
       } else {
-        speed = Constants.EndEffectorConstants.algaeOuttakeSpeed;
+        speed = Constants.EndEffectorConstants.ALGAE_OUTTAKE_SPEED;
       }
     } else {
       if(!RobotContainer.isAlgae) {
-        speed = Constants.EndEffectorConstants.coralOuttakeSpeed;
+        speed = Constants.EndEffectorConstants.CORAL_OUTTAKE_SPEED;
       } else {
-        speed = Constants.EndEffectorConstants.coralIntakeSpeed;
+        speed = Constants.EndEffectorConstants.CORAL_INTAKE_SPEED;
       }
     }
   }

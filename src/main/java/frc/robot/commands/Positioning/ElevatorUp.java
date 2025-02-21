@@ -17,7 +17,7 @@ public class ElevatorUp extends Command {
 
   @Override
   public void execute() {
-    elevator.setSpeed(0.05);
+    elevator.setSpeed(0.10);
   }
 
   @Override

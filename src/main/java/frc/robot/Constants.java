@@ -15,14 +15,15 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
 
     public static final class ControlConstants {
-        public static final int baseDriverControllerPort = 0;
-        public static final int operatorDriverControllerPort = 1;
-        public static final double stickDeadband = 0.1;
+        public static final int BASE_DRIVER_CONTROLLER_PORT = 0;
+        public static final int OPERATOR_DRIVER_CONTROLLER_PORT = 1;
+        public static final double STICK_DEADBAND = 0.1;
+        public static final boolean TEST_MODE = false;
     }
 
     public static final class NotificationConstants {
-        public static final double batteryLowVoltage = 11.5;
-        public static final double batteryLowDuration = 5.0;
+        public static final double BATTERY_LOW_VOLTAGE = 11.5;
+        public static final double BATTERY_LOW_DURATION = 5.0;
     }
 
     public static final class PositionConstants {
@@ -31,67 +32,67 @@ public final class Constants {
          * 2. Wrist Angle
          * 3. Intake Speed -> "0" for coral, "1" for algae
          */
-        public static final double[] startPosition = {0, 0, 0, 1}; //TODO tune
-        public static final double[] l1CoralPosition = {10, 30, 15, 1}; //TODO tune
-        public static final double[] l2CoralPosition = {20, 45, 25, 1}; //TODO tune
-        public static final double[] l3CoralPosition = {30, 60, 35, 1}; //TODO tune
-        public static final double[] l4CoralPosition = {40, 75, 45, 1}; //TODO tune
-        public static final double[] bottomAlgaePosition = {5, 15, -10, 0}; //TODO tune
-        public static final double[] topAlgaePosition = {35, 50, 40, 0}; //TODO tune
-        public static final double[] humanCoralIntakePosition = {15, 20, 0, 1}; //TODO tune
-        public static final double[] deepCagePosition = {22, 5, -25, 1}; //TODO tune
-        public static final double[] processorPosition = {18, 35, 10, 0}; //TODO tune
-        public static final double[] groundAlgaeIntakePosition = {22, 5, -25, 0}; //TODO tune
-        public static final double[] algaeShootingPosition = {22, 5, -25, 1}; //TODO tune
+        public static final double[] START_POSITION = {0, 0, 0, 1}; //TODO tune
+        public static final double[] L1_CORAL_POSITION = {10, 30, 15, 1}; //TODO tune
+        public static final double[] L2_CORAL_POSITION = {20, 45, 25, 1}; //TODO tune
+        public static final double[] L3_CORAL_POSITION = {30, 60, 35, 1}; //TODO tune
+        public static final double[] L4_CORAL_POSITION = {40, 75, 45, 1}; //TODO tune
+        public static final double[] BOTTOM_ALGAE_HARVEST = {5, 15, -10, 0}; //TODO tune
+        public static final double[] TOP_ALGAE_POSITION = {35, 50, 40, 0}; //TODO tune
+        public static final double[] HUMAN_CORAL_POSITION = {15, 20, 0, 1}; //TODO tune
+        public static final double[] DEEP_CAGE_POSITION = {22, 5, -25, 1}; //TODO tune
+        public static final double[] PROCESSOR_POSITION = {18, 35, 10, 0}; //TODO tune
+        public static final double[] GROUND_ALGAE_POSITION = {22, 5, -25, 0}; //TODO tune
+        public static final double[] ALGAE_SHOOT_POSITION = {22, 5, -25, 1}; //TODO tune
     }
 
     public static final class EndEffectorConstants {
-        public static final int endEffectorID = 9; //TODO tune
-        public static final double endEffectorCurrentLimit = 30;
-        public static final double coralIntakeSpeed = 0.5; //TODO tune
-        public static final double coralOuttakeSpeed = -0.5; //TODO tune
-        public static final double algaeIntakeSpeed = 0.5; //TODO tune
-        public static final double algaeOuttakeSpeed = -0.5; //TODO tune
+        public static final int MOTOR_ID = 9;
+        public static final double CURRENT_LIMIT = 30;
+        public static final double CORAL_INTAKE_SPEED = 0.5; //TODO tune
+        public static final double CORAL_OUTTAKE_SPEED = -0.5; //TODO tune
+        public static final double ALGAE_INTAKE_SPEED = 0.5; //TODO tune
+        public static final double ALGAE_OUTTAKE_SPEED = -0.5; //TODO tune
     }
 
     public static final class ElevatorConstants {
-        public static final int elevatorMasterID = 10; //TODO tune
-        public static final int elevatorSlaveID = 11; //TODO tune
-        public static final int elevatorCurrentLimit = 30;
-        public static final int CanandmagID = 15; //TODO tune
-        public static final double p = 1.6; //TODO tune
-        public static final double i = 0.001; //TODO tune
-        public static final double d = 0; //TODO tune
-        public static final double tolerance = .005;
-        public static final double forwardSoftLimit = 3.15;
-        public static final double reverseSoftLimit = 0;
+        public static final int MASTER_ID = 10;
+        public static final int FOLLOWER_ID = 11;
+        public static final int CURRENT_LIMIT = 30;
+        public static final int ENCODER_ID = 15; //TODO tune
+        public static final double P = 1.6; //TODO tune
+        public static final double I = 0.001; //TODO tune
+        public static final double D = 0; //TODO tune
+        public static final double PID_TOLERANCE = .005;
+        public static final double FORWARD_LIMIT = 3.15;
+        public static final double REVERSE_LIMIT = 0;
     }
 
     public static final class ClimberConstants {
-        public static final int climberMotorID = 12; //TODO tune
-        public static final double climberCurrentLimit = 30;
+        public static final int MOTOR_ID = 12;
+        public static final double CURRENT_LIMIT = 30;
     }
 
     public static final class ElbowConstants{
-        public static final int elbowMotorID = 13; //TODO tune
-        public static final int elbowCurrentLimit = 30;
-        public static final double p = 1.6; //TODO tune
-        public static final double i = 0.001; //TODO tune
-        public static final double d = 0; //TODO tune
-        public static final double tolerance = .01;
-        public static final int forwardSoftLimit = 50; //TODO tune
-        public static final int reverseSoftLimit = -50; //TODO tune
+        public static final int MOTOR_ID = 13; //TODO tune
+        public static final int CURRENT_LIMIT = 30;
+        public static final double P = 1.6; //TODO tune
+        public static final double I = 0.001; //TODO tune
+        public static final double D = 0; //TODO tune
+        public static final double PID_TOLERANCE = .01;
+        public static final double FORWARD_LIMIT = 41.8;
+        public static final double REVERSE_LIMIT = 0;
     }
 
     public static final class WristConstants {
-        public static final int wristMotorID = 14; //TODO tune
-        public static final int wristCurrentLimit = 30;
-        public static final double p = .001; //TODO tune
-        public static final double i = 0.001; //TODO tune
-        public static final double d = 0; //TODO tune
-        public static final double tolerance = .01;
-        public static final int forwardSoftLimit = 50; //TODO tune
-        public static final int reverseSoftLimit = -50; //TODO tune
+        public static final int MOTOR_ID = 14;
+        public static final int CURRENT_LIMIT = 30;
+        public static final double P = .001; //TODO tune
+        public static final double I = 0.001; //TODO tune
+        public static final double D = 0; //TODO tune
+        public static final double PID_TOLERANCE = .01;
+        public static final double FORWARD_LIMIT = 7.2;
+        public static final double REVERSE_LIMIT = 0;
     }
 
     public static final class Swerve {

@@ -13,10 +13,10 @@ public class Climber extends SubsystemBase {
   private TalonFXConfiguration climberConfig;
 
   public Climber() {
-    climberMotor = new TalonFX(Constants.ClimberConstants.climberMotorID);
+    climberMotor = new TalonFX(Constants.ClimberConstants.MOTOR_ID);
 
     climberConfig = new TalonFXConfiguration();
-    climberConfig.CurrentLimits.SupplyCurrentLimit = Constants.ClimberConstants.climberCurrentLimit;
+    climberConfig.CurrentLimits.SupplyCurrentLimit = Constants.ClimberConstants.CURRENT_LIMIT;
     climberConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     climberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     climberMotor.getConfigurator().apply(climberConfig);

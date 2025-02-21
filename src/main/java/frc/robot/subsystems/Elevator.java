@@ -19,23 +19,27 @@ public class Elevator extends SubsystemBase {
   private PIDController elevatorPID;
 
   public Elevator() {
-    elevatorMaster = new TalonFX(Constants.ElevatorConstants.elevatorMasterID);
-    elevatorSlave = new TalonFX(Constants.ElevatorConstants.elevatorSlaveID);
-    canandmag = new Canandmag(Constants.ElevatorConstants.CanandmagID);
+    elevatorMaster = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
+    elevatorSlave = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID);
+    canandmag = new Canandmag(Constants.ElevatorConstants.ENCODER_ID);
 
     TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
 
-    elevatorConfig.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.elevatorCurrentLimit;
+    elevatorConfig.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
     elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     elevatorMaster.getConfigurator().apply(elevatorConfig);
+    elevatorSlave.getConfigurator().apply(elevatorConfig);
 
+    elevatorMaster.setNeutralMode(NeutralModeValue.Brake);
+    elevatorSlave.setNeutralMode(NeutralModeValue.Brake);
+    
     elevatorPID = new PIDController(
-      Constants.ElevatorConstants.p,
-      Constants.ElevatorConstants.i,
-      Constants.ElevatorConstants.d);
-    elevatorPID.setTolerance(Constants.ElevatorConstants.tolerance);
+      Constants.ElevatorConstants.P,
+      Constants.ElevatorConstants.I,
+      Constants.ElevatorConstants.D);
+    elevatorPID.setTolerance(Constants.ElevatorConstants.PID_TOLERANCE);
 
     elevatorSlave.setControl(new Follower(elevatorMaster.getDeviceID(), false));
   }
@@ -44,8 +48,8 @@ public class Elevator extends SubsystemBase {
     double currentPosition = canandmag.getPosition();
     SmartDashboard.putNumber("Elevator Setpoint (Degrees)", targetPosition);
     
-    if (currentPosition >= Constants.ElevatorConstants.forwardSoftLimit || 
-        currentPosition <= Constants.ElevatorConstants.reverseSoftLimit) {
+    if (currentPosition >= Constants.ElevatorConstants.FORWARD_LIMIT || 
+        currentPosition <= Constants.ElevatorConstants.REVERSE_LIMIT) {
       stop();
     } else {
       elevatorMaster.set(elevatorPID.calculate(currentPosition, targetPosition));
@@ -53,14 +57,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSpeed(double desiredSpeed) {
-    double currentPosition = canandmag.getPosition();
-    
-    if (currentPosition >= Constants.ElevatorConstants.forwardSoftLimit || 
-        currentPosition <= Constants.ElevatorConstants.reverseSoftLimit) {
-      stop();
-    } else {
-      elevatorMaster.set(desiredSpeed);
-    }
+    elevatorMaster.set(-desiredSpeed);
   }
 
   public void stop() {
@@ -76,8 +73,7 @@ public class Elevator extends SubsystemBase {
     
     SmartDashboard.putNumber("Elevator Position (Radians)", canandmag.getPosition());
     SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
-
-    SmartDashboard.putBoolean("Elevator at Forward Limit", canandmag.getAbsPosition() >= Constants.ElevatorConstants.forwardSoftLimit);
-    SmartDashboard.putBoolean("Elevator at Reverse Limit", canandmag.getAbsPosition() <= Constants.ElevatorConstants.reverseSoftLimit);
+    SmartDashboard.putBoolean("Elevator at Forward Limit", canandmag.getAbsPosition() >= Constants.ElevatorConstants.FORWARD_LIMIT);
+    SmartDashboard.putBoolean("Elevator at Reverse Limit", canandmag.getAbsPosition() <= Constants.ElevatorConstants.REVERSE_LIMIT);
   }
 }

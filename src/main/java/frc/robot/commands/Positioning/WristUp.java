@@ -17,7 +17,7 @@ public class WristUp extends Command {
 
   @Override
   public void execute() {
-    wrist.setSpeed(0.5);
+    wrist.setSpeed(1);
   }
 
   @Override

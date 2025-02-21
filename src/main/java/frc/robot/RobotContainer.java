@@ -23,8 +23,8 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
     /* Controllers */
-    private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.baseDriverControllerPort);
-    private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.operatorDriverControllerPort);
+    private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.BASE_DRIVER_CONTROLLER_PORT);
+    private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.OPERATOR_DRIVER_CONTROLLER_PORT);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -100,13 +100,13 @@ public class RobotContainer {
         baseDriver.rightTrigger().whileTrue(climberUp);
 
         /* TEMP/TESTING CONTROLS */
-        armDriver.a().onTrue(elevatorDown);
-        armDriver.y().onTrue(elevatorUp);
-        armDriver.b().onTrue(elbowUp);
-        armDriver.x().onTrue(elbowDown);
+        armDriver.a().whileTrue(elevatorDown);
+        armDriver.y().whileTrue(elevatorUp);
+        armDriver.b().whileTrue(elbowUp);
+        armDriver.x().whileTrue(elbowDown);
 
-        armDriver.povUp().onTrue(wristUp);
-        armDriver.povDown().onTrue(wristDown);
+        armDriver.povUp().whileTrue(wristUp);
+        armDriver.povDown().whileTrue(wristDown);
 
         armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
         armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
