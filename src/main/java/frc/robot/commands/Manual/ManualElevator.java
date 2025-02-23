@@ -1,21 +1,21 @@
-package frc.robot.commands;
+package frc.robot.commands.Manual;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Elbow;
+import frc.robot.subsystems.Elevator;
 
-public class ManualElbow extends Command {
+public class ManualElevator extends Command {
 
-  private Elbow elbow;
+  private Elevator elevator;
   private DoubleSupplier speed;
 
-  public ManualElbow(Elbow elbow, DoubleSupplier speed) {
-    this.elbow = elbow;
+  public ManualElevator(Elevator elevator, DoubleSupplier speed) {
+    this.elevator = elevator;
     this.speed = speed;
-    addRequirements(elbow);
+    addRequirements(elevator);
   }
 
   @Override
@@ -23,7 +23,7 @@ public class ManualElbow extends Command {
 
   @Override
   public void execute() {
-    elbow.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(),
+    elevator.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(),
       Constants.ControlConstants.STICK_DEADBAND));
   }
 

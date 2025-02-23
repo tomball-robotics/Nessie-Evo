@@ -10,10 +10,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Climber.ClimberDown;
 import frc.robot.commands.Climber.ClimberUp;
-import frc.robot.commands.ManualElbow;
-import frc.robot.commands.ManualElevator;
-import frc.robot.commands.ManualEndEffector;
-import frc.robot.commands.ManualWrist;
+import frc.robot.commands.EndEffector.AlgaeIntake;
+import frc.robot.commands.EndEffector.AlgaeOuttake;
+import frc.robot.commands.EndEffector.IntakeCoral;
+import frc.robot.commands.EndEffector.OuttakeCoral;
+import frc.robot.commands.Manual.ManualElbow;
+import frc.robot.commands.Manual.ManualElevator;
+import frc.robot.commands.Manual.ManualEndEffector;
+import frc.robot.commands.Manual.ManualWrist;
 import frc.robot.commands.Swerve.*;
 import frc.robot.subsystems.*;
 
@@ -42,6 +46,10 @@ public class RobotContainer {
     /* Commands */
     private final ClimberUp climberUp;
     private final ClimberDown climberDown;
+    private final IntakeCoral intakeCoral;
+    private final OuttakeCoral outtakeCoral;
+    private final AlgaeIntake algaeIntake;
+    private final AlgaeOuttake algaeOuttake;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -59,38 +67,48 @@ public class RobotContainer {
             )
         );
 
-        elevator.setDefaultCommand(
-            new ManualElevator(
-                elevator,
-                () -> armDriver.getRawAxis(leftY)
-            )
-        );
+        if(Constants.ControlConstants.MANUAL_OPERATION) {
+            elevator.setDefaultCommand(
+                new ManualElevator(
+                    elevator,
+                    () -> -(armDriver.getRawAxis(leftTrigger) - armDriver.getRawAxis(rightTrigger))
+                )
+            );
 
-        elbow.setDefaultCommand(
-            new ManualElbow(
-                elbow,
-                () -> armDriver.getRawAxis(rightY)
-            )
-        );
+            elbow.setDefaultCommand(
+                new ManualElbow(
+                    elbow,
+                    () -> -armDriver.getRawAxis(rightY)
+                )
+            );
 
-        wrist.setDefaultCommand(
-            new ManualWrist(
-                wrist,
-                () -> armDriver.getRawAxis(rightX)
-            )
-        );
+            wrist.setDefaultCommand(
+                new ManualWrist(
+                    wrist,
+                    () -> armDriver.getRawAxis(leftY)
+                )
+            );
 
-        endEffector.setDefaultCommand(
-            new ManualEndEffector(
-                endEffector,
-                () -> armDriver.getRawAxis(leftTrigger) - armDriver.getRawAxis(rightTrigger)
-            )
-        );
+            endEffector.setDefaultCommand(
+                new ManualEndEffector(
+                    endEffector,
+                    () -> armDriver.getRawAxis(leftX)
+                )
+            );
+        }
 
         climberUp = new ClimberUp(climber);
         climberUp.addRequirements(climber);
         climberDown = new ClimberDown(climber);
         climberDown.addRequirements(climber);
+        intakeCoral = new IntakeCoral(endEffector);
+        intakeCoral.addRequirements(endEffector);
+        outtakeCoral = new OuttakeCoral(endEffector);
+        outtakeCoral.addRequirements(endEffector);
+        algaeIntake = new AlgaeIntake(endEffector);
+        algaeIntake.addRequirements(endEffector);
+        algaeOuttake = new AlgaeOuttake(endEffector);
+        algaeOuttake.addRequirements(endEffector);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -99,13 +117,16 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() { 
-        /* zero robot heading when y is pressed on base driver controller */
+        /* Base Driver */
         baseDriver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
         baseDriver.leftTrigger().whileTrue(climberDown);
         baseDriver.rightTrigger().whileTrue(climberUp);
 
-        //armDriver.a().onTrue(new InstantCommand(() -> elbow.setDesiredPosition(.3)));
-       
+        /* Arm Driver */
+        armDriver.a().whileTrue(intakeCoral);
+        armDriver.b().whileTrue(outtakeCoral);
+        armDriver.x().whileTrue(algaeIntake);
+        armDriver.y().whileTrue(algaeOuttake);
     }
 
     public Command getAutonomousCommand() {

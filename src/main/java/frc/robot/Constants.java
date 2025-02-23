@@ -17,8 +17,8 @@ public final class Constants {
     public static final class ControlConstants {
         public static final int BASE_DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_DRIVER_CONTROLLER_PORT = 1;
-        public static final double STICK_DEADBAND = 0.1;
-        public static final boolean DEBUG = true;
+        public static final double STICK_DEADBAND = 0.05;
+        public static final boolean MANUAL_OPERATION = true;
     }
 
     public static final class NotificationConstants {
@@ -32,18 +32,18 @@ public final class Constants {
          * 2. Wrist Angle
          * 3. Intake Speed -> "0" for coral, "1" for algae
          */
-        public static final double[] START_POSITION = {0, 0, 0, 1}; //TODO tune
-        public static final double[] L1_CORAL_POSITION = {10, 30, 15, 1}; //TODO tune
-        public static final double[] L2_CORAL_POSITION = {20, 45, 25, 1}; //TODO tune
-        public static final double[] L3_CORAL_POSITION = {30, 60, 35, 1}; //TODO tune
-        public static final double[] L4_CORAL_POSITION = {40, 75, 45, 1}; //TODO tune
-        public static final double[] BOTTOM_ALGAE_HARVEST = {5, 15, -10, 0}; //TODO tune
-        public static final double[] TOP_ALGAE_POSITION = {35, 50, 40, 0}; //TODO tune
-        public static final double[] HUMAN_CORAL_POSITION = {15, 20, 0, 1}; //TODO tune
-        public static final double[] DEEP_CAGE_POSITION = {22, 5, -25, 1}; //TODO tune
-        public static final double[] PROCESSOR_POSITION = {18, 35, 10, 0}; //TODO tune
-        public static final double[] GROUND_ALGAE_POSITION = {22, 5, -25, 0}; //TODO tune
-        public static final double[] ALGAE_SHOOT_POSITION = {22, 5, -25, 1}; //TODO tune
+        public static final double[] START_POSITION = {0, 0, 0, 1};
+        public static final double[] L1_CORAL_POSITION = {10, 30, 15, 1};
+        public static final double[] L2_CORAL_POSITION = {20, 45, 25, 1};
+        public static final double[] L3_CORAL_POSITION = {30, 60, 35, 1};
+        public static final double[] L4_CORAL_POSITION = {40, 75, 45, 1};
+        public static final double[] BOTTOM_ALGAE_HARVEST = {5, 15, -10, 0};
+        public static final double[] TOP_ALGAE_POSITION = {35, 50, 40, 0};
+        public static final double[] HUMAN_CORAL_POSITION = {15, 20, 0, 1};
+        public static final double[] DEEP_CAGE_POSITION = {22, 5, -25, 1};
+        public static final double[] PROCESSOR_POSITION = {18, 35, 10, 0};
+        public static final double[] GROUND_ALGAE_POSITION = {22, 5, -25, 0};
+        public static final double[] ALGAE_SHOOT_POSITION = {22, 5, -25, 1};
     }
 
     public static final class EndEffectorConstants {
@@ -60,14 +60,11 @@ public final class Constants {
         public static final int FOLLOWER_ID = 11;
         public static final int CURRENT_LIMIT = 30;
         public static final int ENCODER_ID = 15;
-        public static final double P = .1; //TODO tune
-        public static final double I = 0; //TODO tune
-        public static final double D = 0; //TODO tune
-        public static final double S = .12;
-        public static final double V = 0;
-        public static final double A = 0;
-        public static final double G = .1;
-        public static final double PID_TOLERANCE = .005; //TODO tune
+        public static final double P = .05;
+        public static final double I = 0;
+        public static final double D = 0;
+        public static final double G = 0.0791015625;
+        public static final double TOLERANCE = .005;
         public static final double FORWARD_LIMIT = 3.15;
         public static final double REVERSE_LIMIT = 0;
     }
@@ -75,27 +72,28 @@ public final class Constants {
     public static final class ClimberConstants {
         public static final int MOTOR_ID = 12;
         public static final double CURRENT_LIMIT = 30;
+        public static final double CLIMBER_SPEED = .5;
     }
 
     public static final class ElbowConstants{
         public static final int MOTOR_ID = 13;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = 0.01; //TODO tune
-        public static final double I = 0; //TODO tune
-        public static final double D = 0; //TODO tune
+        public static final double P = 0.01;
+        public static final double I = 0;
+        public static final double D = 0;
         public static final double PID_TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 41.8;
         public static final double REVERSE_LIMIT = 0;
-        public static final int ENCODER_ID = 17; //TODO blah
+        public static final int ENCODER_ID = 17;
         public static final double G = 0;
     }
 
     public static final class WristConstants {
         public static final int MOTOR_ID = 14;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = .001; //TODO tune
-        public static final double I = 0; //TODO tune
-        public static final double D = 0; //TODO tune
+        public static final double P = .001;
+        public static final double I = 0;
+        public static final double D = 0;
         public static final double PID_TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 7.2;
         public static final double REVERSE_LIMIT = 0;
@@ -160,15 +158,15 @@ public final class Constants {
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.53114; //TODO tune
-        public static final double driveKV = 2.3423; //TODO tune
-        public static final double driveKA = 0.12817; //TODO tune
+        public static final double driveKS = 0.53114;
+        public static final double driveKV = 2.3423;
+        public static final double driveKA = 0.12817;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 4.5; //TODO tune
+        public static final double maxSpeed = 4.5;
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; //TODO tune
+        public static final double maxAngularVelocity = 10.0;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
@@ -177,9 +175,9 @@ public final class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            public static final int driveMotorID = 1; //TODO tune
-            public static final int angleMotorID = 2; //TODO tune
-            public static final int canCoderID = 1; //TODO tune
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 2;
+            public static final int canCoderID = 1;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-57.656250);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -187,9 +185,9 @@ public final class Constants {
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            public static final int driveMotorID = 3; //TODO tune
-            public static final int angleMotorID = 4; //TODO tune
-            public static final int canCoderID = 2; //TODO tune
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 4;
+            public static final int canCoderID = 2;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(163.564453);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -197,9 +195,9 @@ public final class Constants {
 
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            public static final int driveMotorID = 5; //TODO tune
-            public static final int angleMotorID = 6; //TODO tune
-            public static final int canCoderID = 3; //TODO tune
+            public static final int driveMotorID = 5;
+            public static final int angleMotorID = 6;
+            public static final int canCoderID = 3;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(66.533203);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -207,9 +205,9 @@ public final class Constants {
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            public static final int driveMotorID = 7; //TODO tune
-            public static final int angleMotorID = 8; //TODO tune
-            public static final int canCoderID = 4; //TODO tune
+            public static final int driveMotorID = 7;
+            public static final int angleMotorID = 8;
+            public static final int canCoderID = 4;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-165.673828);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -217,14 +215,14 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 3.85; //TODO tune
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3.85; //TODO tune
+        public static final double kMaxSpeedMetersPerSecond = 3.85;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.85;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
     
-        public static final double kPXController = .12; //TODO tune
-        public static final double kPYController = 1; //TODO tune
-        public static final double kPThetaController = 1; //TODO tune
+        public static final double kPXController = .12;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 1;
     
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(

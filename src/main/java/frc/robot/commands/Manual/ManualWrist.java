@@ -1,21 +1,21 @@
-package frc.robot.commands;
+package frc.robot.commands.Manual;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.Wrist;
 
-public class ManualEndEffector extends Command {
+public class ManualWrist extends Command {
 
-  private EndEffector endEffector;
+  private Wrist wrist;
   private DoubleSupplier speed;
 
-  public ManualEndEffector(EndEffector endEffector, DoubleSupplier speed) {
-    this.endEffector = endEffector;
+  public ManualWrist(Wrist wrist, DoubleSupplier speed) {
+    this.wrist = wrist;
     this.speed = speed;
-    addRequirements(endEffector);
+    addRequirements(wrist);
   }
 
   @Override
@@ -23,7 +23,7 @@ public class ManualEndEffector extends Command {
 
   @Override
   public void execute() {
-    endEffector.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(),
+    wrist.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(),
       Constants.ControlConstants.STICK_DEADBAND));
   }
 

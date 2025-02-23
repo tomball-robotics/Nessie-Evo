@@ -1,21 +1,21 @@
-package frc.robot.commands;
+package frc.robot.commands.Manual;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Elbow;
 
-public class ManualWrist extends Command {
+public class ManualElbow extends Command {
 
-  private Wrist wrist;
+  private Elbow elbow;
   private DoubleSupplier speed;
 
-  public ManualWrist(Wrist wrist, DoubleSupplier speed) {
-    this.wrist = wrist;
+  public ManualElbow(Elbow elbow, DoubleSupplier speed) {
+    this.elbow = elbow;
     this.speed = speed;
-    addRequirements(wrist);
+    addRequirements(elbow);
   }
 
   @Override
@@ -23,7 +23,7 @@ public class ManualWrist extends Command {
 
   @Override
   public void execute() {
-    wrist.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(),
+    elbow.setSpeed(MathUtil.applyDeadband(speed.getAsDouble(),
       Constants.ControlConstants.STICK_DEADBAND));
   }
 

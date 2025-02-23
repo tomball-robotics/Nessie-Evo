@@ -1,6 +1,7 @@
 package frc.robot.commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 public class ClimberDown extends Command {
@@ -17,12 +18,12 @@ public class ClimberDown extends Command {
 
   @Override
   public void execute() {
-    climber.runClimber(-.5);
+    climber.runClimber(-Constants.ClimberConstants.CLIMBER_SPEED);
   }
 
   @Override
   public void end(boolean interrupted) {
-    climber.stopClimber();
+    climber.stop();
   }
 
   @Override

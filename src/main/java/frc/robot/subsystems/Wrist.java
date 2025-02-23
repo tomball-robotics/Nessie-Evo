@@ -60,7 +60,7 @@ public class Wrist extends SubsystemBase {
     SmartDashboard.putNumber("Wrist Position", canandmag.getPosition());
     SmartDashboard.putBoolean("Wrist at Setpoint", atSetpoint());
 
-    if(!Constants.ControlConstants.DEBUG) {
+    if(!Constants.ControlConstants.MANUAL_OPERATION) {
       double currentPosition = canandmag.getPosition();
       double out = controller.calculate(currentPosition, desiredPosition);
       motor.set(out);

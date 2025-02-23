@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     CanandEventLoop.getInstance();
-    SmartDashboard.putBoolean("Test Mode", Constants.ControlConstants.DEBUG);
+    SmartDashboard.putBoolean("Manual Mode", Constants.ControlConstants.MANUAL_OPERATION);
     m_robotContainer = new RobotContainer();
   }
 

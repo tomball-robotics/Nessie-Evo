@@ -6,7 +6,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,73 +13,72 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
 
-  private TalonFX elevatorMaster;
-  private TalonFX elevatorSlave;
-  private Canandmag canandmag;
-  private PIDController controller;
-  private ElevatorFeedforward feedforward;
-  private double desiredPosition = 0;
+  private static TalonFX motor;
+  private static TalonFX follower;
+  private static TalonFXConfiguration config;
+  private static Canandmag canandmag;
+  private static PIDController controller;
+  private static double desiredPosition = 0;
 
   public Elevator() {
-    elevatorMaster = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
-    elevatorSlave = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID);
+    motor = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
+    follower = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID);
     canandmag = new Canandmag(Constants.ElevatorConstants.ENCODER_ID);
-
-    TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
-
-    elevatorConfig.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
-    elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    elevatorMaster.getConfigurator().apply(elevatorConfig);
-    elevatorSlave.getConfigurator().apply(elevatorConfig);
-
-    elevatorMaster.setNeutralMode(NeutralModeValue.Brake);
-    elevatorSlave.setNeutralMode(NeutralModeValue.Brake);
 
     controller = new PIDController(
       Constants.ElevatorConstants.P,
       Constants.ElevatorConstants.I,
       Constants.ElevatorConstants.D);
-    controller.setTolerance(Constants.ElevatorConstants.PID_TOLERANCE);
+    controller.setTolerance(Constants.ElevatorConstants.TOLERANCE);
 
-    feedforward = new ElevatorFeedforward(
-      Constants.ElevatorConstants.S,
-      Constants.ElevatorConstants.V,
-      Constants.ElevatorConstants.A,
-      Constants.ElevatorConstants.G);
+    config = new TalonFXConfiguration();
 
-    elevatorSlave.setControl(new Follower(elevatorMaster.getDeviceID(), false));
+    config.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    motor.getConfigurator().apply(config);
+    follower.getConfigurator().apply(config);
+
+    motor.setNeutralMode(NeutralModeValue.Brake);
+    follower.setNeutralMode(NeutralModeValue.Brake);
+
+    follower.setControl(new Follower(10, false));
   }
 
-  public void setPosition(double targetPosition) {
-    double feedforwardOutput = feedforward.calculate(canandmag.getVelocity());
-    double pidOutput = controller.calculate(canandmag.getPosition(), targetPosition);
-    double totalOutput = pidOutput + feedforwardOutput;
-    elevatorMaster.set(totalOutput);
+  private void goToDesiredPosition() {
+    double currentPosition = canandmag.getPosition();
+    double output = controller.calculate(currentPosition, desiredPosition);
+    motor.set(output + Constants.ElevatorConstants.G);
   }
 
   public void setDesiredPosition(double desiredPosition) {
-    this.desiredPosition = desiredPosition;
+    Elevator.desiredPosition = desiredPosition;
   }
 
   public void setSpeed(double desiredSpeed) {
-    double feedforwardOutput = feedforward.calculate(canandmag.getVelocity());
-    elevatorMaster.set(-desiredSpeed + feedforwardOutput);
+    double governor;
+    if(canandmag.getPosition() < .3) {
+      governor = 10;
+    }else {
+      governor = 4;
+    }
+    motor.set((desiredSpeed/governor) + Constants.ElevatorConstants.G);
+    SmartDashboard.putNumber("Elevator Desired Speed", desiredSpeed);
   }
 
-  public boolean atSetpoint() {
+  private boolean atSetpoint() {
     return controller.atSetpoint();
   }
 
   @Override
   public void periodic() {
-    if(!Constants.ControlConstants.DEBUG) {
-      setPosition(desiredPosition);
+    if(!Constants.ControlConstants.MANUAL_OPERATION) {
+      goToDesiredPosition();
     }
     SmartDashboard.putNumber("Elevator Velocity", canandmag.getVelocity());
     SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);
-    SmartDashboard.putNumber("Elevator Motor Output", elevatorMaster.get());
+    SmartDashboard.putNumber("Elevator Motor Output", motor.get());
     SmartDashboard.putNumber("Elevator Position", canandmag.getPosition());
     SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
   }
