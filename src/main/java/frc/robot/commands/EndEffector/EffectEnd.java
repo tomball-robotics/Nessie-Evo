@@ -36,12 +36,12 @@ public class EffectEnd extends Command {
 
   @Override
   public void execute() {
-    endEffector.runEndEffector(speed);
+    endEffector.setSpeed(speed);
   }
 
   @Override
   public void end(boolean interrupted) {
-    endEffector.stopEndEffector();
+    endEffector.stop();
   }
 
   @Override

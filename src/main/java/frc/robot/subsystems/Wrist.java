@@ -1,15 +1,9 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLimitSwitch;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.reduxrobotics.sensors.canandmag.Canandmag;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,40 +12,24 @@ import frc.robot.Constants;
 
 public class Wrist extends SubsystemBase {
 
-  private static SparkMax motor;
-  private static SparkMaxConfig config;
-  private static PIDController controller;
-  private static RelativeEncoder relativeEncoder;
-  private static AbsoluteEncoder absoluteEncoder;
-  private static SparkLimitSwitch forwardLimitSwitch;
-  private static SparkLimitSwitch reverseLimitSwitch;
+  private TalonFX motor;
+  private Canandmag canandmag;
+  private PIDController controller;
+  private double desiredPosition = 0;
 
   public Wrist() {
-    motor = new SparkMax(Constants.WristConstants.MOTOR_ID, MotorType.kBrushless);
-    config = new SparkMaxConfig();
-    forwardLimitSwitch = motor.getForwardLimitSwitch();
-    reverseLimitSwitch = motor.getReverseLimitSwitch();
-    absoluteEncoder = motor.getAbsoluteEncoder();
-    relativeEncoder = motor.getEncoder();
+    motor = new TalonFX(Constants.WristConstants.MOTOR_ID);
+    canandmag = new Canandmag(Constants.WristConstants.ENCODER_ID);
 
-    relativeEncoder.setPosition(absoluteEncoder.getPosition());
+    TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
-    config.idleMode(IdleMode.kBrake);
-    config.smartCurrentLimit(Constants.WristConstants.CURRENT_LIMIT);
-    
-    config.limitSwitch
-      .forwardLimitSwitchType(Type.kNormallyOpen)
-      .forwardLimitSwitchEnabled(true)
-      .reverseLimitSwitchType(Type.kNormallyOpen)
-      .reverseLimitSwitchEnabled(true);
+    wristConfig.CurrentLimits.SupplyCurrentLimit = Constants.WristConstants.CURRENT_LIMIT;
+    wristConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    config.softLimit
-      .forwardSoftLimit(Constants.WristConstants.FORWARD_LIMIT)
-      .forwardSoftLimitEnabled(true)
-      .reverseSoftLimit(Constants.WristConstants.REVERSE_LIMIT)
-      .reverseSoftLimitEnabled(true);
+    motor.getConfigurator().apply(wristConfig);
 
-    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    motor.setNeutralMode(NeutralModeValue.Brake);
 
     controller = new PIDController(
       Constants.WristConstants.P,
@@ -60,14 +38,12 @@ public class Wrist extends SubsystemBase {
     controller.setTolerance(Constants.WristConstants.PID_TOLERANCE);
   }
 
-  public void setRotation(double desiredPosition) {
-    double currentPosition = relativeEncoder.getPosition();
-    double out = controller.calculate(currentPosition, desiredPosition);
-    motor.set(out);
+  public void setDesiredPosition(double desiredPosition) {
+    this.desiredPosition = desiredPosition;
   }
 
-  public void setSpeed(double speed) {
-    motor.set(speed);
+  public void setSpeed(double desiredSpeed) {
+    motor.set(-desiredSpeed);
   }
 
   public void stop() {
@@ -80,13 +56,14 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Wrist Position", relativeEncoder.getPosition());
+    SmartDashboard.putNumber("Wrist Desired Position", desiredPosition);
+    SmartDashboard.putNumber("Wrist Position", canandmag.getPosition());
     SmartDashboard.putBoolean("Wrist at Setpoint", atSetpoint());
-    SmartDashboard.putNumber("Wrist Setpoint", controller.getSetpoint());
-    SmartDashboard.putNumber("Wrist Forward Limit", Constants.WristConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Wrist Reverse Limit", Constants.WristConstants.REVERSE_LIMIT);
-    SmartDashboard.putBoolean("Wrist at Forward Limit", forwardLimitSwitch.isPressed());
-    SmartDashboard.putBoolean("Wrist at Reverse Limit", reverseLimitSwitch.isPressed());
-  }
 
+    if(!Constants.ControlConstants.DEBUG) {
+      double currentPosition = canandmag.getPosition();
+      double out = controller.calculate(currentPosition, desiredPosition);
+      motor.set(out);
+    }
+  }
 }

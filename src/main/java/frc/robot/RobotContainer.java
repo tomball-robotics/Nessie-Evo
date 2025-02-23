@@ -10,13 +10,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Climber.ClimberDown;
 import frc.robot.commands.Climber.ClimberUp;
-import frc.robot.commands.EndEffector.EffectEnd;
-import frc.robot.commands.Positioning.ElbowDown;
-import frc.robot.commands.Positioning.ElbowUp;
-import frc.robot.commands.Positioning.ElevatorDown;
-import frc.robot.commands.Positioning.ElevatorUp;
-import frc.robot.commands.Positioning.WristDown;
-import frc.robot.commands.Positioning.WristUp;
+import frc.robot.commands.ManualElbow;
+import frc.robot.commands.ManualElevator;
+import frc.robot.commands.ManualEndEffector;
+import frc.robot.commands.ManualWrist;
 import frc.robot.commands.Swerve.*;
 import frc.robot.subsystems.*;
 
@@ -27,12 +24,15 @@ public class RobotContainer {
     private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.OPERATOR_DRIVER_CONTROLLER_PORT);
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final int leftY = XboxController.Axis.kLeftY.value;
+    private final int leftX = XboxController.Axis.kLeftX.value;
+    private final int rightX = XboxController.Axis.kRightX.value;
+    private final int rightTrigger = XboxController.Axis.kRightTrigger.value;
+    private final int leftTrigger = XboxController.Axis.kLeftTrigger.value;
+    private final int rightY = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
-    private final Swerve Swerve = new Swerve();
+    private final Swerve swerve = new Swerve();
     private final Wrist wrist = new Wrist();
     private final Elbow elbow = new Elbow();
     private final Elevator elevator = new Elevator();
@@ -42,29 +42,48 @@ public class RobotContainer {
     /* Commands */
     private final ClimberUp climberUp;
     private final ClimberDown climberDown;
-    private final ElbowDown elbowDown;
-    private final ElbowUp elbowUp;
-    private final WristDown wristDown;
-    private final WristUp wristUp;
-    private final ElevatorDown elevatorDown;
-    private final ElevatorUp elevatorUp;
-
-
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
     public static boolean isAlgae = false;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
-        Swerve.setDefaultCommand(
+        swerve.setDefaultCommand(
             new TeleopSwerve(
-                Swerve, 
-                () -> -baseDriver.getRawAxis(translationAxis), 
-                () -> -baseDriver.getRawAxis(strafeAxis), 
-                () -> -baseDriver.getRawAxis(rotationAxis), 
+                swerve, 
+                () -> -baseDriver.getRawAxis(leftY), 
+                () -> -baseDriver.getRawAxis(leftX), 
+                () -> -baseDriver.getRawAxis(rightX), 
                 () -> baseDriver.leftBumper().getAsBoolean()
+            )
+        );
+
+        elevator.setDefaultCommand(
+            new ManualElevator(
+                elevator,
+                () -> armDriver.getRawAxis(leftY)
+            )
+        );
+
+        elbow.setDefaultCommand(
+            new ManualElbow(
+                elbow,
+                () -> armDriver.getRawAxis(rightY)
+            )
+        );
+
+        wrist.setDefaultCommand(
+            new ManualWrist(
+                wrist,
+                () -> armDriver.getRawAxis(rightX)
+            )
+        );
+
+        endEffector.setDefaultCommand(
+            new ManualEndEffector(
+                endEffector,
+                () -> armDriver.getRawAxis(leftTrigger) - armDriver.getRawAxis(rightTrigger)
             )
         );
 
@@ -72,73 +91,23 @@ public class RobotContainer {
         climberUp.addRequirements(climber);
         climberDown = new ClimberDown(climber);
         climberDown.addRequirements(climber);
-        elbowDown = new ElbowDown(elbow);
-        elbowDown.addRequirements(elbow);
-        elbowUp = new ElbowUp(elbow);
-        elbowUp.addRequirements(elbow);
-        wristDown = new WristDown(wrist);
-        wristDown.addRequirements(wrist);
-        wristUp = new WristUp(wrist);
-        wristUp.addRequirements(wrist);
-        elevatorDown = new ElevatorDown(elevator);
-        elevatorDown.addRequirements(elevator);
-        elevatorUp = new ElevatorUp(elevator);
-        elevatorUp.addRequirements(elevator);
 
-        // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
-        // Configure the button bindings
         configureButtonBindings();
     }
 
     private void configureButtonBindings() { 
         /* zero robot heading when y is pressed on base driver controller */
-        baseDriver.y().onTrue(new InstantCommand(() -> Swerve.zeroHeading()));
+        baseDriver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
         baseDriver.leftTrigger().whileTrue(climberDown);
         baseDriver.rightTrigger().whileTrue(climberUp);
 
-        /* TEMP/TESTING CONTROLS */
-        armDriver.a().whileTrue(elevatorDown);
-        armDriver.y().whileTrue(elevatorUp);
-        armDriver.b().whileTrue(elbowUp);
-        armDriver.x().whileTrue(elbowDown);
-
-        armDriver.povUp().whileTrue(wristUp);
-        armDriver.povDown().whileTrue(wristDown);
-
-        armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
-        armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
-
-        /* FINAL CONTROLS */
-
-        /* coral positions */
-        //armDriver.a().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l1CoralPosition));
-        //armDriver.b().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l2CoralPosition));
-        //armDriver.y().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l3CoralPosition));
-        //armDriver.x().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.l4CoralPosition));
-
-        /* intake */
-        //armDriver.leftTrigger(.15).whileTrue(new EffectEnd(endEffector, true));
-        //armDriver.rightTrigger(.15).whileTrue(new EffectEnd(endEffector, false));
-        //armDriver.rightBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.humanCoralIntakePosition));
-        //armDriver.leftBumper().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.deepCagePosition));
-
-        /* algae positions */
-        //armDriver.povDown().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.groundAlgaeIntakePosition));
-        //armDriver.povUp().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.processorPosition));
-        //armDriver.povLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.topAlgaePosition));
-        //armDriver.povRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.bottomAlgaePosition));
-        //armDriver.povUpLeft().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.algaeShootingPosition));
-        //armDriver.povUpRight().onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.startPosition));
+        //armDriver.a().onTrue(new InstantCommand(() -> elbow.setDesiredPosition(.3)));
+       
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
     }

@@ -17,7 +17,7 @@ public class ClimberDown extends Command {
 
   @Override
   public void execute() {
-    climber.runClimber(-1);
+    climber.runClimber(-.5);
   }
 
   @Override

@@ -18,7 +18,7 @@ public final class Constants {
         public static final int BASE_DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_DRIVER_CONTROLLER_PORT = 1;
         public static final double STICK_DEADBAND = 0.1;
-        public static final boolean TEST_MODE = false;
+        public static final boolean DEBUG = true;
     }
 
     public static final class NotificationConstants {
@@ -49,21 +49,25 @@ public final class Constants {
     public static final class EndEffectorConstants {
         public static final int MOTOR_ID = 9;
         public static final double CURRENT_LIMIT = 30;
-        public static final double CORAL_INTAKE_SPEED = 0.5; //TODO tune
-        public static final double CORAL_OUTTAKE_SPEED = -0.5; //TODO tune
-        public static final double ALGAE_INTAKE_SPEED = 0.5; //TODO tune
-        public static final double ALGAE_OUTTAKE_SPEED = -0.5; //TODO tune
+        public static final double CORAL_INTAKE_SPEED = -.25;
+        public static final double CORAL_OUTTAKE_SPEED = 0.25;
+        public static final double ALGAE_INTAKE_SPEED = -1;
+        public static final double ALGAE_OUTTAKE_SPEED = 0.25;
     }
 
     public static final class ElevatorConstants {
         public static final int MASTER_ID = 10;
         public static final int FOLLOWER_ID = 11;
         public static final int CURRENT_LIMIT = 30;
-        public static final int ENCODER_ID = 15; //TODO tune
-        public static final double P = 1.6; //TODO tune
-        public static final double I = 0.001; //TODO tune
+        public static final int ENCODER_ID = 15;
+        public static final double P = .1; //TODO tune
+        public static final double I = 0; //TODO tune
         public static final double D = 0; //TODO tune
-        public static final double PID_TOLERANCE = .005;
+        public static final double S = .12;
+        public static final double V = 0;
+        public static final double A = 0;
+        public static final double G = .1;
+        public static final double PID_TOLERANCE = .005; //TODO tune
         public static final double FORWARD_LIMIT = 3.15;
         public static final double REVERSE_LIMIT = 0;
     }
@@ -74,25 +78,28 @@ public final class Constants {
     }
 
     public static final class ElbowConstants{
-        public static final int MOTOR_ID = 13; //TODO tune
+        public static final int MOTOR_ID = 13;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = 1.6; //TODO tune
-        public static final double I = 0.001; //TODO tune
+        public static final double P = 0.01; //TODO tune
+        public static final double I = 0; //TODO tune
         public static final double D = 0; //TODO tune
         public static final double PID_TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 41.8;
         public static final double REVERSE_LIMIT = 0;
+        public static final int ENCODER_ID = 17; //TODO blah
+        public static final double G = 0;
     }
 
     public static final class WristConstants {
         public static final int MOTOR_ID = 14;
         public static final int CURRENT_LIMIT = 30;
         public static final double P = .001; //TODO tune
-        public static final double I = 0.001; //TODO tune
+        public static final double I = 0; //TODO tune
         public static final double D = 0; //TODO tune
         public static final double PID_TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 7.2;
         public static final double REVERSE_LIMIT = 0;
+        public static final int ENCODER_ID = 16;
     }
 
     public static final class Swerve {
