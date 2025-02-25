@@ -60,7 +60,6 @@ public class RobotContainer {
     public static boolean manual = true;
 
     public RobotContainer() {
-
         swerve.setDefaultCommand(
             new TeleopSwerve(
                 swerve, 
@@ -132,20 +131,18 @@ public class RobotContainer {
         operator.x().whileTrue(algaeIntake);
 
         /* --- Operator Keypad  --- */
-        new JoystickButton(operatorKeypad, 1).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L1_CORAL_POSITION)); // top left
-        new JoystickButton(operatorKeypad, 2).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L2_CORAL_POSITION));
-        new JoystickButton(operatorKeypad, 3).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L3_CORAL_POSITION));
-        new JoystickButton(operatorKeypad, 4).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L4_CORAL_POSITION));
-        new JoystickButton(operatorKeypad, 5).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.GROUND_ALGAE_POSITION));
-        new JoystickButton(operatorKeypad, 6).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.DEEP_CAGE_POSITION)); // bottom left
-        new JoystickButton(operatorKeypad, 7).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW_POSITION)); // top right
-        new JoystickButton(operatorKeypad, 8).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE_POSITION));
-        new JoystickButton(operatorKeypad, 9).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE_HARVEST));
-        new JoystickButton(operatorKeypad, 10).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR_POSITION));
-        new JoystickButton(operatorKeypad, 11).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.HUMAN_CORAL_POSITION));
+        new JoystickButton(operatorKeypad, 1).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L1)); // top left
+        new JoystickButton(operatorKeypad, 2).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L2));
+        new JoystickButton(operatorKeypad, 3).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L3));
+        new JoystickButton(operatorKeypad, 4).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L4));
+        new JoystickButton(operatorKeypad, 5).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.GROUND_ALGAE));
+        new JoystickButton(operatorKeypad, 6).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.CAGE)); // bottom left
+        new JoystickButton(operatorKeypad, 7).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW)); // top right
+        new JoystickButton(operatorKeypad, 8).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE));
+        new JoystickButton(operatorKeypad, 9).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE));
+        new JoystickButton(operatorKeypad, 10).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR));
+        new JoystickButton(operatorKeypad, 11).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.SOURCE));
         new JoystickButton(operatorKeypad, 12).onTrue(swapControlMode); // bottom right
-
-
     }
 
     public Command getAutonomousCommand() {

@@ -27,18 +27,18 @@ public final class Constants {
     }
 
     public class PositionConstants {
-        public static final Position STOW_POSITION = new Position(0, 0, 0, true, "Stow");
-        public static final Position L1_CORAL_POSITION = new Position(0.0018310546875, -0.0772705078125, -0.02850341796875, true, "L1");
-        public static final Position L2_CORAL_POSITION = new Position(0.39263916015625, -0.08111572265625, -0.03155517578125, true, "L2");
-        public static final Position L3_CORAL_POSITION = new Position(1.48455810546875, -0.09161376953125, -0.0106201171875, true, "L3");
-        public static final Position L4_CORAL_POSITION = new Position(3.11761474609375, -0.106689453125, -0.01055908203125, true, "L4");
-        public static final Position BOTTOM_ALGAE_HARVEST = new Position(5, 15, -10, false, "Bottom Algae");
-        public static final Position TOP_ALGAE_POSITION = new Position(35, 50, 40, false, "Top Algae");
-        public static final Position HUMAN_CORAL_POSITION = new Position(0.1121826171875, -0.0382080078125, 0.3271484375, true, "Source");
-        public static final Position DEEP_CAGE_POSITION = new Position(22, 5, -25, true, "Cage");
-        public static final Position PROCESSOR_POSITION = new Position(18, 35, 10, false, "Processor");
-        public static final Position GROUND_ALGAE_POSITION = new Position(22, 5, -25, false, "Ground Algae");
-        public static final Position ALGAE_SHOOT_POSITION = new Position(22, 5, -25, true, "Shoot Algae");
+        public static final Position STOW = new Position(0, 0, 0, true, "Stow");
+        public static final Position L1 = new Position(0, 0, 0, true, "L1");
+        public static final Position L2 = new Position(0, 0, 0, true, "L2");
+        public static final Position L3 = new Position(0, 0, 0, true, "L3");
+        public static final Position L4 = new Position(0, 0, 0, true, "L4");
+        public static final Position BOTTOM_ALGAE = new Position(0, 0, 0, false, "Bottom Algae");
+        public static final Position TOP_ALGAE = new Position(0, 0, 0, false, "Top Algae");
+        public static final Position SOURCE = new Position(0, 0, 0, true, "Source");
+        public static final Position CAGE = new Position(0, 0, 0, true, "Cage");
+        public static final Position PROCESSOR = new Position(0, 0, 0, false, "Processor");
+        public static final Position GROUND_ALGAE = new Position(0, 0, 0, false, "Ground Algae");
+        public static final Position ALGAE_SHOOT = new Position(0, 0, 0, true, "Shoot Algae");
     }
     
 
