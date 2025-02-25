@@ -4,70 +4,89 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
+import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Elbow extends SubsystemBase {
 
-  private TalonFX motor;
-  private Canandmag canandmag;
-  private PIDController controller;
-  private double desiredPosition = 0;
+  private static TalonFX motor;
+  private static TalonFXConfiguration config;
+  private static Canandmag canandmag;
+  private static CanandmagSettings canandmagSettings;
+  private static PIDController controller;
+  private static double desiredPosition = 0;
 
   public Elbow() {
     motor = new TalonFX(Constants.ElbowConstants.MOTOR_ID);
     canandmag = new Canandmag(Constants.ElbowConstants.ENCODER_ID);
-
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    config.CurrentLimits.SupplyCurrentLimit = Constants.ElbowConstants.CURRENT_LIMIT;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.Slot0.kP = Constants.ElbowConstants.P;
-    config.Slot0.kI = Constants.ElbowConstants.I;
-    config.Slot0.kD = Constants.ElbowConstants.D;
-    config.Slot0.kG = Constants.ElbowConstants.G;
-
-    motor.getConfigurator().apply(config);
-
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    canandmag.setPosition(0);
 
     controller = new PIDController(
       Constants.ElbowConstants.P,
       Constants.ElbowConstants.I,
       Constants.ElbowConstants.D);
-    controller.setTolerance(Constants.ElbowConstants.PID_TOLERANCE);
+    controller.setTolerance(Constants.ElbowConstants.TOLERANCE);
+
+    canandmagSettings = new CanandmagSettings();
+
+    canandmagSettings.setInvertDirection(true);
+
+    config = new TalonFXConfiguration();
+
+    config.CurrentLimits.SupplyCurrentLimit = Constants.ElbowConstants.CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    motor.getConfigurator().apply(config);
+    motor.setNeutralMode(NeutralModeValue.Brake);
+    canandmag.setSettings(canandmagSettings);
   }
 
   public void setDesiredPosition(double desiredPosition) {
-    this.desiredPosition = desiredPosition;
+    Elbow.desiredPosition = desiredPosition;
+  }
+
+  private void goToDesiredPosition() {
+    double currentPosition = canandmag.getPosition();
+    double output = controller.calculate(currentPosition, desiredPosition);
+    setSpeed(output);
   }
 
   public void setSpeed(double desiredSpeed) {
-    motor.set(-desiredSpeed);
+    double currentPosition = canandmag.getPosition();
+    double feedForward = -0.02179303089 * Math.sin(Math.toRadians(currentPosition * 360));
+    SmartDashboard.putNumber("Elbow Feed Forward", feedForward); 
+    
+    double forwardLimit = Constants.ElbowConstants.FORWARD_LIMIT;
+    double reverseLimit = Constants.ElbowConstants.REVERSE_LIMIT;
+    
+    if(currentPosition >= forwardLimit && desiredSpeed > 0) {
+      desiredSpeed = 0;
+    } else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
+      desiredSpeed = 0;
+    }
+    
+    motor.set(desiredSpeed + feedForward);
   }
-
-  public void stop() {
-    motor.stopMotor();
-  }
-
-  public boolean atSetpoint() {
-    return controller.atSetpoint();
-  }
+  
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elbow Desired Position", desiredPosition);
-    SmartDashboard.putNumber("Elbow Position", canandmag.getPosition());
-    SmartDashboard.putBoolean("Elbow at Setpoint", atSetpoint());
-
-    if(!Constants.ControlConstants.MANUAL_OPERATION) {
-      double currentPosition = canandmag.getPosition();
-      double out = controller.calculate(currentPosition, desiredPosition);
-      motor.set(out);
+    if(!RobotContainer.Manual) {
+      goToDesiredPosition();
+      SmartDashboard.putNumber("Elbow Desired Position", desiredPosition);
+      SmartDashboard.putBoolean("Elbow at Setpoint", controller.atSetpoint());
     }
+    SmartDashboard.putNumber("Elbow Forward Limit", Constants.ElbowConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Elbow Reverse Limit", Constants.ElbowConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("Elbow Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("Elbow Motor Output", motor.get());
+    SmartDashboard.putNumber("Elbow Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Elbow Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
 }

@@ -9,61 +9,61 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Wrist extends SubsystemBase {
 
-  private TalonFX motor;
-  private Canandmag canandmag;
-  private PIDController controller;
-  private double desiredPosition = 0;
+  private static TalonFX motor;
+  private static TalonFXConfiguration config;
+  private static Canandmag canandmag;
+  private static PIDController controller;
+  private static double desiredPosition = 0;
 
   public Wrist() {
     motor = new TalonFX(Constants.WristConstants.MOTOR_ID);
     canandmag = new Canandmag(Constants.WristConstants.ENCODER_ID);
-
-    TalonFXConfiguration wristConfig = new TalonFXConfiguration();
-
-    wristConfig.CurrentLimits.SupplyCurrentLimit = Constants.WristConstants.CURRENT_LIMIT;
-    wristConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    motor.getConfigurator().apply(wristConfig);
-
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    canandmag.setPosition(0);
 
     controller = new PIDController(
       Constants.WristConstants.P,
       Constants.WristConstants.I,
       Constants.WristConstants.D);
-    controller.setTolerance(Constants.WristConstants.PID_TOLERANCE);
+    controller.setTolerance(Constants.WristConstants.TOLERANCE);
+
+    config = new TalonFXConfiguration();
+
+    config.CurrentLimits.SupplyCurrentLimit = Constants.WristConstants.CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    motor.getConfigurator().apply(config);
+    motor.setNeutralMode(NeutralModeValue.Brake);
+  }
+
+  private void goToDesiredPosition() {
+    double currentPosition = canandmag.getPosition();
+    double output = controller.calculate(currentPosition, desiredPosition);
+    motor.set(output);
   }
 
   public void setDesiredPosition(double desiredPosition) {
-    this.desiredPosition = desiredPosition;
+    Wrist.desiredPosition = desiredPosition;
   }
 
   public void setSpeed(double desiredSpeed) {
-    motor.set(-desiredSpeed);
-  }
-
-  public void stop() {
-    motor.stopMotor();
-  }
-
-  public boolean atSetpoint() {
-    return controller.atSetpoint();
+    motor.set(desiredSpeed);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Wrist Desired Position", desiredPosition);
-    SmartDashboard.putNumber("Wrist Position", canandmag.getPosition());
-    SmartDashboard.putBoolean("Wrist at Setpoint", atSetpoint());
-
-    if(!Constants.ControlConstants.MANUAL_OPERATION) {
-      double currentPosition = canandmag.getPosition();
-      double out = controller.calculate(currentPosition, desiredPosition);
-      motor.set(out);
+    if(!RobotContainer.Manual) {
+      goToDesiredPosition();
+      SmartDashboard.putNumber("Wrist Desired Position", desiredPosition);
+      SmartDashboard.putBoolean("Wrist at Setpoint", controller.atSetpoint());
     }
+    SmartDashboard.putNumber("Wrist Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("Wrist Motor Output", motor.get());
+    SmartDashboard.putNumber("Wrist Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Wrist Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
 }

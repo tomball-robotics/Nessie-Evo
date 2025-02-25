@@ -24,9 +24,9 @@ import frc.lib.Elastic.Notification;
 public class Robot extends TimedRobot {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
-  private Command m_autonomousCommand;
+  private Command auto;
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer robotContainer;
 
   private double batteryLowStartTime = -1;
 
@@ -39,8 +39,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     CanandEventLoop.getInstance();
-    SmartDashboard.putBoolean("Manual Mode", Constants.ControlConstants.MANUAL_OPERATION);
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   /**
@@ -77,6 +76,7 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
+    SmartDashboard.putBoolean("Manual Operation", RobotContainer.Manual);
     CommandScheduler.getInstance().run();
   }
 
@@ -90,11 +90,11 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    auto = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (auto != null) {
+      auto.schedule();
     }
   }
 
@@ -108,8 +108,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (auto != null) {
+      auto.cancel();
     }
   }
 

@@ -18,7 +18,6 @@ public final class Constants {
         public static final int BASE_DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_DRIVER_CONTROLLER_PORT = 1;
         public static final double STICK_DEADBAND = 0.05;
-        public static final boolean MANUAL_OPERATION = true;
     }
 
     public static final class NotificationConstants {
@@ -31,15 +30,16 @@ public final class Constants {
          * 1. Elbow Position
          * 2. Wrist Angle
          * 3. Intake Speed -> "0" for coral, "1" for algae
+         * 4. Elbow Gravity Feedforward
          */
         public static final double[] START_POSITION = {0, 0, 0, 1};
-        public static final double[] L1_CORAL_POSITION = {10, 30, 15, 1};
-        public static final double[] L2_CORAL_POSITION = {20, 45, 25, 1};
-        public static final double[] L3_CORAL_POSITION = {30, 60, 35, 1};
-        public static final double[] L4_CORAL_POSITION = {40, 75, 45, 1};
+        public static final double[] L1_CORAL_POSITION = {0.0018310546875, -0.0772705078125, -0.02850341796875, 0};
+        public static final double[] L2_CORAL_POSITION = {0.39263916015625, -0.08111572265625, -0.03155517578125, 0};
+        public static final double[] L3_CORAL_POSITION = {1.48455810546875, -0.09161376953125, -0.0106201171875, 0};
+        public static final double[] L4_CORAL_POSITION = {3.11761474609375, -0.106689453125, -0.01055908203125, 0};
         public static final double[] BOTTOM_ALGAE_HARVEST = {5, 15, -10, 0};
         public static final double[] TOP_ALGAE_POSITION = {35, 50, 40, 0};
-        public static final double[] HUMAN_CORAL_POSITION = {15, 20, 0, 1};
+        public static final double[] HUMAN_CORAL_POSITION = {0.1121826171875, -0.0382080078125, 0.3271484375, 0};
         public static final double[] DEEP_CAGE_POSITION = {22, 5, -25, 1};
         public static final double[] PROCESSOR_POSITION = {18, 35, 10, 0};
         public static final double[] GROUND_ALGAE_POSITION = {22, 5, -25, 0};
@@ -60,11 +60,12 @@ public final class Constants {
         public static final int FOLLOWER_ID = 11;
         public static final int CURRENT_LIMIT = 30;
         public static final int ENCODER_ID = 15;
-        public static final double P = .05;
+        public static final double P = .005;
         public static final double I = 0;
         public static final double D = 0;
         public static final double G = 0.0791015625;
-        public static final double TOLERANCE = .005;
+        public static final double S = 0;
+        public static final double TOLERANCE = .0005;
         public static final double FORWARD_LIMIT = 3.15;
         public static final double REVERSE_LIMIT = 0;
     }
@@ -81,11 +82,12 @@ public final class Constants {
         public static final double P = 0.01;
         public static final double I = 0;
         public static final double D = 0;
-        public static final double PID_TOLERANCE = .01;
-        public static final double FORWARD_LIMIT = 41.8;
-        public static final double REVERSE_LIMIT = 0;
+        public static final double TOLERANCE = .01;
+        public static final double FORWARD_LIMIT = .2;
+        public static final double REVERSE_LIMIT = .001;
         public static final int ENCODER_ID = 17;
         public static final double G = 0;
+        public static final double HORIZONTAL_ENDODER_OFFSET = 0;
     }
 
     public static final class WristConstants {
@@ -94,7 +96,7 @@ public final class Constants {
         public static final double P = .001;
         public static final double I = 0;
         public static final double D = 0;
-        public static final double PID_TOLERANCE = .01;
+        public static final double TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 7.2;
         public static final double REVERSE_LIMIT = 0;
         public static final int ENCODER_ID = 16;

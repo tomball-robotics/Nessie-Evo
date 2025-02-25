@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Elevator extends SubsystemBase {
 
@@ -24,6 +25,7 @@ public class Elevator extends SubsystemBase {
     motor = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
     follower = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID);
     canandmag = new Canandmag(Constants.ElevatorConstants.ENCODER_ID);
+    canandmag.setPosition(0);
 
     controller = new PIDController(
       Constants.ElevatorConstants.P,
@@ -46,40 +48,42 @@ public class Elevator extends SubsystemBase {
     follower.setControl(new Follower(10, false));
   }
 
-  private void goToDesiredPosition() {
-    double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition, desiredPosition);
-    motor.set(output + Constants.ElevatorConstants.G);
-  }
-
   public void setDesiredPosition(double desiredPosition) {
     Elevator.desiredPosition = desiredPosition;
   }
 
-  public void setSpeed(double desiredSpeed) {
-    double governor;
-    if(canandmag.getPosition() < .3) {
-      governor = 10;
-    }else {
-      governor = 4;
-    }
-    motor.set((desiredSpeed/governor) + Constants.ElevatorConstants.G);
-    SmartDashboard.putNumber("Elevator Desired Speed", desiredSpeed);
+  private void goToDesiredPosition() {
+    double currentPosition = canandmag.getPosition();
+    double output = controller.calculate(currentPosition, desiredPosition);
+    setSpeed(output);
   }
 
-  private boolean atSetpoint() {
-    return controller.atSetpoint();
+  public void setSpeed(double desiredSpeed) {
+    double currentPosition = canandmag.getPosition();
+    double kG = Constants.ElevatorConstants.G; // gravity feedforward
+    double kS = Constants.ElevatorConstants.S; // static friction compensation
+    double forwardLimit = Constants.ElevatorConstants.FORWARD_LIMIT;
+    double reverseLimit = Constants.ElevatorConstants.REVERSE_LIMIT;
+    if(currentPosition >= forwardLimit && desiredSpeed > 0) {
+      desiredSpeed = 0;
+    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
+      desiredSpeed = 0;
+    }
+    motor.set(desiredSpeed + kS + kG);
   }
 
   @Override
   public void periodic() {
-    if(!Constants.ControlConstants.MANUAL_OPERATION) {
+    if(!RobotContainer.Manual) {
       goToDesiredPosition();
+      SmartDashboard.putBoolean("Elevator at Setpoint", controller.atSetpoint());
+      SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);
     }
     SmartDashboard.putNumber("Elevator Velocity", canandmag.getVelocity());
     SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);
     SmartDashboard.putNumber("Elevator Motor Output", motor.get());
     SmartDashboard.putNumber("Elevator Position", canandmag.getPosition());
-    SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
+    SmartDashboard.putNumber("ELevator Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
 }
+ 
