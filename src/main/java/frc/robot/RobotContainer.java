@@ -31,7 +31,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private final Wrist wrist = new Wrist();
     private final Elbow elbow = new Elbow();
-    //private final Elevator elevator = new Elevator();
+    private final Elevator elevator = new Elevator();
     private final EndEffector endEffector = new EndEffector();
     private final Climber climber = new Climber();
 
@@ -59,14 +59,12 @@ public class RobotContainer {
 
         if(RobotContainer.Manual) {
 
-            /*
             elevator.setDefaultCommand(
                 new ManualElevator(
                     elevator,
                     () -> -(armDriver.getRawAxis(leftTrigger) - armDriver.getRawAxis(rightTrigger))
                 )
             );
-            */
 
             elbow.setDefaultCommand(
                 new ManualElbow(
