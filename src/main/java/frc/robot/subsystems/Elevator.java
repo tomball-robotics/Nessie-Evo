@@ -72,6 +72,10 @@ public class Elevator extends SubsystemBase {
     motor.set(desiredSpeed + kS + kG);
   }
 
+  public boolean atSetpoint() {
+    return controller.atSetpoint();
+  }
+
   @Override
   public void periodic() {
     if(!RobotContainer.Manual) {

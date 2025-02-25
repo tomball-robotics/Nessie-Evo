@@ -54,6 +54,10 @@ public class Wrist extends SubsystemBase {
     motor.set(desiredSpeed);
   }
 
+  public boolean atSetpoint() {
+    return controller.atSetpoint();
+  }
+
   @Override
   public void periodic() {
     if(!RobotContainer.Manual) {

@@ -111,11 +111,9 @@ public class SwerveModule {
     }
 
     public void setTargetState(SwerveModuleState targetState) {
-        // Optimize the state
         currentState.optimize(currentState.angle);
-  
         currentPosition = new SwerveModulePosition(currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02), currentState.angle);
-      }
+    }
     
     public SwerveModuleState getDesiredState() {
         return desiredState;

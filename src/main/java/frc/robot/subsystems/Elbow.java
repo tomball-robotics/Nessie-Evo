@@ -73,7 +73,10 @@ public class Elbow extends SubsystemBase {
     
     motor.set(desiredSpeed + feedForward);
   }
-  
+
+  public boolean atSetpoint() {
+    return controller.atSetpoint();
+  }
 
   @Override
   public void periodic() {

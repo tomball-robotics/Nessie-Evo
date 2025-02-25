@@ -1,11 +1,19 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.SetPosition;
+import frc.robot.commands.SwapControlMode;
 import frc.robot.commands.Climber.ClimberDown;
 import frc.robot.commands.Climber.ClimberUp;
+import frc.robot.commands.EndEffector.AlgaeIntake;
+import frc.robot.commands.EndEffector.AlgaeOuttake;
+import frc.robot.commands.EndEffector.CoralIntake;
+import frc.robot.commands.EndEffector.CoralOuttake;
 import frc.robot.commands.Manual.ManualElbow;
 import frc.robot.commands.Manual.ManualElevator;
 import frc.robot.commands.Manual.ManualEndEffector;
@@ -16,8 +24,9 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
     /* Controllers */
-    private final CommandXboxController baseDriver = new CommandXboxController(Constants.ControlConstants.BASE_DRIVER_CONTROLLER_PORT);
-    private final CommandXboxController armDriver = new CommandXboxController(Constants.ControlConstants.OPERATOR_DRIVER_CONTROLLER_PORT);
+    private final CommandXboxController driver = new CommandXboxController(Constants.ControlConstants.DRIVER_PORT);
+    private final CommandXboxController operator = new CommandXboxController(Constants.ControlConstants.OPERATOR_PORT);
+    private final GenericHID operatorKeypad = new GenericHID(Constants.ControlConstants.OPERATOR_KEYPAD_PORT);
 
     /* Drive Controls */
     private final int leftY = XboxController.Axis.kLeftY.value;
@@ -38,6 +47,11 @@ public class RobotContainer {
     /* Commands */
     private final ClimberUp climberUp;
     private final ClimberDown climberDown;
+    private final CoralIntake coralIntake;
+    private final CoralOuttake coralOuttake;
+    private final AlgaeIntake algaeIntake;
+    private final AlgaeOuttake algaeOuttake;
+    private final SwapControlMode swapControlMode;
 
     /* Autos */
 
@@ -50,10 +64,10 @@ public class RobotContainer {
         swerve.setDefaultCommand(
             new TeleopSwerve(
                 swerve, 
-                () -> -baseDriver.getRawAxis(leftY), 
-                () -> -baseDriver.getRawAxis(leftX), 
-                () -> -baseDriver.getRawAxis(rightX), 
-                () -> baseDriver.leftBumper().getAsBoolean()
+                () -> -driver.getRawAxis(leftY), 
+                () -> -driver.getRawAxis(leftX), 
+                () -> -driver.getRawAxis(rightX), 
+                () -> driver.leftBumper().getAsBoolean()
             )
         );
 
@@ -62,28 +76,28 @@ public class RobotContainer {
             elevator.setDefaultCommand(
                 new ManualElevator(
                     elevator,
-                    () -> -(armDriver.getRawAxis(leftTrigger) - armDriver.getRawAxis(rightTrigger))
+                    () -> -(operator.getRawAxis(leftTrigger) - operator.getRawAxis(rightTrigger))
                 )
             );
 
             elbow.setDefaultCommand(
                 new ManualElbow(
                     elbow,
-                    () -> armDriver.getRawAxis(rightY)
+                    () -> operator.getRawAxis(rightY)
                 )
             );
 
             wrist.setDefaultCommand(
                 new ManualWrist(
                     wrist,
-                    () -> -armDriver.getRawAxis(leftY)
+                    () -> -operator.getRawAxis(leftY)
                 )
             );
 
             endEffector.setDefaultCommand(
                 new ManualEndEffector(
                     endEffector,
-                    () -> armDriver.getRawAxis(leftX)
+                    () -> operator.getRawAxis(leftX)
                 )
             );
         }
@@ -92,22 +106,46 @@ public class RobotContainer {
         climberUp.addRequirements(climber);
         climberDown = new ClimberDown(climber);
         climberDown.addRequirements(climber);
+        algaeIntake = new AlgaeIntake(endEffector);
+        algaeIntake.addRequirements(endEffector);
+        algaeOuttake = new AlgaeOuttake(endEffector);
+        algaeOuttake.addRequirements(endEffector);
+        coralIntake = new CoralIntake(endEffector);
+        coralIntake.addRequirements(endEffector);
+        coralOuttake = new CoralOuttake(endEffector);
+        coralOuttake.addRequirements(endEffector);
+        swapControlMode = new SwapControlMode();
 
         configureButtonBindings();
     }
 
     private void configureButtonBindings() { 
-        /* Base Driver */
-        baseDriver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
-        baseDriver.leftTrigger().whileTrue(climberDown);
-        baseDriver.rightTrigger().whileTrue(climberUp);
+        /* --- Driver --- */
+        driver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+        driver.leftTrigger().whileTrue(climberDown);
+        driver.rightTrigger().whileTrue(climberUp);
 
-        /* Arm Driver */
-        //armDriver.a().onTrue(new InstantCommand(() -> elevator.setDesiredPosition(Constants.PositionConstants.L1_CORAL_POSITION[0])));
-        armDriver.b().onTrue(new InstantCommand(() -> elbow.setDesiredPosition(Constants.PositionConstants.L1_CORAL_POSITION[1])));
-        armDriver.y().onTrue(new InstantCommand(() -> wrist.setDesiredPosition(Constants.PositionConstants.L1_CORAL_POSITION[2])));
+        /* --- Operator  --- */
+        operator.a().whileTrue(coralIntake);
+        operator.b().whileTrue(coralOuttake);
+        operator.y().whileTrue(algaeOuttake);
+        operator.x().whileTrue(algaeIntake);
 
-        
+        /* --- Operator Keypad  --- */
+        new JoystickButton(operatorKeypad, 1).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L1_CORAL_POSITION)); // top left
+        new JoystickButton(operatorKeypad, 2).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L2_CORAL_POSITION));
+        new JoystickButton(operatorKeypad, 3).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L3_CORAL_POSITION));
+        new JoystickButton(operatorKeypad, 4).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L4_CORAL_POSITION));
+        new JoystickButton(operatorKeypad, 5).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.GROUND_ALGAE_POSITION));
+        new JoystickButton(operatorKeypad, 6).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.DEEP_CAGE_POSITION)); // bottom left
+        new JoystickButton(operatorKeypad, 7).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW_POSITION)); // top right
+        new JoystickButton(operatorKeypad, 8).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE_POSITION));
+        new JoystickButton(operatorKeypad, 9).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE_HARVEST));
+        new JoystickButton(operatorKeypad, 10).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR_POSITION));
+        new JoystickButton(operatorKeypad, 11).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.HUMAN_CORAL_POSITION));
+        new JoystickButton(operatorKeypad, 12).onTrue(swapControlMode); // bottom right
+
+
     }
 
     public Command getAutonomousCommand() {
