@@ -78,7 +78,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!RobotContainer.Manual) {
+    if(!RobotContainer.manual) {
       goToDesiredPosition();
       SmartDashboard.putBoolean("Elevator at Setpoint", controller.atSetpoint());
       SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);

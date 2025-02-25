@@ -60,7 +60,7 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!RobotContainer.Manual) {
+    if(!RobotContainer.manual) {
       goToDesiredPosition();
       SmartDashboard.putNumber("Wrist Desired Position", desiredPosition);
       SmartDashboard.putBoolean("Wrist at Setpoint", controller.atSetpoint());

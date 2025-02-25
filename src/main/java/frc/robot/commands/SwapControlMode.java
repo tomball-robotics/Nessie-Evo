@@ -11,8 +11,8 @@ public class SwapControlMode extends Command {
 
   @Override
   public void initialize() {
-    previous = RobotContainer.Manual;
-    RobotContainer.Manual = !previous;
+    previous = RobotContainer.manual;
+    RobotContainer.manual = !previous;
   }
 
   @Override
@@ -23,6 +23,6 @@ public class SwapControlMode extends Command {
 
   @Override
   public boolean isFinished() {
-    return previous != RobotContainer.Manual;
+    return previous != RobotContainer.manual;
   }
 }

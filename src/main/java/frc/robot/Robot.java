@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-    SmartDashboard.putBoolean("Manual Operation", RobotContainer.Manual);
+    SmartDashboard.putBoolean("Manual Operation", RobotContainer.manual);
     CommandScheduler.getInstance().run();
   }
 

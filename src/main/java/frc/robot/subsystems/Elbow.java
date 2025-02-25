@@ -80,7 +80,7 @@ public class Elbow extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!RobotContainer.Manual) {
+    if(!RobotContainer.manual) {
       goToDesiredPosition();
       SmartDashboard.putNumber("Elbow Desired Position", desiredPosition);
       SmartDashboard.putBoolean("Elbow at Setpoint", controller.atSetpoint());

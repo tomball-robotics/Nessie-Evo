@@ -57,7 +57,7 @@ public class RobotContainer {
 
     /* Game */
     public static boolean isAlgae = false;
-    public static boolean Manual = true;
+    public static boolean manual = true;
 
     public RobotContainer() {
 
@@ -71,7 +71,7 @@ public class RobotContainer {
             )
         );
 
-        if(RobotContainer.Manual) {
+        if(RobotContainer.manual) {
 
             elevator.setDefaultCommand(
                 new ManualElevator(
