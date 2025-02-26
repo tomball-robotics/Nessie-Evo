@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.SetPosition;
-import frc.robot.commands.SwapControlMode;
+import frc.robot.commands.SetDesiredPosition;
 import frc.robot.commands.Climber.ClimberDown;
 import frc.robot.commands.Climber.ClimberUp;
 import frc.robot.commands.EndEffector.AlgaeIntake;
@@ -51,13 +49,12 @@ public class RobotContainer {
     private final CoralOuttake coralOuttake;
     private final AlgaeIntake algaeIntake;
     private final AlgaeOuttake algaeOuttake;
-    private final SwapControlMode swapControlMode;
 
     /* Autos */
 
     /* Game */
     public static boolean isAlgae = false;
-    public static boolean manual = true;
+    public static boolean manual = false;
 
     public RobotContainer() {
         swerve.setDefaultCommand(
@@ -113,7 +110,6 @@ public class RobotContainer {
         coralIntake.addRequirements(endEffector);
         coralOuttake = new CoralOuttake(endEffector);
         coralOuttake.addRequirements(endEffector);
-        swapControlMode = new SwapControlMode();
 
         configureButtonBindings();
     }
@@ -128,21 +124,15 @@ public class RobotContainer {
         operator.a().whileTrue(coralIntake);
         operator.b().whileTrue(coralOuttake);
         operator.y().whileTrue(algaeOuttake);
-        operator.x().whileTrue(algaeIntake);
+        operator.x().toggleOnTrue(algaeIntake);
+
+        operator.rightBumper().onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L1));
+        operator.leftBumper().onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW));
 
         /* --- Operator Keypad  --- */
-        new JoystickButton(operatorKeypad, 1).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L1)); // top left
-        new JoystickButton(operatorKeypad, 2).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L2));
-        new JoystickButton(operatorKeypad, 3).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L3));
-        new JoystickButton(operatorKeypad, 4).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.L4));
-        new JoystickButton(operatorKeypad, 5).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.GROUND_ALGAE));
-        new JoystickButton(operatorKeypad, 6).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.CAGE)); // bottom left
-        new JoystickButton(operatorKeypad, 7).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW)); // top right
-        new JoystickButton(operatorKeypad, 8).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE));
-        new JoystickButton(operatorKeypad, 9).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE));
-        new JoystickButton(operatorKeypad, 10).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR));
-        new JoystickButton(operatorKeypad, 11).onTrue(new SetPosition(elevator, elbow, wrist, Constants.PositionConstants.SOURCE));
-        new JoystickButton(operatorKeypad, 12).onTrue(swapControlMode); // bottom right
+        if(operatorKeypad.getRawButtonPressed(12)) {
+            manual = !manual;
+        }
     }
 
     public Command getAutonomousCommand() {

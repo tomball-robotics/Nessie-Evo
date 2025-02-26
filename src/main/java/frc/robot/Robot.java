@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     CanandEventLoop.getInstance();
     robotContainer = new RobotContainer();
+    SmartDashboard.putString("Current Position", "Stow");
   }
 
   /**

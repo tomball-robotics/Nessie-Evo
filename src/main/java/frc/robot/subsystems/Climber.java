@@ -10,8 +10,8 @@ import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
 
-  private TalonFX motor;
-  private TalonFXConfiguration config;
+  private static TalonFX motor;
+  private static TalonFXConfiguration config;
 
   public Climber() {
     motor = new TalonFX(Constants.ClimberConstants.MOTOR_ID);

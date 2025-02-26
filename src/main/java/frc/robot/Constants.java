@@ -28,7 +28,7 @@ public final class Constants {
 
     public class PositionConstants {
         public static final Position STOW = new Position(0, 0, 0, true, "Stow");
-        public static final Position L1 = new Position(0, 0, 0, true, "L1");
+        public static final Position L1 = new Position(0.49530029296875, 0.32208251953125, 0.1131591796875, true, "L1");
         public static final Position L2 = new Position(0, 0, 0, true, "L2");
         public static final Position L3 = new Position(0, 0, 0, true, "L3");
         public static final Position L4 = new Position(0, 0, 0, true, "L4");
@@ -54,15 +54,15 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int MASTER_ID = 10;
         public static final int FOLLOWER_ID = 11;
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 40;
         public static final int ENCODER_ID = 15;
-        public static final double P = .005;
-        public static final double I = 0;
+        public static final double P = 3;
+        public static final double I = .01;
         public static final double D = 0;
-        public static final double G = 0.0791015625;
+        public static final double G = 0;
         public static final double S = 0;
         public static final double TOLERANCE = .0005;
-        public static final double FORWARD_LIMIT = 3.15;
+        public static final double FORWARD_LIMIT = 3.331298828125;
         public static final double REVERSE_LIMIT = 0;
     }
 
@@ -75,7 +75,7 @@ public final class Constants {
     public static final class ElbowConstants{
         public static final int MOTOR_ID = 13;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = 0.01;
+        public static final double P = 0.1;
         public static final double I = 0;
         public static final double D = 0;
         public static final double TOLERANCE = .01;
@@ -89,11 +89,11 @@ public final class Constants {
     public static final class WristConstants {
         public static final int MOTOR_ID = 14;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = .001;
+        public static final double P = .01;
         public static final double I = 0;
         public static final double D = 0;
-        public static final double TOLERANCE = .01;
-        public static final double FORWARD_LIMIT = 7.2;
+        public static final double TOLERANCE = .0001;
+        public static final double FORWARD_LIMIT = 0.84716796875;
         public static final double REVERSE_LIMIT = 0;
         public static final int ENCODER_ID = 16;
     }
