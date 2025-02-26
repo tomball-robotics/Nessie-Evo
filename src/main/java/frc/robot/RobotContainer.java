@@ -130,6 +130,39 @@ public class RobotContainer {
         operator.leftBumper().onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW));
 
         /* --- Operator Keypad  --- */
+        if(operatorKeypad.getRawButtonPressed(1)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L1);
+        }
+        if(operatorKeypad.getRawButtonPressed(2)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L2);
+        }
+        if(operatorKeypad.getRawButtonPressed(3)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L3);
+        }
+        if(operatorKeypad.getRawButtonPressed(4)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L4);
+        }
+        if(operatorKeypad.getRawButtonPressed(5)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR);
+        }
+        if(operatorKeypad.getRawButtonPressed(6)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.CAGE);
+        }
+        if(operatorKeypad.getRawButtonPressed(7)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW);
+        }
+        if(operatorKeypad.getRawButtonPressed(8)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE);
+        }
+        if(operatorKeypad.getRawButtonPressed(9)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE);
+        }
+        if(operatorKeypad.getRawButtonPressed(10)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.SOURCE);
+        }
+        if(operatorKeypad.getRawButtonPressed(11)) {
+            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.ALGAE_SHOOT);
+        }
         if(operatorKeypad.getRawButtonPressed(12)) {
             manual = !manual;
         }

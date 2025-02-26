@@ -37,7 +37,6 @@ public final class Constants {
         public static final Position SOURCE = new Position(0, 0, 0, true, "Source");
         public static final Position CAGE = new Position(0, 0, 0, true, "Cage");
         public static final Position PROCESSOR = new Position(0, 0, 0, false, "Processor");
-        public static final Position GROUND_ALGAE = new Position(0, 0, 0, false, "Ground Algae");
         public static final Position ALGAE_SHOOT = new Position(0, 0, 0, true, "Shoot Algae");
     }
     
@@ -48,7 +47,7 @@ public final class Constants {
         public static final double CORAL_INTAKE_SPEED = -.25;
         public static final double CORAL_OUTTAKE_SPEED = 0.25;
         public static final double ALGAE_INTAKE_SPEED = -1;
-        public static final double ALGAE_OUTTAKE_SPEED = 0.25;
+        public static final double ALGAE_OUTTAKE_SPEED = 1;
     }
 
     public static final class ElevatorConstants {
