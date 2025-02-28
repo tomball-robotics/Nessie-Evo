@@ -7,6 +7,7 @@ import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,6 +21,7 @@ public class Elbow extends SubsystemBase {
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
   private double desiredPosition = 0;
+  private double lastUpdateTime = 0;
 
   public Elbow() {
     motor = new TalonFX(Constants.ElbowConstants.MOTOR_ID);
@@ -56,7 +58,7 @@ public class Elbow extends SubsystemBase {
 
   public void setSpeed(double desiredSpeed) {
     double currentPosition = canandmag.getPosition();
-    double feedForward = -0.02179303089 * Math.sin(Math.toRadians(currentPosition * 360));
+    double feedForward = -0.04179303089 * Math.sin(Math.toRadians(currentPosition * 360));
     SmartDashboard.putNumber("Elbow Feed Forward", feedForward); 
     
     double forwardLimit = Constants.ElbowConstants.FORWARD_LIMIT;
@@ -64,7 +66,7 @@ public class Elbow extends SubsystemBase {
     
     if(currentPosition >= forwardLimit && desiredSpeed > 0) {
       desiredSpeed = 0;
-    } else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
+    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
       desiredSpeed = 0;
     }
     
@@ -77,7 +79,9 @@ public class Elbow extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!RobotContainer.manual) {
+    double currentTime = Timer.getFPGATimestamp();
+    if (!RobotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
+      lastUpdateTime = currentTime;
       goToDesiredPosition();
     }
     SmartDashboard.putNumber("Elbow Desired Position", desiredPosition);

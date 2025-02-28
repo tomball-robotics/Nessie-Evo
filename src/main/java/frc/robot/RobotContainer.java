@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.lib.Elastic;
+import frc.lib.Elastic.Notification;
+import frc.lib.Elastic.Notification.NotificationLevel;
 import frc.robot.commands.SetDesiredPosition;
 import frc.robot.commands.Climber.ClimberDown;
 import frc.robot.commands.Climber.ClimberUp;
@@ -54,7 +58,7 @@ public class RobotContainer {
 
     /* Game */
     public static boolean isAlgae = false;
-    public static boolean manual = false;
+    public static boolean manual = true;
 
     public RobotContainer() {
         swerve.setDefaultCommand(
@@ -111,6 +115,7 @@ public class RobotContainer {
         coralOuttake = new CoralOuttake(endEffector);
         coralOuttake.addRequirements(endEffector);
 
+
         configureButtonBindings();
     }
 
@@ -130,42 +135,25 @@ public class RobotContainer {
         operator.leftBumper().onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW));
 
         /* --- Operator Keypad  --- */
-        if(operatorKeypad.getRawButtonPressed(1)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L1);
-        }
-        if(operatorKeypad.getRawButtonPressed(2)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L2);
-        }
-        if(operatorKeypad.getRawButtonPressed(3)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L3);
-        }
-        if(operatorKeypad.getRawButtonPressed(4)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L4);
-        }
-        if(operatorKeypad.getRawButtonPressed(5)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR);
-        }
-        if(operatorKeypad.getRawButtonPressed(6)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.CAGE);
-        }
-        if(operatorKeypad.getRawButtonPressed(7)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW);
-        }
-        if(operatorKeypad.getRawButtonPressed(8)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE);
-        }
-        if(operatorKeypad.getRawButtonPressed(9)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE);
-        }
-        if(operatorKeypad.getRawButtonPressed(10)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.SOURCE);
-        }
-        if(operatorKeypad.getRawButtonPressed(11)) {
-            new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.ALGAE_SHOOT);
-        }
-        if(operatorKeypad.getRawButtonPressed(12)) {
-            manual = !manual;
-        }
+        new JoystickButton(operatorKeypad, 1).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L1));
+        new JoystickButton(operatorKeypad, 2).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L2));
+        new JoystickButton(operatorKeypad, 3).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L3));
+        new JoystickButton(operatorKeypad, 4).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.L4));
+        //new JoystickButton(operatorKeypad, 5).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.PROCESSOR));
+        new JoystickButton(operatorKeypad, 6).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.CAGE));
+        new JoystickButton(operatorKeypad, 7).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.STOW));
+        new JoystickButton(operatorKeypad, 8).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.TOP_ALGAE));
+        new JoystickButton(operatorKeypad, 9).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.BOTTOM_ALGAE));
+        new JoystickButton(operatorKeypad, 10).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.SOURCE));
+        //new JoystickButton(operatorKeypad, 11).onTrue(new SetDesiredPosition(elevator, elbow, wrist, Constants.PositionConstants.GROUND_ALGAE));
+        new JoystickButton(operatorKeypad, 12).onTrue(new InstantCommand(() -> swapControlMode()));
+
+        
+    }
+
+    public static void swapControlMode() {
+        manual = !manual;
+        Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Control Mode Swapped", manual ? "Current Mode: Manual" : "Current Mode: Auto"));
     }
 
     public Command getAutonomousCommand() {

@@ -7,6 +7,7 @@ import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,6 +21,7 @@ public class Wrist extends SubsystemBase {
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
   private double desiredPosition = 0;
+  private double lastUpdateTime = 0;
 
   public Wrist() {
     motor = new TalonFX(Constants.WristConstants.MOTOR_ID);
@@ -75,7 +77,9 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!RobotContainer.manual) {
+    double currentTime = Timer.getFPGATimestamp();
+    if (!RobotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
+      lastUpdateTime = currentTime;
       goToDesiredPosition();
     }
     SmartDashboard.putNumber("Wrist Desired Position", desiredPosition);

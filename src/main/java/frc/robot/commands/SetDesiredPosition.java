@@ -28,15 +28,14 @@ public class SetDesiredPosition extends Command {
   @Override
   public void initialize() {
     SmartDashboard.putString("Current Position", position.getName());
+    elevator.setDesiredPosition(position.getElevatorPosition());
+    elbow.setDesiredPosition(position.getElbowPosition());
+    wrist.setDesiredPosition(position.getWristPosition());
   }
 
   @Override
   public void execute() {
-    elevator.setDesiredPosition(position.getElevatorPosition());
-    if(elevator.atSetpoint()) {
-      elbow.setDesiredPosition(position.getElbowPosition());
-      wrist.setDesiredPosition(position.getWristPosition());
-    }
+
   }
 
   @Override

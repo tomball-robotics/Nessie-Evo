@@ -18,7 +18,8 @@ public final class Constants {
         public static final int DRIVER_PORT = 0;
         public static final int OPERATOR_PORT = 1;
         public static final double STICK_DEADBAND = 0.05;
-        public static final int OPERATOR_KEYPAD_PORT = 0;
+        public static final int OPERATOR_KEYPAD_PORT = 2;
+        public static final double UPDATE_INTERVAL = 0.05;
     }
 
     public static final class NotificationConstants {
@@ -28,14 +29,14 @@ public final class Constants {
 
     public class PositionConstants {
         public static final Position STOW = new Position(0, 0, 0, true, "Stow");
-        public static final Position L1 = new Position(0.49530029296875, 0.32208251953125, 0.1131591796875, true, "L1");
-        public static final Position L2 = new Position(0, 0, 0, true, "L2");
-        public static final Position L3 = new Position(0, 0, 0, true, "L3");
-        public static final Position L4 = new Position(0, 0, 0, true, "L4");
-        public static final Position BOTTOM_ALGAE = new Position(0, 0, 0, false, "Bottom Algae");
-        public static final Position TOP_ALGAE = new Position(0, 0, 0, false, "Top Algae");
-        public static final Position SOURCE = new Position(0, 0, 0, true, "Source");
-        public static final Position CAGE = new Position(0, 0, 0, true, "Cage");
+        public static final Position L1 = new Position(0, 0.07830810546875, 0.09771728515625, true, "L1");
+        public static final Position L2 = new Position(0, 0.0262451171875, 0.0965576171875, true, "L2");
+        public static final Position L3 = new Position(1.322998046875, 0.0604248046875, 0.0284423828125, true, "L3");
+        public static final Position L4 = new Position(2.6839599609375, 0.03460693359375, 0.0018310546875, true, "L4");
+        public static final Position SOURCE = new Position(0, .064, .406, false, "Source");
+        public static final Position TOP_ALGAE = new Position(1.55572509765625, 0.10748291015625, 0.25006103515625, false, "Top Algae");
+        public static final Position BOTTOM_ALGAE = new Position(0.65057373046875, 0.03875732421875, 0.05865478515625, false, "Bottom Algae");
+        public static final Position CAGE = new Position(0, 0, 0.51959228515625, true, "Cage");
         public static final Position PROCESSOR = new Position(0, 0, 0, false, "Processor");
         public static final Position ALGAE_SHOOT = new Position(0, 0, 0, true, "Shoot Algae");
     }
@@ -74,8 +75,8 @@ public final class Constants {
     public static final class ElbowConstants{
         public static final int MOTOR_ID = 13;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = 0.1;
-        public static final double I = 0;
+        public static final double P = 4.5;
+        public static final double I = 0.01;
         public static final double D = 0;
         public static final double TOLERANCE = .01;
         public static final double FORWARD_LIMIT = .2;
@@ -88,7 +89,7 @@ public final class Constants {
     public static final class WristConstants {
         public static final int MOTOR_ID = 14;
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = .01;
+        public static final double P = 1;
         public static final double I = 0;
         public static final double D = 0;
         public static final double TOLERANCE = .0001;
