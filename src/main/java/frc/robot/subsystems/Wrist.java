@@ -20,10 +20,12 @@ public class Wrist extends SubsystemBase {
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
+  private RobotContainer robotContainer;
   private double desiredPosition = 0;
   private double lastUpdateTime = 0;
 
-  public Wrist() {
+  public Wrist(RobotContainer robotContainer) {
+    this.robotContainer = robotContainer;
     motor = new TalonFX(Constants.WristConstants.MOTOR_ID);
     config = new TalonFXConfiguration();
     canandmag = new Canandmag(Constants.WristConstants.ENCODER_ID);
@@ -49,6 +51,7 @@ public class Wrist extends SubsystemBase {
   public void setDesiredPosition(double desiredPosition) {
     this.desiredPosition = desiredPosition;
   }
+  
 
   private void goToDesiredPosition() {
     double currentPosition = canandmag.getPosition();
@@ -78,7 +81,7 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
-    if (!RobotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
+    if (!robotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
       lastUpdateTime = currentTime;
       goToDesiredPosition();
     }

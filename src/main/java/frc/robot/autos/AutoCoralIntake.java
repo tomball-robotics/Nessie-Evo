@@ -1,32 +1,31 @@
-package frc.robot.commands.EndEffector;
+package frc.robot.autos;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.EndEffector;
 
-public class CoralOuttake extends Command {
-
+public class AutoCoralIntake extends Command {
+  
   private EndEffector endEffector;
-  private double speed;
+  private Timer timer;
 
-  public CoralOuttake(EndEffector endEffector) {
+  public AutoCoralIntake(EndEffector endEffector) {
     this.endEffector = endEffector;
+    timer = new Timer();
+
     addRequirements(endEffector);
   }
 
   @Override
   public void initialize() {
-    if(SmartDashboard.getString("Current Position", "").equals("L1")) {
-      speed = .1;
-    }else {
-      speed = Constants.EndEffectorConstants.CORAL_OUTTAKE_SPEED;
-    }
+    timer.reset();
+    timer.start();
   }
 
   @Override
   public void execute() {
-    endEffector.setSpeed(speed);
+    endEffector.setSpeed(Constants.EndEffectorConstants.CORAL_INTAKE_SPEED);
   }
 
   @Override
@@ -36,6 +35,6 @@ public class CoralOuttake extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.get() > 1.2;
   }
 }

@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    CameraServer.startAutomaticCapture();
     CanandEventLoop.getInstance();
     robotContainer = new RobotContainer();
     SmartDashboard.putString("Current Position", "Stow");
@@ -77,7 +79,7 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-    SmartDashboard.putBoolean("Manual Operation", RobotContainer.manual);
+    SmartDashboard.putBoolean("Manual Operation", robotContainer.manual);
     CommandScheduler.getInstance().run();
   }
 

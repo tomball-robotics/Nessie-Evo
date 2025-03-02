@@ -20,14 +20,18 @@ public class Elbow extends SubsystemBase {
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
+  private RobotContainer robotContainer;
+  private double offset;
   private double desiredPosition = 0;
   private double lastUpdateTime = 0;
 
-  public Elbow() {
+  public Elbow(RobotContainer robotContainer) {
+    this.robotContainer = robotContainer;
     motor = new TalonFX(Constants.ElbowConstants.MOTOR_ID);
     config = new TalonFXConfiguration();
     canandmag = new Canandmag(Constants.ElbowConstants.ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
+    offset = 0;
     canandmagSettings.setInvertDirection(true);
 
     controller = new PIDController(
@@ -50,9 +54,13 @@ public class Elbow extends SubsystemBase {
     this.desiredPosition = desiredPosition;
   }
 
+  public void adjustOffset(double adjustment) {
+    offset += adjustment;
+  }
+
   private void goToDesiredPosition() {
     double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition, desiredPosition);
+    double output = controller.calculate(currentPosition, (desiredPosition + offset));
     setSpeed(output);
   }
 
@@ -80,7 +88,7 @@ public class Elbow extends SubsystemBase {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
-    if (!RobotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
+    if (!robotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
       lastUpdateTime = currentTime;
       goToDesiredPosition();
     }
@@ -93,4 +101,5 @@ public class Elbow extends SubsystemBase {
     SmartDashboard.putNumber("Elbow Position", canandmag.getPosition());
     SmartDashboard.putNumber("Elbow Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
+  
 }

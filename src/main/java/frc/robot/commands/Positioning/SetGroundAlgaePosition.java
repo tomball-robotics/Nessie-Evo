@@ -1,24 +1,25 @@
-package frc.robot.commands;
+package frc.robot.commands.Positioning;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
+import frc.robot.Constants;
 import frc.robot.Position;
 
-public class SetDesiredPosition extends Command {
+public class SetGroundAlgaePosition extends Command {
 
   private Elevator elevator;
   private Elbow elbow;
   private Wrist wrist;
   private Position position;
 
-  public SetDesiredPosition(Elevator elevator, Elbow elbow, Wrist wrist, Position position) {
+  public SetGroundAlgaePosition(Elevator elevator, Elbow elbow, Wrist wrist) {
     this.elevator = elevator;
     this.elbow = elbow;
     this.wrist = wrist;
-    this.position = position;
+    this.position = Constants.PositionConstants.GROUND_ALGAE;
 
     addRequirements(elevator);
     addRequirements(elbow);
@@ -34,9 +35,7 @@ public class SetDesiredPosition extends Command {
   }
 
   @Override
-  public void execute() {
-
-  }
+  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {}
