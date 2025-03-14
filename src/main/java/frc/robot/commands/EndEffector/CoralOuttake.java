@@ -1,4 +1,4 @@
-package frc.robot.commands.EndEffector;
+package frc.robot.commands.endeffector;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;

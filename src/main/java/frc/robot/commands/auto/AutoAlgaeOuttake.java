@@ -1,47 +1,40 @@
-package frc.robot.autos;
-
-
+package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.EndEffector;
 
-public class AutoCoralOuttake extends Command {
-
-  private Timer timer;
+public class AutoAlgaeOuttake extends Command {
+  
   private EndEffector endEffector;
+  private Timer timer;
 
-  public AutoCoralOuttake(EndEffector endEffector) {
+  public AutoAlgaeOuttake(EndEffector endEffector) {
     this.endEffector = endEffector;
     timer = new Timer();
 
     addRequirements(endEffector);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     timer.reset();
     timer.start();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    endEffector.setSpeed(Constants.EndEffectorConstants.CORAL_OUTTAKE_SPEED);
+    endEffector.setSpeed(Constants.EndEffectorConstants.ALGAE_OUTTAKE_SPEED);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     endEffector.stop();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() > .5;
+    return timer.get() > 1.2;
   }
 }

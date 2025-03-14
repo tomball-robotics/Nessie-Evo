@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
-public class Wrist extends SubsystemBase {
+public class Arm extends SubsystemBase {
 
   private TalonFX motor;
   private TalonFXConfiguration config;
@@ -21,24 +21,26 @@ public class Wrist extends SubsystemBase {
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
   private RobotContainer robotContainer;
+  private double offset;
   private double desiredPosition = 0;
   private double lastUpdateTime = 0;
 
-  public Wrist(RobotContainer robotContainer) {
+  public Arm(RobotContainer robotContainer) {
     this.robotContainer = robotContainer;
-    motor = new TalonFX(Constants.WristConstants.MOTOR_ID);
+    motor = new TalonFX(Constants.ElbowConstants.MOTOR_ID);
     config = new TalonFXConfiguration();
-    canandmag = new Canandmag(Constants.WristConstants.ENCODER_ID);
+    canandmag = new Canandmag(Constants.ElbowConstants.ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
+    offset = 0;
     canandmagSettings.setInvertDirection(true);
 
     controller = new PIDController(
-      Constants.WristConstants.P,
-      Constants.WristConstants.I,
-      Constants.WristConstants.D);
-    controller.setTolerance(Constants.WristConstants.TOLERANCE);
+      Constants.ElbowConstants.P,
+      Constants.ElbowConstants.I,
+      Constants.ElbowConstants.D);
+    controller.setTolerance(Constants.ElbowConstants.TOLERANCE);
 
-    config.CurrentLimits.SupplyCurrentLimit = Constants.WristConstants.CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimit = Constants.ElbowConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -51,27 +53,32 @@ public class Wrist extends SubsystemBase {
   public void setDesiredPosition(double desiredPosition) {
     this.desiredPosition = desiredPosition;
   }
-  
+
+  public void adjustOffset(double adjustment) {
+    offset += adjustment;
+  }
 
   private void goToDesiredPosition() {
     double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition, desiredPosition);
+    double output = controller.calculate(currentPosition, (desiredPosition + offset));
     setSpeed(output);
   }
 
   public void setSpeed(double desiredSpeed) {
     double currentPosition = canandmag.getPosition();
-
-    double forwardLimit = Constants.WristConstants.FORWARD_LIMIT;
-    double reverseLimit = Constants.WristConstants.REVERSE_LIMIT;
+    double feedForward = -0.04179303089 * Math.sin(Math.toRadians(currentPosition * 360));
+    SmartDashboard.putNumber("Elbow Feed Forward", feedForward); 
+    
+    double forwardLimit = Constants.ElbowConstants.FORWARD_LIMIT;
+    double reverseLimit = Constants.ElbowConstants.REVERSE_LIMIT;
     
     if(currentPosition >= forwardLimit && desiredSpeed > 0) {
       desiredSpeed = 0;
-    } else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
+    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
       desiredSpeed = 0;
     }
     
-    motor.set(desiredSpeed);
+    motor.set(desiredSpeed + feedForward);
   }
 
   public boolean atSetpoint() {
@@ -85,13 +92,14 @@ public class Wrist extends SubsystemBase {
       lastUpdateTime = currentTime;
       goToDesiredPosition();
     }
-    SmartDashboard.putNumber("Wrist Desired Position", desiredPosition);
-    SmartDashboard.putBoolean("Wrist at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("Wrist Forward Limit", Constants.WristConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Wrist Reverse Limit", Constants.WristConstants.REVERSE_LIMIT);
-    SmartDashboard.putNumber("Wrist Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Wrist Motor Output", motor.get());
-    SmartDashboard.putNumber("Wrist Position", canandmag.getPosition());
-    SmartDashboard.putNumber("Wrist Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elbow Desired Position", desiredPosition);
+    SmartDashboard.putBoolean("Elbow at Setpoint", controller.atSetpoint());
+    SmartDashboard.putNumber("Elbow Forward Limit", Constants.ElbowConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Elbow Reverse Limit", Constants.ElbowConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("Elbow Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("Elbow Motor Output", motor.get());
+    SmartDashboard.putNumber("Elbow Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Elbow Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
+  
 }

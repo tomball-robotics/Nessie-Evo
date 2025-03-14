@@ -1,16 +1,16 @@
-package frc.robot.autos;
+package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.EndEffector;
 
-public class AutoCoralIntake extends Command {
-  
-  private EndEffector endEffector;
-  private Timer timer;
+public class AutoCoralOuttake extends Command {
 
-  public AutoCoralIntake(EndEffector endEffector) {
+  private Timer timer;
+  private EndEffector endEffector;
+
+  public AutoCoralOuttake(EndEffector endEffector) {
     this.endEffector = endEffector;
     timer = new Timer();
 
@@ -25,7 +25,7 @@ public class AutoCoralIntake extends Command {
 
   @Override
   public void execute() {
-    endEffector.setSpeed(Constants.EndEffectorConstants.CORAL_INTAKE_SPEED);
+    endEffector.setSpeed(Constants.EndEffectorConstants.CORAL_OUTTAKE_SPEED);
   }
 
   @Override
@@ -35,6 +35,6 @@ public class AutoCoralIntake extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > 1.2;
+    return timer.get() > .5;
   }
 }
