@@ -23,12 +23,10 @@ import frc.lib.Elastic.Notification;
  * project.
  */
 public class Robot extends TimedRobot {
+
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
-
   private Command auto;
-
   private RobotContainer robotContainer;
-
   private double batteryLowStartTime = -1;
 
   /**
@@ -79,7 +77,6 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-    SmartDashboard.putBoolean("Manual Operation", robotContainer.manual);
     CommandScheduler.getInstance().run();
   }
 

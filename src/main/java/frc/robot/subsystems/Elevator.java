@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 public class Elevator extends SubsystemBase {
 
@@ -22,12 +21,10 @@ public class Elevator extends SubsystemBase {
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
-  private RobotContainer robotContainer;
   private double desiredPosition = 0;
   private double lastUpdateTime = 0;
   
-  public Elevator(RobotContainer robotContainer) {
-    this.robotContainer = robotContainer;
+  public Elevator() {
     motor = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
     follower = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID);
     canandmag = new Canandmag(Constants.ElevatorConstants.ENCODER_ID);
@@ -92,7 +89,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
-    if (!robotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
+    if (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL) {
       lastUpdateTime = currentTime;
       goToDesiredPosition();
     }

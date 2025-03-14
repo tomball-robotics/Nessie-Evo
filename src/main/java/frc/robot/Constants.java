@@ -74,7 +74,7 @@ public final class Constants {
         public static final double CLIMBER_SPEED = .5;
     }
 
-    public static final class ElbowConstants{
+    public static final class ArmConstants{
         public static final int MOTOR_ID = 13;
         public static final int CURRENT_LIMIT = 30;
         public static final double P = 4.5;

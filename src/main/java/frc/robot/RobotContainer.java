@@ -33,12 +33,11 @@ public class RobotContainer {
     private final int leftY = XboxController.Axis.kLeftY.value;
     private final int leftX = XboxController.Axis.kLeftX.value;
     private final int rightX = XboxController.Axis.kRightX.value;
-    private final int rightY = XboxController.Axis.kRightY.value;
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-     private final Arm arm = new Arm(this);
-    private final Elevator elevator = new Elevator(this);
+     private final Arm arm = new Arm();
+    private final Elevator elevator = new Elevator();
     private final EndEffector endEffector = new EndEffector();
     private final Climber climber = new Climber();
 
@@ -52,15 +51,12 @@ public class RobotContainer {
 
     private final AutoCoralIntake autoCoralIntake;
     private final AutoCoralOuttake autoCoralOuttake;
+
     private final FastMode fastMode;
     private final SlowMode slowMode;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
-
-    /* Game */
-    public boolean isAlgae = false;
-    public boolean manual = false;
 
     public RobotContainer() {
 
@@ -97,6 +93,7 @@ public class RobotContainer {
         autoCoralOuttake.addRequirements(endEffector);
 
         /* Swerve Commands */
+        
         fastMode = new FastMode(swerve);
         fastMode.addRequirements(swerve);
         slowMode = new SlowMode(swerve);

@@ -10,8 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
+import frc.robot.Constants;;
 
 public class Arm extends SubsystemBase {
 
@@ -20,27 +19,25 @@ public class Arm extends SubsystemBase {
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
-  private RobotContainer robotContainer;
   private double offset;
   private double desiredPosition = 0;
   private double lastUpdateTime = 0;
 
-  public Arm(RobotContainer robotContainer) {
-    this.robotContainer = robotContainer;
-    motor = new TalonFX(Constants.ElbowConstants.MOTOR_ID);
+  public Arm() {
+    motor = new TalonFX(Constants.ArmConstants.MOTOR_ID);
     config = new TalonFXConfiguration();
-    canandmag = new Canandmag(Constants.ElbowConstants.ENCODER_ID);
+    canandmag = new Canandmag(Constants.ArmConstants.ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     offset = 0;
     canandmagSettings.setInvertDirection(true);
 
     controller = new PIDController(
-      Constants.ElbowConstants.P,
-      Constants.ElbowConstants.I,
-      Constants.ElbowConstants.D);
-    controller.setTolerance(Constants.ElbowConstants.TOLERANCE);
+      Constants.ArmConstants.P,
+      Constants.ArmConstants.I,
+      Constants.ArmConstants.D);
+    controller.setTolerance(Constants.ArmConstants.TOLERANCE);
 
-    config.CurrentLimits.SupplyCurrentLimit = Constants.ElbowConstants.CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimit = Constants.ArmConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -67,10 +64,10 @@ public class Arm extends SubsystemBase {
   public void setSpeed(double desiredSpeed) {
     double currentPosition = canandmag.getPosition();
     double feedForward = -0.04179303089 * Math.sin(Math.toRadians(currentPosition * 360));
-    SmartDashboard.putNumber("Elbow Feed Forward", feedForward); 
+    SmartDashboard.putNumber("Arm Feed Forward", feedForward); 
     
-    double forwardLimit = Constants.ElbowConstants.FORWARD_LIMIT;
-    double reverseLimit = Constants.ElbowConstants.REVERSE_LIMIT;
+    double forwardLimit = Constants.ArmConstants.FORWARD_LIMIT;
+    double reverseLimit = Constants.ArmConstants.REVERSE_LIMIT;
     
     if(currentPosition >= forwardLimit && desiredSpeed > 0) {
       desiredSpeed = 0;
@@ -88,18 +85,18 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
-    if (!robotContainer.manual && (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL)) {
+    if (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL) {
       lastUpdateTime = currentTime;
       goToDesiredPosition();
     }
-    SmartDashboard.putNumber("Elbow Desired Position", desiredPosition);
-    SmartDashboard.putBoolean("Elbow at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("Elbow Forward Limit", Constants.ElbowConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Elbow Reverse Limit", Constants.ElbowConstants.REVERSE_LIMIT);
-    SmartDashboard.putNumber("Elbow Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Elbow Motor Output", motor.get());
-    SmartDashboard.putNumber("Elbow Position", canandmag.getPosition());
-    SmartDashboard.putNumber("Elbow Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Arm Desired Position", desiredPosition);
+    SmartDashboard.putBoolean("Arm at Setpoint", controller.atSetpoint());
+    SmartDashboard.putNumber("Arm Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Arm Reverse Limit", Constants.ArmConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("Arm Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("Arm Motor Output", motor.get());
+    SmartDashboard.putNumber("Arm Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Arm Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
   
 }
