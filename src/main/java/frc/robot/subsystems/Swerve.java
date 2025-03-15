@@ -22,6 +22,8 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.Elastic;
+import frc.lib.Elastic.Notification;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.LimelightHelpers;
@@ -37,7 +39,6 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(180);
         currentPose = new Pose2d();
         speedMultiplier = 1.0;
 
@@ -55,26 +56,25 @@ public class Swerve extends SubsystemBase {
             new Pose2d()
         );
 
-        RobotConfig config;
         try {
+            RobotConfig config;
             config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                this::getPose,
+                this::resetPose,
+                this::getRobotRelativeSpeeds,
+                this::driveRobotRelative,
+                new PPHolonomicDriveController(
+                    new PIDConstants(5.0, 0.0, 0.0),
+                    new PIDConstants(5.0, 0.0, 0.0)
+                ),
+                config,
+                () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red,
+                this
+            );
         } catch (Exception e) {
-            config = null;
+            Elastic.sendNotification(new Notification(Notification.NotificationLevel.ERROR, "Failed to configure AutoBuilder", "The AutoBuilder could not be configured. " + e.getMessage()));
         }
-
-        AutoBuilder.configure(
-            this::getPose,
-            this::resetPose,
-            this::getRobotRelativeSpeeds,
-            this::driveRobotRelative,
-            new PPHolonomicDriveController(
-                new PIDConstants(5.0, 0.0, 0.0),
-                new PIDConstants(5.0, 0.0, 0.0)
-            ),
-            config,
-            () -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red,
-            this
-        );
 
         LimelightHelpers.SetIMUMode("limelight-back", 2);
     }
@@ -196,37 +196,32 @@ public class Swerve extends SubsystemBase {
 
         currentPose = poseEstimator.getEstimatedPosition();
 
-        // Send pose data to AdvantageKit
         sendPoseToAdvantageKit(currentPose);
-
-        // Send swerve module states to AdvantageKit
         sendSwerveStatesToAdvantageKit(getModuleStates());
-
-        // Send vision target data if available
         sendVisionTargetToAdvantageKit(mt2);
 
-        // Publish other relevant data to SmartDashboard
         SmartDashboard.putNumber("Swerve/X", getPose().getX());
         SmartDashboard.putNumber("Swerve/Y", getPose().getY());
         SmartDashboard.putNumber("Swerve/Theta", getPose().getRotation().getDegrees());
+        SmartDashboard.putBoolean("Swerve/FastMode", speedMultiplier == 1.0);
+        SmartDashboard.putString("Swerve/DesiredAlignment", desiredAlignment);
+        SmartDashboard.putBoolean("Swerve/LeftDesiredAlign", desiredAlignment.equals("left") || desiredAlignment.equals("center"));
+        SmartDashboard.putBoolean("Swerve/RightDesiredAlign", desiredAlignment.equals("right") || desiredAlignment.equals("center"));
     }
 
     private void sendPoseToAdvantageKit(Pose2d pose) {
-        // Publish Pose2d data (Robot object)
         StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("RobotPose", Pose2d.struct).publish();
         publisher.set(pose);
     }
 
     private void sendSwerveStatesToAdvantageKit(SwerveModuleState[] states) {
-        // Publish SwerveModuleState[] data (SwerveStates)
         StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
             .getStructArrayTopic("SwerveStates", SwerveModuleState.struct).publish();
         publisher.set(states);
     }
 
     private void sendVisionTargetToAdvantageKit(LimelightHelpers.PoseEstimate mt2) {
-        // Publish vision target data (VisionTarget)
         if (mt2.tagCount > 0) {
             Pose2d visionPose = new Pose2d(mt2.pose.getTranslation(), new Rotation2d());
             StructPublisher<Pose2d> visionPublisher = NetworkTableInstance.getDefault()

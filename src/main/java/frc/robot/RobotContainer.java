@@ -118,7 +118,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         /* --- Driver --- */
-        driver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+        
+        //driver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
         driver.b().whileTrue(new InstantCommand(() -> swerve.setX()));
         driver.leftTrigger().whileTrue(climberDown);
         driver.rightTrigger().whileTrue(climberUp);
@@ -126,6 +127,7 @@ public class RobotContainer {
         driver.b().onTrue(slowMode);
 
         /* --- Operator  --- */
+
         operator.rightBumper().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("right")).andThen(align));
         operator.leftBumper().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("left")).andThen(align));
         operator.povDown().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("center")).andThen(align));
