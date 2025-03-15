@@ -14,10 +14,10 @@ import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
 import frc.robot.commands.climber.ClimberDown;
 import frc.robot.commands.climber.ClimberUp;
-import frc.robot.commands.endeffector.AlgaeIntake;
-import frc.robot.commands.endeffector.AlgaeOuttake;
-import frc.robot.commands.endeffector.CoralIntake;
-import frc.robot.commands.endeffector.CoralOuttake;
+import frc.robot.commands.scoring.ScoreL1;
+import frc.robot.commands.scoring.ScoreL2;
+import frc.robot.commands.scoring.ScoreL3;
+import frc.robot.commands.scoring.ScoreL4;
 import frc.robot.commands.swerve.*;
 import frc.robot.subsystems.*;
 
@@ -44,16 +44,19 @@ public class RobotContainer {
     /* Commands */
     private final ClimberUp climberUp;
     private final ClimberDown climberDown;
-    private final CoralIntake coralIntake;
-    private final CoralOuttake coralOuttake;
-    private final AlgaeIntake algaeIntake;
-    private final AlgaeOuttake algaeOuttake;
 
     private final AutoCoralIntake autoCoralIntake;
     private final AutoCoralOuttake autoCoralOuttake;
 
+    private final ScoreL1 scoreL1;
+    private final ScoreL2 scoreL2;
+    private final ScoreL3 scoreL3;
+    private final ScoreL4 scoreL4;
+
     private final FastMode fastMode;
     private final SlowMode slowMode;
+
+    private final Align align;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -77,16 +80,6 @@ public class RobotContainer {
         climberDown = new ClimberDown(climber);
         climberDown.addRequirements(climber);
 
-        /* Endeffector Commands */
-
-        algaeIntake = new AlgaeIntake(endEffector);
-        algaeIntake.addRequirements(endEffector);
-        algaeOuttake = new AlgaeOuttake(endEffector);
-        algaeOuttake.addRequirements(endEffector);
-        coralIntake = new CoralIntake(endEffector);
-        coralIntake.addRequirements(endEffector);
-        coralOuttake = new CoralOuttake(endEffector);
-        coralOuttake.addRequirements(endEffector);
         autoCoralIntake = new AutoCoralIntake(endEffector);
         autoCoralIntake.addRequirements(endEffector);
         autoCoralOuttake = new AutoCoralOuttake(endEffector);
@@ -98,6 +91,19 @@ public class RobotContainer {
         fastMode.addRequirements(swerve);
         slowMode = new SlowMode(swerve);
         slowMode.addRequirements(swerve);
+        align = new Align(swerve);
+        align.addRequirements(swerve);
+
+        /* Superstructure Commands */
+        
+        scoreL1 = new ScoreL1(arm, endEffector);
+        scoreL1.addRequirements(arm, endEffector);
+        scoreL2 = new ScoreL2(arm, elevator, endEffector);
+        scoreL2.addRequirements(arm, elevator, endEffector);
+        scoreL3 = new ScoreL3(arm, elevator, endEffector);
+        scoreL3.addRequirements(arm, elevator, endEffector);
+        scoreL4 = new ScoreL4(arm, elevator, endEffector);
+        scoreL4.addRequirements(arm, elevator, endEffector);
 
         /* Register Commands & Autos */
 
@@ -109,7 +115,7 @@ public class RobotContainer {
         configureButtonBindings();
     }
 
-    private void configureButtonBindings() { 
+    private void configureButtonBindings() {
 
         /* --- Driver --- */
         driver.y().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
@@ -120,8 +126,14 @@ public class RobotContainer {
         driver.b().onTrue(slowMode);
 
         /* --- Operator  --- */
-        operator.rightBumper().whileTrue(coralOuttake);
-        operator.leftBumper().whileTrue(coralIntake);
+        operator.rightBumper().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("right")).andThen(align));
+        operator.leftBumper().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("left")).andThen(align));
+        operator.povDown().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("center")).andThen(align));
+
+        operator.a().onTrue(scoreL1);
+        operator.b().onTrue(scoreL2);
+        operator.x().onTrue(scoreL3);
+        operator.y().onTrue(scoreL4);
 
     }
 

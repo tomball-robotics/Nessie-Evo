@@ -16,8 +16,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,13 +30,15 @@ public class Swerve extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator;
     private final SwerveModule[] swerveModules;
     private final Pigeon2 gyro;
-    private static final Field2d field = new Field2d();
+    private Pose2d currentPose;
     private double speedMultiplier;
+    public String desiredAlignment = "center";
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(180);
+        currentPose = new Pose2d();
         speedMultiplier = 1.0;
 
         swerveModules = new SwerveModule[] {
@@ -73,6 +77,10 @@ public class Swerve extends SubsystemBase {
         );
 
         LimelightHelpers.SetIMUMode("limelight-back", 2);
+    }
+
+    public void setDesiredAlignment(String desiredAlignment) {
+        this.desiredAlignment = desiredAlignment;
     }
 
     public void setSpeedMultiplier(double speedMultiplier) {
@@ -186,9 +194,44 @@ public class Swerve extends SubsystemBase {
             poseEstimator.addVisionMeasurement(mt2.pose, System.currentTimeMillis() / 1000.0);
         }
 
-        field.setRobotPose(poseEstimator.getEstimatedPosition());
+        currentPose = poseEstimator.getEstimatedPosition();
+
+        // Send pose data to AdvantageKit
+        sendPoseToAdvantageKit(currentPose);
+
+        // Send swerve module states to AdvantageKit
+        sendSwerveStatesToAdvantageKit(getModuleStates());
+
+        // Send vision target data if available
+        sendVisionTargetToAdvantageKit(mt2);
+
+        // Publish other relevant data to SmartDashboard
         SmartDashboard.putNumber("Swerve/X", getPose().getX());
         SmartDashboard.putNumber("Swerve/Y", getPose().getY());
         SmartDashboard.putNumber("Swerve/Theta", getPose().getRotation().getDegrees());
+    }
+
+    private void sendPoseToAdvantageKit(Pose2d pose) {
+        // Publish Pose2d data (Robot object)
+        StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("RobotPose", Pose2d.struct).publish();
+        publisher.set(pose);
+    }
+
+    private void sendSwerveStatesToAdvantageKit(SwerveModuleState[] states) {
+        // Publish SwerveModuleState[] data (SwerveStates)
+        StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+            .getStructArrayTopic("SwerveStates", SwerveModuleState.struct).publish();
+        publisher.set(states);
+    }
+
+    private void sendVisionTargetToAdvantageKit(LimelightHelpers.PoseEstimate mt2) {
+        // Publish vision target data (VisionTarget)
+        if (mt2.tagCount > 0) {
+            Pose2d visionPose = new Pose2d(mt2.pose.getTranslation(), new Rotation2d());
+            StructPublisher<Pose2d> visionPublisher = NetworkTableInstance.getDefault()
+                .getStructTopic("VisionTarget", Pose2d.struct).publish();
+            visionPublisher.set(visionPose);
+        }
     }
 }
