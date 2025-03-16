@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,28 +28,20 @@ import frc.robot.SwerveModule;
 import frc.robot.LimelightHelpers;
 
 public class Swerve extends SubsystemBase {
-    private final SwerveDrivePoseEstimator poseEstimator;
-    private final SwerveModule[] swerveModules;
-    private final Pigeon2 gyro;
-    private Pose2d currentPose;
+    private SwerveDrivePoseEstimator poseEstimator;
+    private SwerveModule[] swerveModules;
+    private Pigeon2 gyro;
     private double speedMultiplier;
     public String desiredAlignment = "center";
-    private final StructPublisher<Pose2d> posePublisher;
-    private final StructArrayPublisher<SwerveModuleState> swerveStatesPublisher;
-    private final StructPublisher<Pose2d> visionTargetPublisher;
+    private StructPublisher<Pose2d> posePublisher;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        currentPose = new Pose2d();
         speedMultiplier = 1.0;
 
         posePublisher = NetworkTableInstance.getDefault()
             .getStructTopic("RobotPose", Pose2d.struct).publish();
-        swerveStatesPublisher = NetworkTableInstance.getDefault()
-            .getStructArrayTopic("SwerveStates", SwerveModuleState.struct).publish();
-        visionTargetPublisher = NetworkTableInstance.getDefault()
-            .getStructTopic("VisionTarget", Pose2d.struct).publish();
 
         swerveModules = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -86,7 +77,9 @@ public class Swerve extends SubsystemBase {
             Elastic.sendNotification(new Notification(Notification.NotificationLevel.ERROR, "Failed to configure AutoBuilder", "The AutoBuilder could not be configured. " + e.getMessage()));
         }
 
-        LimelightHelpers.SetIMUMode("limelight-back", 2);
+        LimelightHelpers.setLEDMode_ForceOff("limelight-back");
+        LimelightHelpers.setPipelineIndex("limelight-back", 0); // Ensure AprilTag pipeline is selected
+        LimelightHelpers.SetIMUMode("limelight-back", 2); // Use internal IMU for MegaTag2
     }
 
     public void setDesiredAlignment(String desiredAlignment) {
@@ -198,26 +191,45 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+        poseEstimator.update(getGyroYaw(), getModulePositions());
 
-        // if (mt2.tagCount > 0) {
-        //     poseEstimator.addVisionMeasurement(mt2.pose, System.currentTimeMillis() / 1000.0);
-        //     Pose2d visionPose = new Pose2d(mt2.pose.getTranslation(), new Rotation2d());
-        //     visionTargetPublisher.set(visionPose);
-        // }
+        updateVisionMeasurement();
 
-        currentPose = poseEstimator.getEstimatedPosition();
-
-        posePublisher.set(currentPose);
-        swerveStatesPublisher.set(getModuleStates());
-
-        SmartDashboard.putNumber("Swerve/X", getPose().getX());
-        SmartDashboard.putNumber("Swerve/Y", getPose().getY());
-        SmartDashboard.putNumber("Swerve/Theta", getPose().getRotation().getDegrees());
+        posePublisher.set(new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(getPose().getRotation().getDegrees())));
         SmartDashboard.putBoolean("Swerve/FastMode", speedMultiplier == 1.0);
         SmartDashboard.putString("Swerve/DesiredAlignment", desiredAlignment);
         SmartDashboard.putBoolean("Swerve/LeftDesiredAlign", desiredAlignment.equals("left") || desiredAlignment.equals("center"));
         SmartDashboard.putBoolean("Swerve/RightDesiredAlign", desiredAlignment.equals("right") || desiredAlignment.equals("center"));
+    }
+
+    @SuppressWarnings("removal")
+    private void updateVisionMeasurement() {
+        // Set the robot's orientation for MegaTag2
+        LimelightHelpers.SetRobotOrientation("limelight-back", getGyroYaw().getDegrees(), 0, 0, 0, 0, 0);
+    
+        // Get the MegaTag2 pose estimate
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+    
+        boolean doRejectUpdate = false;
+    
+        // Reject the update if the robot is rotating too quickly
+        if (Math.abs(gyro.getRate()) > 720) { // 720 degrees per second
+            doRejectUpdate = true;
+        }
+    
+        // Reject the update if no tags are visible
+        if (mt2.tagCount == 0) {
+            doRejectUpdate = true;
+        }
+    
+        // If the update is not rejected, add it to the pose estimator
+        if (!doRejectUpdate) {
+            poseEstimator.setVisionMeasurementStdDevs(edu.wpi.first.math.VecBuilder.fill(0.7, 0.7, 9999999));
+            poseEstimator.addVisionMeasurement(
+                mt2.pose,
+                mt2.timestampSeconds
+            );
+        }
     }
 
 }

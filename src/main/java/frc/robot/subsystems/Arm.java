@@ -24,9 +24,9 @@ public class Arm extends SubsystemBase {
   private double lastUpdateTime = 0;
 
   public Arm() {
-    motor = new TalonFX(Constants.ArmConstants.MOTOR_ID);
+    motor = new TalonFX(10);
     config = new TalonFXConfiguration();
-    canandmag = new Canandmag(Constants.ArmConstants.ENCODER_ID);
+    canandmag = new Canandmag(16);
     canandmagSettings = new CanandmagSettings();
     offset = 0;
     canandmagSettings.setInvertDirection(true);
