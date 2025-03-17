@@ -35,5 +35,5 @@ public class EndEffector extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Endeffector Velocity", motor.getVelocity().getValueAsDouble());
   }
-
+  
 }

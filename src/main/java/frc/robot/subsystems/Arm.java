@@ -49,15 +49,15 @@ public class Arm extends SubsystemBase {
     double currentPosition = canandmag.getPosition();
     double progression = currentPosition/halfPosition * 2;
     double progressionRads = progression * 2 *  Math.PI;
-    double feedforward = Math.abs(kG * Math.sin(progressionRads));
+    double feedforward = kG * Math.sin(progressionRads);
     return feedforward;
   }
 
-  public  void goTowardsDesiredPosition(double desiredPosition) {
+  public void goTowardsDesiredPosition(double desiredPosition) {
+    SmartDashboard.putNumber("Arm Desired Position", desiredPosition);
     double currentPosition = canandmag.getPosition();
     double output = controller.calculate(currentPosition, desiredPosition);
-    motor.set(output + feedforward(currentPosition));
-    SmartDashboard.putNumber("Arm Desired Position", desiredPosition);
+    setSpeed(output);
   }
 
   public void setRawSpeed(double desiredSpeed) {
@@ -65,7 +65,17 @@ public class Arm extends SubsystemBase {
   }
 
   public void setSpeed(double desiredSpeed) {
-    motor.set(desiredSpeed + feedforward(canandmag.getPosition()));
+    double currentPosition = canandmag.getPosition();
+    double forwardLimit = Constants.ArmConstants.FORWARD_LIMIT;
+    double reverseLimit = Constants.ArmConstants.REVERSE_LIMIT;
+
+    if(currentPosition >= forwardLimit && desiredSpeed > 0) {
+      desiredSpeed = 0;
+    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
+      desiredSpeed = 0;
+    }
+
+    motor.set(desiredSpeed + feedforward(currentPosition));
   }
 
   public boolean atSetpoint() {
