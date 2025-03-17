@@ -8,7 +8,6 @@ import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,8 +20,6 @@ public class Elevator extends SubsystemBase {
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
-  private double desiredPosition = 0;
-  private double lastUpdateTime = 0;
   
   public Elevator() {
     motor = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
@@ -53,23 +50,26 @@ public class Elevator extends SubsystemBase {
     motor.setNeutralMode(NeutralModeValue.Brake);
     follower.setNeutralMode(NeutralModeValue.Brake);
 
-    follower.setControl(new Follower(10, false));
+    follower.setControl(new Follower(10, true));
   }
 
-  public void setDesiredPosition(double desiredPosition) {
-    this.desiredPosition = desiredPosition;
+  private double feedforward(double position) {
+    return 0;
   }
 
-  private void goToDesiredPosition() {
+  public void goTowardsDesiredPosition(double desiredPosition) {
+    SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);
     double currentPosition = canandmag.getPosition();
     double output = controller.calculate(currentPosition, desiredPosition);
     setSpeed(output);
   }
 
+  public void setRawSpeed(double desiredSpeed) {
+    motor.set(desiredSpeed);
+  }
+
   public void setSpeed(double desiredSpeed) {
     double currentPosition = canandmag.getPosition();
-    double kS = Constants.ElevatorConstants.S; // static friction compensation
-
     double forwardLimit = Constants.ElevatorConstants.FORWARD_LIMIT;
     double reverseLimit = Constants.ElevatorConstants.REVERSE_LIMIT;
 
@@ -79,7 +79,11 @@ public class Elevator extends SubsystemBase {
       desiredSpeed = 0;
     }
 
-    motor.set(desiredSpeed + kS);
+    motor.set(desiredSpeed + feedforward(currentPosition));
+  }
+
+  public void stop() {
+    motor.set(0 + feedforward(canandmag.getPosition()));
   }
 
   public boolean atSetpoint() {
@@ -88,17 +92,14 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double currentTime = Timer.getFPGATimestamp();
-    if (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL) {
-      lastUpdateTime = currentTime;
-      goToDesiredPosition();
-    }
     SmartDashboard.putNumber("Elevator Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("Elevator Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);
     SmartDashboard.putNumber("Elevator Motor Output", motor.get());
     SmartDashboard.putNumber("Elevator Position", canandmag.getPosition());
     SmartDashboard.putNumber("ELevator Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Forward Limit", Constants.ElevatorConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Elevator Reverse Limit", Constants.ElevatorConstants.REVERSE_LIMIT);
   }
+
 }
  
