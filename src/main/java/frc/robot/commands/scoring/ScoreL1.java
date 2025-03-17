@@ -8,7 +8,7 @@ import frc.robot.subsystems.EndEffector;
 
 public class ScoreL1 extends SequentialCommandGroup {
 
-  private double armExtendedPosition = 0; // TODO tune
+  private double armExtendedPosition = .25; // TODO tune
 
   public ScoreL1(Arm arm, EndEffector endEffector) {
 

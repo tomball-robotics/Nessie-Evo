@@ -41,19 +41,15 @@ public class Align extends Command {
     if(LimelightHelpers.getTV("limelight-front")) {
       double[] targetPoseRobot = LimelightHelpers.getTargetPose_RobotSpace("limelight-front");
       
-      // Extract x and y positions from targetPoseRobot
       double xError = targetPoseRobot[0] - xSetpoint;
       double yError = targetPoseRobot[1] - ySetpoint;
       
-      // Yaw error for rotation
       double yawToTag = targetPoseRobot[5];
       
-      // Calculate outputs
       double translationOut = translationalP * xError;
       double strafeOut = strafeP * yError;
       double rotationOut = -rotationalP * yawToTag;
   
-      // Apply the calculated values to drive the swerve
       swerve.drive(
           new Translation2d(translationOut, strafeOut).times(Constants.Swerve.maxSpeed), 
           rotationOut * Constants.Swerve.maxAngularVelocity, 

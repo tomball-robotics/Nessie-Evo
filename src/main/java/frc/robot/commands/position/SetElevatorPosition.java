@@ -15,12 +15,12 @@ public class SetElevatorPosition extends Command {
   }
 
   @Override
-  public void initialize() {
-    elevator.goTowardsDesiredPosition(position);
-  }
+  public void initialize() {}
 
   @Override
-  public void execute() {}
+  public void execute() {
+    elevator.goTowardsDesiredPosition(position);
+  }
 
   @Override
   public void end(boolean interrupted) {

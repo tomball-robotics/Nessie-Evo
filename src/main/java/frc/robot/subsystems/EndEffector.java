@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,7 @@ public class EndEffector extends SubsystemBase {
     config = new TalonFXConfiguration();
     config.CurrentLimits.SupplyCurrentLimit = Constants.EndEffectorConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     motor.setNeutralMode(NeutralModeValue.Brake);
     motor.getConfigurator().apply(config);

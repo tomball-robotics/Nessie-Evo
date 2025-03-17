@@ -35,6 +35,6 @@ public class AutoCoralIntake extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > 1.2;
+    return timer.get() > .3;
   }
 }

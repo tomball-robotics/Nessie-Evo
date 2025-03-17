@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
@@ -37,14 +38,18 @@ public class Elevator extends SubsystemBase {
 
     canandmagSettings = new CanandmagSettings();
 
-    canandmagSettings.setInvertDirection(true);
+    canandmagSettings.setInvertDirection(false);
 
     config.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    motor.getConfigurator().apply(config);
     follower.getConfigurator().apply(config);
+
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    motor.getConfigurator().apply(config);
+
     canandmag.setSettings(canandmagSettings);
 
     motor.setNeutralMode(NeutralModeValue.Brake);
@@ -54,7 +59,7 @@ public class Elevator extends SubsystemBase {
   }
 
   private double feedforward(double position) {
-    return 0;
+    return 0.037109375;
   }
 
   public void goTowardsDesiredPosition(double desiredPosition) {
@@ -92,6 +97,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("Elevator at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("Elevator Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("Elevator Velocity", canandmag.getVelocity());
     SmartDashboard.putNumber("Elevator Motor Output", motor.get());

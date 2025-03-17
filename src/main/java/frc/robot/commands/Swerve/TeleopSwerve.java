@@ -12,19 +12,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 
 public class TeleopSwerve extends Command {    
-    private Swerve s_Swerve;    
+    private Swerve swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
+    private BooleanSupplier lockSup;
     private BooleanSupplier robotCentricSup;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
-        this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve);
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier lockSup, BooleanSupplier robotCentricSup) {
+        this.swerve = swerve;
+        addRequirements(swerve);
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
+        this.lockSup = lockSup;
         this.robotCentricSup = robotCentricSup;
     }
 
@@ -33,17 +35,19 @@ public class TeleopSwerve extends Command {
 
     @Override
     public void execute() {
-        /* Get Values, Deadband*/
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.ControlConstants.STICK_DEADBAND);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.ControlConstants.STICK_DEADBAND);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.ControlConstants.STICK_DEADBAND);
 
-        /* Drive */
-        s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-            rotationVal * Constants.Swerve.maxAngularVelocity, 
-            !robotCentricSup.getAsBoolean(), 
-            true
-        );
+        if(!lockSup.getAsBoolean()) {
+            swerve.drive(
+                new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
+                rotationVal * Constants.Swerve.maxAngularVelocity, 
+                !robotCentricSup.getAsBoolean(), 
+                true
+            );
+        }else {
+            swerve.setX();
+        }
     }
 }
