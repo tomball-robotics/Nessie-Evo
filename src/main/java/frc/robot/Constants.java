@@ -14,6 +14,37 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
+    public static final class ID {
+
+        // SWERVE ('cani' bus) --------------------------
+
+        public static final int PIDGEON_ID = 0;
+        public static final int FRONT_LEFT_DRIVE_TALONFX_ID = 1;
+        public static final int FRONT_LEFT_CANCODER_ID = 1;
+        public static final int FRONT_LEFT_ANGLE_TALONFX_ID = 2;
+        public static final int FRONT_RIGHT_CANCODER_ID = 2;
+        public static final int FRONT_RIGHT_DRIVE_TALONFX_ID = 3;
+        public static final int BACK_RIGHT_CANCODER_ID = 3;
+        public static final int FRONT_RIGHT_ANGLE_TALONFX_ID = 4;
+        public static final int BACK_LEFT_CANCODER_ID = 4;
+        public static final int BACK_RIGHT_DRIVE_TALONFX_ID = 5;
+        public static final int BACK_RIGHT_ANGLE_TALONFX_ID = 6;
+        public static final int BACK_LEFT_DRIVE_TALONFX_ID = 7;
+        public static final int BACK_LEFT_ANGLE_TALONFX_ID = 8;
+
+        // SUPERSTRUCTURE ('rio' bus) --------------------------
+
+        public static final int END_EFFECTOR_TALONFX_ID = 9;
+        public static final int ELEVATOR_MASTER_TALONFX_ID = 10;
+        public static final int ELEVATOR_FOLLOWER_TALONFX_ID = 11;
+        public static final int INTAKE_TALONFX_ID = 12;
+        public static final int ELBOW_TALONFX_ID = 13;
+        public static final int ARM_ENCODER_ID = 14;
+        public static final int ELEVATOR_ENCODER_ID = 15;
+        public static final int INTAKE_ENCODER_ID = 16;
+        public static final int ARM_TALONFX_ID = 17;
+    }
+
     public static final class ControlConstants {
         public static final int DRIVER_PORT = 0;
         public static final int OPERATOR_PORT = 1;
@@ -42,7 +73,6 @@ public final class Constants {
         public static final Position GROUND_ALGAE = new Position(0, 0, 0, false, "Ground Algae");
 
     }
-    
 
     public static final class EndEffectorConstants {
         public static final int MOTOR_ID = 9;

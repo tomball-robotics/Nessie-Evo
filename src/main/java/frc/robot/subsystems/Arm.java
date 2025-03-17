@@ -7,7 +7,6 @@ import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;;
@@ -19,16 +18,12 @@ public class Arm extends SubsystemBase {
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
-  private double offset;
-  private double desiredPosition = 0;
-  private double lastUpdateTime = 0;
 
   public Arm() {
-    motor = new TalonFX(10);
+    motor = new TalonFX(Constants.ID.ARM_TALONFX_ID);
     config = new TalonFXConfiguration();
-    canandmag = new Canandmag(16);
+    canandmag = new Canandmag(Constants.ID.ARM_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
-    offset = 0;
     canandmagSettings.setInvertDirection(true);
 
     controller = new PIDController(
@@ -47,49 +42,42 @@ public class Arm extends SubsystemBase {
     canandmag.setPosition(0);
   }
 
-  public void setDesiredPosition(double desiredPosition) {
-    this.desiredPosition = desiredPosition;
-  }
+  private double feedforward(double position) {
+    double halfPosition = 0; // this is what the position reads when the arm is straight up
+    double kG = 0; // this is js the max feedforward, that theoeretically should be needed to hold the arm up in the .25 progression state
 
-  public void adjustOffset(double adjustment) {
-    offset += adjustment;
-  }
-
-  private void goToDesiredPosition() {
     double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition, (desiredPosition + offset));
-    setSpeed(output);
+    double progression = currentPosition/halfPosition * 2;
+    double progressionRads = progression * 2 *  Math.PI;
+    double feedforward = Math.abs(kG * Math.sin(progressionRads));
+    return feedforward;
+  }
+
+  public  void goTowardsDesiredPosition(double desiredPosition) {
+    double currentPosition = canandmag.getPosition();
+    double output = controller.calculate(currentPosition, desiredPosition);
+    motor.set(output + feedforward(currentPosition));
+    SmartDashboard.putNumber("Arm Desired Position", desiredPosition);
+  }
+
+  public void setRawSpeed(double desiredSpeed) {
+    motor.set(desiredSpeed);
   }
 
   public void setSpeed(double desiredSpeed) {
-    double currentPosition = canandmag.getPosition();
-    double feedForward = -0.04179303089 * Math.sin(Math.toRadians(currentPosition * 360));
-    SmartDashboard.putNumber("Arm Feed Forward", feedForward); 
-    
-    double forwardLimit = Constants.ArmConstants.FORWARD_LIMIT;
-    double reverseLimit = Constants.ArmConstants.REVERSE_LIMIT;
-    
-    if(currentPosition >= forwardLimit && desiredSpeed > 0) {
-      desiredSpeed = 0;
-    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
-      desiredSpeed = 0;
-    }
-    
-    motor.set(desiredSpeed + feedForward);
+    motor.set(desiredSpeed + feedforward(canandmag.getPosition()));
   }
 
   public boolean atSetpoint() {
     return controller.atSetpoint();
   }
 
+  public void stop() {
+    motor.set(0 + feedforward(canandmag.getPosition()));
+  }
+
   @Override
-  public void periodic() {
-    double currentTime = Timer.getFPGATimestamp();
-    if (currentTime - lastUpdateTime >= Constants.ControlConstants.UPDATE_INTERVAL) {
-      lastUpdateTime = currentTime;
-      goToDesiredPosition();
-    }
-    SmartDashboard.putNumber("Arm Desired Position", desiredPosition);
+  public void periodic() {    
     SmartDashboard.putBoolean("Arm at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("Arm Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);
     SmartDashboard.putNumber("Arm Reverse Limit", Constants.ArmConstants.REVERSE_LIMIT);

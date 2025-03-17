@@ -19,12 +19,12 @@ SUPERSTRUCTURE ('rio' bus) --------------------------
 9. end effector talonfx
 10. elevator master talonfx
 11. elevator follower talonfx
-12. climber talonfx
+12. intake talonfx
 13. elbow talonfx
-14. wrist talonfx
-15. elevator canandmag
-16. wrist encoder
-17. elbow encoder
+14. arm encoder
+15. elevator encoder
+16. intake encoder
+17. arm pivot talonfx
 18.
 19.
 20.

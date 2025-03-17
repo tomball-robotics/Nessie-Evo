@@ -79,6 +79,13 @@ public class RobotContainer {
             )
         );
 
+        arm.setDefaultCommand(
+            new InstantCommand(
+                () -> arm.setSpeed(operator.getRawAxis(leftY)), 
+                arm
+            )
+        );
+
         // Climber Commands
         climberUp = new ClimberUp(climber);
         climberUp.addRequirements(climber);
