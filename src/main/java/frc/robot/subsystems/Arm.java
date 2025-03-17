@@ -94,14 +94,14 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {    
-    SmartDashboard.putBoolean("Arm at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("Arm Setpoint", controller.getSetpoint());
-    SmartDashboard.putNumber("Arm Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Arm Reverse Limit", Constants.ArmConstants.REVERSE_LIMIT);
-    SmartDashboard.putNumber("Arm Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Arm Motor Output", motor.get());
-    SmartDashboard.putNumber("Arm Position", canandmag.getPosition());
-    SmartDashboard.putNumber("Arm Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putBoolean("Arm/at Setpoint", controller.atSetpoint());
+    SmartDashboard.putNumber("Arm/Setpoint", controller.getSetpoint());
+    SmartDashboard.putNumber("Arm/Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Arm/Reverse Limit", Constants.ArmConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("Arm/Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("Arm/Motor Output", motor.get());
+    SmartDashboard.putNumber("Arm/Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Arm/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
   
 }

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
+import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.climber.ClimberDown;
 import frc.robot.commands.climber.ClimberUp;
 import frc.robot.commands.motions.ScoreL1;
@@ -18,7 +19,6 @@ import frc.robot.commands.motions.ScoreL2;
 import frc.robot.commands.motions.ScoreL3;
 import frc.robot.commands.motions.ScoreL4;
 import frc.robot.commands.swerve.HoldAlign;
-import frc.robot.commands.swerve.PressAlign;
 import frc.robot.commands.swerve.ChangeSpeedMultiplier;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
@@ -61,7 +61,7 @@ public class RobotContainer {
 
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
     private final HoldAlign holdAlign;
-    private final PressAlign pressAlign;
+    private final AutoAlign pressAlign;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -110,7 +110,7 @@ public class RobotContainer {
         changeSpeedMultiplier.addRequirements(swerve);
         holdAlign = new HoldAlign(swerve, this);
         holdAlign.addRequirements(swerve);
-        pressAlign = new PressAlign(swerve);
+        pressAlign = new AutoAlign(swerve);
         pressAlign.addRequirements(swerve);
 
         // superstructure

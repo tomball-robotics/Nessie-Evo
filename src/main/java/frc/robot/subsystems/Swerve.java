@@ -19,6 +19,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.Elastic;
@@ -29,6 +30,7 @@ import frc.robot.LimelightHelpers;
 
 public class Swerve extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator;
+    private Field2d field;
     private SwerveModule[] swerveModules;
     private Pigeon2 gyro;
     private double speedMultiplier;
@@ -39,6 +41,8 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         speedMultiplier = 1.0;
+
+        field = new Field2d();
 
         posePublisher = NetworkTableInstance.getDefault()
             .getStructTopic("RobotPose", Pose2d.struct).publish();
@@ -196,12 +200,15 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         poseEstimator.update(getGyroYaw(), getModulePositions());
-
         updateVisionMeasurement();
 
-        posePublisher.set(new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(getPose().getRotation().getDegrees())));
-        SmartDashboard.putBoolean("Swerve/Fast Mode", speedMultiplier == 1.0);
+        Pose2d currentPose = getPose();
 
+        field.setRobotPose(currentPose);
+
+        posePublisher.set(new Pose2d(currentPose.getX(), currentPose.getY(), new Rotation2d(currentPose.getRotation().getDegrees())));
+        SmartDashboard.putBoolean("Swerve/Fast Mode", speedMultiplier == 1.0);
+        SmartDashboard.putData("Swerve/Field", field);
     }
 
     @SuppressWarnings("removal")

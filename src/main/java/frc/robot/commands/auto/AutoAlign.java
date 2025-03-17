@@ -1,4 +1,4 @@
-package frc.robot.commands.swerve;
+package frc.robot.commands.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -6,7 +6,7 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
-public class PressAlign extends Command {
+public class AutoAlign extends Command {
 
   private Swerve swerve;
   private String target;
@@ -16,12 +16,12 @@ public class PressAlign extends Command {
   private final double rotationalP = 0.1;
   private final double translationalP = 0.1;
   private final double strafeP = 0.1;
-  
+
   private final double translationTolerance = 0.1; // Adjust as needed
   private final double strafeTolerance = 0.1;      // Adjust as needed
   private final double rotationTolerance = 1.0;    // Adjust as needed (in degrees)
 
-  public PressAlign(Swerve swerve) {
+  public AutoAlign(Swerve swerve) {
     this.swerve = swerve;
     addRequirements(swerve);
   }

@@ -97,14 +97,14 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Elevator at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("Elevator Setpoint", controller.getSetpoint());
-    SmartDashboard.putNumber("Elevator Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Elevator Motor Output", motor.get());
-    SmartDashboard.putNumber("Elevator Position", canandmag.getPosition());
-    SmartDashboard.putNumber("ELevator Supply Current", motor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator Forward Limit", Constants.ElevatorConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Elevator Reverse Limit", Constants.ElevatorConstants.REVERSE_LIMIT);
+    SmartDashboard.putBoolean("Elevator/at Setpoint", controller.atSetpoint());
+    SmartDashboard.putNumber("Elevator/Setpoint", controller.getSetpoint());
+    SmartDashboard.putNumber("Elevator/Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("Elevator/Motor Output", motor.get());
+    SmartDashboard.putNumber("Elevator/Position", canandmag.getPosition());
+    SmartDashboard.putNumber("ELevator/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Forward Limit", Constants.ElevatorConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("Elevator/Reverse Limit", Constants.ElevatorConstants.REVERSE_LIMIT);
   }
 
 }

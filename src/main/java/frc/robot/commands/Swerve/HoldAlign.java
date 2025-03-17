@@ -2,6 +2,7 @@ package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -48,33 +49,35 @@ public class HoldAlign extends Command {
 
   @Override
   public void execute() {
-    if(LimelightHelpers.getTV("limelight-front")) {
-      double[] targetPoseRobot = LimelightHelpers.getTargetPose_RobotSpace("limelight-front");
-      
-      double xError = targetPoseRobot[0] - xSetpoint;
-      double yError = targetPoseRobot[1] - ySetpoint;
-      
-      double yawToTag = targetPoseRobot[5];
-      
-      double translationOut = translationalP * xError;
-      double strafeOut = strafeP * yError;
-      double rotationOut = -rotationalP * yawToTag;
-  
-      swerve.drive(
-          new Translation2d(translationOut, strafeOut).times(Constants.Swerve.maxSpeed), 
-          rotationOut * Constants.Swerve.maxAngularVelocity, 
-          false, 
-          true
-      );
-    }
-    if(aligned()) {
+    double[] targetPoseRobot = LimelightHelpers.getTargetPose_RobotSpace("limelight-front");
+    if(aligned(targetPoseRobot)) {
       robotContainer.operator.setRumble(RumbleType.kBothRumble, 1);
+      SmartDashboard.putBoolean("Swerve/Aligned", true);
+    }else {
+      SmartDashboard.putBoolean("Swerve/Aligned", false);
+      robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
+      if(LimelightHelpers.getTV("limelight-front")) {
+        double xError = targetPoseRobot[0] - xSetpoint;
+        double yError = targetPoseRobot[1] - ySetpoint;
+        
+        double yawToTag = targetPoseRobot[5];
+        
+        double translationOut = translationalP * xError;
+        double strafeOut = strafeP * yError;
+        double rotationOut = -rotationalP * yawToTag;
+    
+        swerve.drive(
+            new Translation2d(translationOut, strafeOut).times(Constants.Swerve.maxSpeed), 
+            rotationOut * Constants.Swerve.maxAngularVelocity, 
+            false, 
+            true
+        );
+      }
     }
   }
 
-  private boolean aligned() {
+  private boolean aligned(double[] targetPoseRobot) {
     if(LimelightHelpers.getTV("limelight-front")) {
-      double[] targetPoseRobot = LimelightHelpers.getTargetPose_RobotSpace("limelight-front");
       double xError = Math.abs(targetPoseRobot[0] - xSetpoint);
       double yError = Math.abs(targetPoseRobot[1] - ySetpoint);
       double yawError = Math.abs(targetPoseRobot[5]);
@@ -86,6 +89,7 @@ public class HoldAlign extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("Swerve/Aligned", false);
     robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
   }
 
