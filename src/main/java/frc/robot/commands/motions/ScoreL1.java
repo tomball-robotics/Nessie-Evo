@@ -1,4 +1,4 @@
-package frc.robot.commands.scoring;
+package frc.robot.commands.motions;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.AutoCoralOuttake;

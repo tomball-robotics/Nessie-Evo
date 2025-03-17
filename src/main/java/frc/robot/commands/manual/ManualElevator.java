@@ -25,6 +25,6 @@ public class ManualElevator extends Command {
     @Override
     public void execute() {
         double desiredSpeed = MathUtil.applyDeadband(desiredSpeedSup.getAsDouble(), Constants.ControlConstants.STICK_DEADBAND);
-        Elevator.setRawSpeed(desiredSpeed);
+        Elevator.setSpeed(desiredSpeed);
     }
 }

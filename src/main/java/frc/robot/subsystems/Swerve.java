@@ -86,6 +86,10 @@ public class Swerve extends SubsystemBase {
         this.desiredAlignment = desiredAlignment;
     }
 
+    public double getSpeedMultiplier() {
+        return speedMultiplier;
+    }
+
     public void setSpeedMultiplier(double speedMultiplier) {
         this.speedMultiplier = speedMultiplier;
     }
@@ -196,40 +200,30 @@ public class Swerve extends SubsystemBase {
         updateVisionMeasurement();
 
         posePublisher.set(new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(getPose().getRotation().getDegrees())));
-        SmartDashboard.putBoolean("Swerve/FastMode", speedMultiplier == 1.0);
-        SmartDashboard.putString("Swerve/DesiredAlignment", desiredAlignment);
-        SmartDashboard.putBoolean("Swerve/LeftDesiredAlign", desiredAlignment.equals("left") || desiredAlignment.equals("center"));
-        SmartDashboard.putBoolean("Swerve/RightDesiredAlign", desiredAlignment.equals("right") || desiredAlignment.equals("center"));
+        SmartDashboard.putBoolean("Swerve/Fast Mode", speedMultiplier == 1.0);
+
     }
 
     @SuppressWarnings("removal")
     private void updateVisionMeasurement() {
-        // Set the robot's orientation for MegaTag2
         LimelightHelpers.SetRobotOrientation("limelight-back", getGyroYaw().getDegrees(), 0, 0, 0, 0, 0);
-
-        // Get the MegaTag2 pose estimate
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
-        // Check if mt2 is null before accessing its fields
         if (mt2 == null) {
-            // Optionally log a message for debugging
             DriverStation.reportWarning("Vision measurement returned null", false);
             return;
         }
 
         boolean doRejectUpdate = false;
 
-        // Reject the update if the robot is rotating too quickly
-        if (Math.abs(gyro.getRate()) > 720) { // 720 degrees per second
+        if (Math.abs(gyro.getRate()) > 720) {
             doRejectUpdate = true;
         }
 
-        // Reject the update if no tags are visible
         if (mt2.tagCount == 0) {
             doRejectUpdate = true;
         }
 
-        // If the update is not rejected, add it to the pose estimator
         if (!doRejectUpdate) {
             poseEstimator.setVisionMeasurementStdDevs(edu.wpi.first.math.VecBuilder.fill(0.7, 0.7, 9999999));
             poseEstimator.addVisionMeasurement(

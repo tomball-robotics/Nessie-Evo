@@ -13,15 +13,13 @@ import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
 import frc.robot.commands.climber.ClimberDown;
 import frc.robot.commands.climber.ClimberUp;
-import frc.robot.commands.manual.ManualElevator;
-import frc.robot.commands.position.SetElevatorPosition;
-import frc.robot.commands.scoring.ScoreL1;
-import frc.robot.commands.scoring.ScoreL2;
-import frc.robot.commands.scoring.ScoreL3;
-import frc.robot.commands.scoring.ScoreL4;
-import frc.robot.commands.swerve.Align;
-import frc.robot.commands.swerve.FastMode;
-import frc.robot.commands.swerve.SlowMode;
+import frc.robot.commands.motions.ScoreL1;
+import frc.robot.commands.motions.ScoreL2;
+import frc.robot.commands.motions.ScoreL3;
+import frc.robot.commands.motions.ScoreL4;
+import frc.robot.commands.swerve.HoldAlign;
+import frc.robot.commands.swerve.PressAlign;
+import frc.robot.commands.swerve.ChangeSpeedMultiplier;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
@@ -32,8 +30,8 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
 
     /* Controllers */
-    private final CommandXboxController driver = new CommandXboxController(Constants.ControlConstants.DRIVER_PORT);
-    private final CommandXboxController operator = new CommandXboxController(Constants.ControlConstants.OPERATOR_PORT);
+    public final CommandXboxController driver = new CommandXboxController(Constants.ControlConstants.DRIVER_PORT);
+    public final CommandXboxController operator = new CommandXboxController(Constants.ControlConstants.OPERATOR_PORT);
     @SuppressWarnings("unused")
     private final GenericHID operatorKeypad = new GenericHID(Constants.ControlConstants.OPERATOR_KEYPAD_PORT);
 
@@ -61,16 +59,16 @@ public class RobotContainer {
     private final ScoreL3 scoreL3;
     private final ScoreL4 scoreL4;
 
-    private final FastMode fastMode;
-    private final SlowMode slowMode;
-    private final Align align;
+    private final ChangeSpeedMultiplier changeSpeedMultiplier;
+    private final HoldAlign holdAlign;
+    private final PressAlign pressAlign;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
 
-        swerve.setDefaultCommand( // pass in x mode bool
+        swerve.setDefaultCommand(
             new TeleopSwerve(
                 swerve, 
                 () -> -driver.getRawAxis(leftY), 
@@ -108,12 +106,12 @@ public class RobotContainer {
         autoCoralOuttake.addRequirements(endEffector);
 
         // swerve
-        fastMode = new FastMode(swerve);
-        fastMode.addRequirements(swerve);
-        slowMode = new SlowMode(swerve);
-        slowMode.addRequirements(swerve);
-        align = new Align(swerve);
-        align.addRequirements(swerve);
+        changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
+        changeSpeedMultiplier.addRequirements(swerve);
+        holdAlign = new HoldAlign(swerve, this);
+        holdAlign.addRequirements(swerve);
+        pressAlign = new PressAlign(swerve);
+        pressAlign.addRequirements(swerve);
 
         // superstructure
         scoreL1 = new ScoreL1(arm, endEffector);
@@ -143,10 +141,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         // driver
-        driver.leftTrigger().whileTrue(climberDown);
-        driver.rightTrigger().whileTrue(climberUp);
-        driver.a().onTrue(fastMode);
-        driver.b().onTrue(slowMode);
+        driver.b().onTrue(changeSpeedMultiplier);
 
         // operator
         // operator.rightBumper().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("right")));
@@ -158,14 +153,13 @@ public class RobotContainer {
         // operator.povDown().onTrue(new InstantCommand(() -> swerve.setDesiredAlignment("center")));
         // operator.povDown().whileTrue(align);
 
-        // operator.a().onTrue(scoreL1);
-        // operator.b().onTrue(scoreL2);
-        // operator.x().onTrue(scoreL3);
-        // operator.y().onTrue(scoreL4);
-
         operator.a().onTrue(scoreL1);
         operator.b().onTrue(scoreL2);
-        operator.y().onTrue(scoreL3);
+        operator.x().onTrue(scoreL3);
+        operator.y().onTrue(scoreL4);
+
+        operator.a().onTrue(autoCoralIntake);
+
     }
 
     public Command getAutonomousCommand() {

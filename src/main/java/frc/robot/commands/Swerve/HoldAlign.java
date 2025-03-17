@@ -1,14 +1,18 @@
 package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve;
 
-public class Align extends Command {
+public class HoldAlign extends Command {
 
   private Swerve swerve;
+  private RobotContainer robotContainer;
+
   private String target;
   private double xSetpoint;
   private final double ySetpoint = 0;
@@ -17,8 +21,14 @@ public class Align extends Command {
   private final double translationalP = 0.1;
   private final double strafeP = 0.1;
 
-  public Align(Swerve swerve) {
+  private final double translationTolerance = 0.1; // Adjust as needed
+  private final double strafeTolerance = 0.1;      // Adjust as needed
+  private final double rotationTolerance = 1.0;    // Adjust as needed (in degrees)
+
+  public HoldAlign(Swerve swerve, RobotContainer robotContainer) {
     this.swerve = swerve;
+    this.robotContainer = robotContainer;
+
     addRequirements(swerve);
   }
 
@@ -57,10 +67,27 @@ public class Align extends Command {
           true
       );
     }
+    if(aligned()) {
+      robotContainer.operator.setRumble(RumbleType.kBothRumble, 1);
+    }
+  }
+
+  private boolean aligned() {
+    if(LimelightHelpers.getTV("limelight-front")) {
+      double[] targetPoseRobot = LimelightHelpers.getTargetPose_RobotSpace("limelight-front");
+      double xError = Math.abs(targetPoseRobot[0] - xSetpoint);
+      double yError = Math.abs(targetPoseRobot[1] - ySetpoint);
+      double yawError = Math.abs(targetPoseRobot[5]);
+      
+      return (xError <= translationTolerance && yError <= strafeTolerance && yawError <= rotationTolerance);
+    }
+    return false;
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
+  }
 
   @Override
   public boolean isFinished() {

@@ -1,4 +1,4 @@
-package frc.robot.commands.scoring;
+package frc.robot.commands.motions;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -13,7 +13,7 @@ public class ScoreL2 extends SequentialCommandGroup {
 
   private double elevatorHeight = 1; // TODO tune
   private double armExtendedPosition = .7; // TODO tune
-  private double armClearancePosition = .192;
+  private double armClearancePosition = 0.437;
 
   public ScoreL2(Arm arm, Elevator elevator, EndEffector endEffector) {
 
