@@ -77,31 +77,34 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-    SmartDashboard.putNumber("Driverstation Location", DriverStation.getLocation().getAsInt());
 
-    if(DriverStation.getMatchTime() == 15) {
-      robotContainer.driver.setRumble(RumbleType.kBothRumble, .25);
-      robotContainer.operator.setRumble(RumbleType.kBothRumble, .25);
-    }else if(DriverStation.getMatchTime() == 14) {
-      robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
-      robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
-    }
-
-    if(DriverStation.getMatchTime() == 10) {
-      robotContainer.driver.setRumble(RumbleType.kBothRumble, .50);
-      robotContainer.operator.setRumble(RumbleType.kBothRumble, .50);
-    }else if(DriverStation.getMatchTime() == 9) {
-      robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
-      robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
-    }
-
-    if(DriverStation.getMatchTime() == 5) {
-      robotContainer.driver.setRumble(RumbleType.kBothRumble, 1);
-      robotContainer.operator.setRumble(RumbleType.kBothRumble, 1);
-    }else if(DriverStation.getMatchTime() == 4) {
-      robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
-      robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
+    if(DriverStation.isDSAttached()) {
+      SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+      SmartDashboard.putNumber("Driverstation Location", DriverStation.getLocation().getAsInt());
+  
+      if(DriverStation.getMatchTime() == 15) {
+        robotContainer.driver.setRumble(RumbleType.kBothRumble, .25);
+        robotContainer.operator.setRumble(RumbleType.kBothRumble, .25);
+      }else if(DriverStation.getMatchTime() == 14) {
+        robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
+        robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
+      }
+  
+      if(DriverStation.getMatchTime() == 10) {
+        robotContainer.driver.setRumble(RumbleType.kBothRumble, .50);
+        robotContainer.operator.setRumble(RumbleType.kBothRumble, .50);
+      }else if(DriverStation.getMatchTime() == 9) {
+        robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
+        robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
+      }
+  
+      if(DriverStation.getMatchTime() == 5) {
+        robotContainer.driver.setRumble(RumbleType.kBothRumble, 1);
+        robotContainer.operator.setRumble(RumbleType.kBothRumble, 1);
+      }else if(DriverStation.getMatchTime() == 4) {
+        robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
+        robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
+      }
     }
   }
 

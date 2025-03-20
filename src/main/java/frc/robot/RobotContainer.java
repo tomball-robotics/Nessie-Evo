@@ -106,15 +106,16 @@ public class RobotContainer {
         NamedCommands.registerCommand("L2", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
         NamedCommands.registerCommand("L3", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
         NamedCommands.registerCommand("L4", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-
         NamedCommands.registerCommand("Algae Intake Low", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
         NamedCommands.registerCommand("Algae Intake Hiigh", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         NamedCommands.registerCommand("Algae Taxi", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
         NamedCommands.registerCommand("Algae Shoot", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         NamedCommands.registerCommand("Algae Process", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
-
-        NamedCommands.registerCommand("AlignRight", new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
-        NamedCommands.registerCommand("AlignLeft", new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
+        NamedCommands.registerCommand("Stow", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        NamedCommands.registerCommand("Align Right", new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
+        NamedCommands.registerCommand("Align Left", new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
+        NamedCommands.registerCommand("Shoot", autoCoralOuttake);
+        NamedCommands.registerCommand("Intake", autoCoralIntake);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);
@@ -124,10 +125,14 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
 
+        /* driver controls */
+
         driver.b().onTrue(changeSpeedMultiplier);
-        // driver.leftBumper().onTrue(new SequentialCommandGroup(
-        //     null
-        // ));
+        driver.leftBumper().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
+        driver.leftBumper().whileTrue(autoCoralIntake);
+        driver.leftBumper().toggleOnFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
+
+        /* operator positions */
 
         operator.rightTrigger().onTrue(autoCoralOuttake);
 
