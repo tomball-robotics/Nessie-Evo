@@ -19,13 +19,11 @@ public class SetElevatorPosition extends Command {
 
   @Override
   public void execute() {
-    elevator.goTowardsDesiredPosition(position);
+    elevator.setSetpoint(position);
   }
 
   @Override
-  public void end(boolean interrupted) {
-    elevator.stop();
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

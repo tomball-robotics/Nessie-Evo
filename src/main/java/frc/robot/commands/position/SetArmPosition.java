@@ -19,13 +19,11 @@ public class SetArmPosition extends Command {
 
   @Override
   public void execute() {
-    arm.goTowardsDesiredPosition(position);
+    arm.setSetpoint(position);
   }
 
   @Override
-  public void end(boolean interrupted) {
-    arm.stop();
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

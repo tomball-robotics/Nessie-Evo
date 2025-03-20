@@ -15,7 +15,7 @@ public class EndEffector extends SubsystemBase {
   private TalonFXConfiguration config;
 
   public EndEffector() {
-    motor = new TalonFX(Constants.EndEffectorConstants.MOTOR_ID);
+    motor = new TalonFX(Constants.ID.END_EFFECTOR_TALONFX_ID);
     config = new TalonFXConfiguration();
     config.CurrentLimits.SupplyCurrentLimit = Constants.EndEffectorConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -35,7 +35,9 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Endeffector Velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Endeffector/Motor/Velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Endeffector/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Endeffector/Motor/Applied Output", motor.getSupplyCurrent().getValueAsDouble());
   }
   
 }

@@ -23,9 +23,9 @@ public class Elevator extends SubsystemBase {
   private PIDController controller;
   
   public Elevator() {
-    motor = new TalonFX(Constants.ElevatorConstants.MASTER_ID);
-    follower = new TalonFX(Constants.ElevatorConstants.FOLLOWER_ID);
-    canandmag = new Canandmag(Constants.ElevatorConstants.ENCODER_ID);
+    motor = new TalonFX(Constants.ID.ELEVATOR_MASTER_TALONFX_ID);
+    follower = new TalonFX(Constants.ID.ELEVATOR_FOLLOWER_TALONFX_ID);
+    canandmag = new Canandmag(Constants.ID.ELEVATOR_ENCODER_ID);
     canandmag.setPosition(0);
 
     controller = new PIDController(
@@ -58,19 +58,14 @@ public class Elevator extends SubsystemBase {
     follower.setControl(new Follower(10, true));
   }
 
-  private double feedforward(double position) {
-    return 0.037109375;
-  }
-
-  public void goTowardsDesiredPosition(double desiredPosition) {
-    SmartDashboard.putNumber("Elevator Desired Position", desiredPosition);
+  public void goTowardsDesiredPosition() {
     double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition, desiredPosition);
+    double output = controller.calculate(currentPosition);
     setSpeed(output);
   }
 
-  public void setRawSpeed(double desiredSpeed) {
-    motor.set(desiredSpeed);
+  public void setSetpoint(double desiredPosition) {
+    controller.setSetpoint(desiredPosition);
   }
 
   public void setSpeed(double desiredSpeed) {
@@ -84,11 +79,7 @@ public class Elevator extends SubsystemBase {
       desiredSpeed = 0;
     }
 
-    motor.set(desiredSpeed + feedforward(currentPosition));
-  }
-
-  public void stop() {
-    motor.set(0 + feedforward(canandmag.getPosition()));
+    motor.set(desiredSpeed + Constants.ElevatorConstants.G);
   }
 
   public boolean atSetpoint() {
@@ -97,12 +88,13 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    goTowardsDesiredPosition();
     SmartDashboard.putBoolean("Elevator/at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("Elevator/Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("Elevator/Velocity", canandmag.getVelocity());
     SmartDashboard.putNumber("Elevator/Motor Output", motor.get());
     SmartDashboard.putNumber("Elevator/Position", canandmag.getPosition());
-    SmartDashboard.putNumber("ELevator/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/Forward Limit", Constants.ElevatorConstants.FORWARD_LIMIT);
     SmartDashboard.putNumber("Elevator/Reverse Limit", Constants.ElevatorConstants.REVERSE_LIMIT);
   }

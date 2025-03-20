@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;;
 
-public class Arm extends SubsystemBase {
+public class IntakePivot extends SubsystemBase {
 
   private TalonFX motor;
   private TalonFXConfiguration config;
@@ -20,7 +20,7 @@ public class Arm extends SubsystemBase {
   private CanandmagSettings canandmagSettings;
   private PIDController controller;
 
-  public Arm() {
+  public IntakePivot() {
     motor = new TalonFX(Constants.ID.ARM_TALONFX_ID);
     config = new TalonFXConfiguration();
     canandmag = new Canandmag(Constants.ID.ARM_ENCODER_ID);
@@ -28,12 +28,12 @@ public class Arm extends SubsystemBase {
     canandmagSettings.setInvertDirection(true);
 
     controller = new PIDController(
-      Constants.ArmConstants.P,
-      Constants.ArmConstants.I,
-      Constants.ArmConstants.D);
-    controller.setTolerance(Constants.ArmConstants.TOLERANCE);
+      Constants.IntakePivotConstants.P,
+      Constants.IntakePivotConstants.I,
+      Constants.IntakePivotConstants.D);
+    controller.setTolerance(Constants.IntakePivotConstants.TOLERANCE);
 
-    config.CurrentLimits.SupplyCurrentLimit = Constants.ArmConstants.CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimit = Constants.IntakePivotConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -63,8 +63,8 @@ public class Arm extends SubsystemBase {
   
   public void setSpeed(double desiredSpeed) {
     double currentPosition = canandmag.getPosition();
-    double forwardLimit = Constants.ArmConstants.FORWARD_LIMIT;
-    double reverseLimit = Constants.ArmConstants.REVERSE_LIMIT;
+    double forwardLimit = Constants.IntakePivotConstants.FORWARD_LIMIT;
+    double reverseLimit = Constants.IntakePivotConstants.REVERSE_LIMIT;
 
     desiredSpeed = desiredSpeed + feedforward(currentPosition);
 
@@ -88,15 +88,15 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     goTowardsDesiredPosition();
-    SmartDashboard.putBoolean("Arm/at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("Arm/Setpoint", controller.getSetpoint());
-    SmartDashboard.putNumber("Arm/Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Arm/Reverse Limit", Constants.ArmConstants.REVERSE_LIMIT);
-    SmartDashboard.putNumber("Arm/Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Arm/Position", canandmag.getPosition());
-    SmartDashboard.putNumber("Arm/Motor/Velocity", motor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Arm/Motor/Applied Output", motor.get());
-    SmartDashboard.putNumber("Arm/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putBoolean("IntakePivot/at Setpoint", controller.atSetpoint());
+    SmartDashboard.putNumber("IntakePivot/Setpoint", controller.getSetpoint());
+    SmartDashboard.putNumber("IntakePivot/Forward Limit", Constants.IntakePivotConstants.FORWARD_LIMIT);
+    SmartDashboard.putNumber("IntakePivot/Reverse Limit", Constants.IntakePivotConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("IntakePivot/Velocity", canandmag.getVelocity());
+    SmartDashboard.putNumber("IntakePivot/Position", canandmag.getPosition());
+    SmartDashboard.putNumber("IntakePivot/Motor/Velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("IntakePivot/Motor/Applied Output", motor.get());
+    SmartDashboard.putNumber("IntakePivot/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
   }
 
 }

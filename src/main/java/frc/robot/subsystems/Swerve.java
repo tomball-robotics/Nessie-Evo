@@ -23,10 +23,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.Elastic;
+import frc.lib.LimelightHelpers;
 import frc.lib.Elastic.Notification;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
-import frc.robot.LimelightHelpers;
 
 public class Swerve extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator;
@@ -38,7 +38,7 @@ public class Swerve extends SubsystemBase {
     private StructPublisher<Pose2d> posePublisher;
 
     public Swerve() {
-        gyro = new Pigeon2(Constants.Swerve.pigeonID, "cani");
+        gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "cani");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         speedMultiplier = 1.0;
 
@@ -48,14 +48,14 @@ public class Swerve extends SubsystemBase {
             .getStructTopic("RobotPose", Pose2d.struct).publish();
 
         swerveModules = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+            new SwerveModule(0, Constants.SwerveConstants.Mod0.constants),
+            new SwerveModule(1, Constants.SwerveConstants.Mod1.constants),
+            new SwerveModule(2, Constants.SwerveConstants.Mod2.constants),
+            new SwerveModule(3, Constants.SwerveConstants.Mod3.constants)
         };
 
         poseEstimator = new SwerveDrivePoseEstimator(
-            Constants.Swerve.swerveKinematics,
+            Constants.SwerveConstants.swerveKinematics,
             getGyroYaw(),
             getModulePositions(),
             new Pose2d()
@@ -81,9 +81,6 @@ public class Swerve extends SubsystemBase {
             Elastic.sendNotification(new Notification(Notification.NotificationLevel.ERROR, "Failed to configure AutoBuilder", "The AutoBuilder could not be configured. " + e.getMessage()));
         }
 
-        LimelightHelpers.setLEDMode_ForceOff("limelight-back");
-        LimelightHelpers.setPipelineIndex("limelight-back", 0); // Ensure AprilTag pipeline is selected
-        LimelightHelpers.SetIMUMode("limelight-back", 2); // Use internal IMU for MegaTag2
     }
 
     public void setDesiredAlignment(String desiredAlignment) {
@@ -100,7 +97,7 @@ public class Swerve extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(fieldRelative
+            Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     translation.getX() * speedMultiplier,
                     translation.getY() * speedMultiplier,
@@ -113,18 +110,18 @@ public class Swerve extends SubsystemBase {
                     rotation * speedMultiplier)
             );
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
         for (SwerveModule mod : swerveModules) {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
-        return Constants.Swerve.swerveKinematics.toChassisSpeeds(getModuleStates());
+        return Constants.SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     public void driveRobotRelative(ChassisSpeeds speeds) {
-        SwerveModuleState[] states = Constants.Swerve.swerveKinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.AutoConstants.kMaxSpeedMetersPerSecond);
         setModuleStates(states);
     }
@@ -217,7 +214,7 @@ public class Swerve extends SubsystemBase {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
         if (mt2 == null) {
-            DriverStation.reportWarning("Vision measurement returned null", false);
+            DriverStation.reportWarning("Vision measurement returned null, check connection to back localization limelight.", false);
             return;
         }
 
@@ -232,7 +229,6 @@ public class Swerve extends SubsystemBase {
         }
 
         if (!doRejectUpdate) {
-            poseEstimator.setVisionMeasurementStdDevs(edu.wpi.first.math.VecBuilder.fill(0.7, 0.7, 9999999));
             poseEstimator.addVisionMeasurement(
                 mt2.pose,
                 mt2.timestampSeconds

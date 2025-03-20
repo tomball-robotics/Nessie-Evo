@@ -14,7 +14,7 @@ public class Climber extends SubsystemBase {
   private static TalonFXConfiguration config;
 
   public Climber() {
-    motor = new TalonFX(Constants.ClimberConstants.MOTOR_ID);
+    motor = new TalonFX(Constants.ID.CLIMBER_TALONFX_ID);
 
     config = new TalonFXConfiguration();
     config.CurrentLimits.SupplyCurrentLimit = Constants.ClimberConstants.CURRENT_LIMIT;
@@ -34,7 +34,9 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Climber Velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Climber/Velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Climber/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Climber/Motor Output", motor.getSupplyCurrent().getValueAsDouble());
   }
 
 }

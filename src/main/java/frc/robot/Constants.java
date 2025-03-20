@@ -9,40 +9,32 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.lib.util.COTSTalonFXSwerveConstants;
-import frc.lib.util.SwerveModuleConstants;
+import frc.lib.COTSTalonFXSwerveConstants;
+import frc.lib.SwerveModuleConstants;
 
 public final class Constants {
 
     public static final class ID {
-
-        // SWERVE ('cani' bus) --------------------------
-
-        public static final int PIDGEON_ID = 0;
-        public static final int FRONT_LEFT_DRIVE_TALONFX_ID = 1;
-        public static final int FRONT_LEFT_CANCODER_ID = 1;
-        public static final int FRONT_LEFT_ANGLE_TALONFX_ID = 2;
-        public static final int FRONT_RIGHT_CANCODER_ID = 2;
-        public static final int FRONT_RIGHT_DRIVE_TALONFX_ID = 3;
-        public static final int BACK_RIGHT_CANCODER_ID = 3;
-        public static final int FRONT_RIGHT_ANGLE_TALONFX_ID = 4;
-        public static final int BACK_LEFT_CANCODER_ID = 4;
-        public static final int BACK_RIGHT_DRIVE_TALONFX_ID = 5;
-        public static final int BACK_RIGHT_ANGLE_TALONFX_ID = 6;
-        public static final int BACK_LEFT_DRIVE_TALONFX_ID = 7;
-        public static final int BACK_LEFT_ANGLE_TALONFX_ID = 8;
-
-        // SUPERSTRUCTURE ('rio' bus) --------------------------
-
         public static final int END_EFFECTOR_TALONFX_ID = 9;
         public static final int ELEVATOR_MASTER_TALONFX_ID = 10;
         public static final int ELEVATOR_FOLLOWER_TALONFX_ID = 11;
         public static final int INTAKE_TALONFX_ID = 12;
-        public static final int ELBOW_TALONFX_ID = 13;
+        public static final int CLIMBER_TALONFX_ID = 13;
         public static final int ARM_ENCODER_ID = 14;
         public static final int ELEVATOR_ENCODER_ID = 15;
         public static final int INTAKE_ENCODER_ID = 16;
         public static final int ARM_TALONFX_ID = 17;
+    }
+
+    public static final class IntakePivotConstants {
+        public static final int CURRENT_LIMIT = 30;
+        public static final double P = 1;
+        public static final double I = .5;
+        public static final double D = 0;
+        public static final double TOLERANCE = .01;
+        public static final double FORWARD_LIMIT = 2.2;
+        public static final double REVERSE_LIMIT = .0;
+        public static final double G = 0;
     }
 
     public static final class ControlConstants {
@@ -59,37 +51,30 @@ public final class Constants {
     }
 
     public static final class EndEffectorConstants {
-        public static final int MOTOR_ID = 9;
-        public static final double CURRENT_LIMIT = 30;
-        public static final double CORAL_INTAKE_SPEED = -.1;
-        public static final double CORAL_OUTTAKE_SPEED = .3;
+        public static final double CURRENT_LIMIT = 40;
+        public static final double CORAL_INTAKE_SPEED = -.5;
+        public static final double CORAL_OUTTAKE_SPEED = .5;
         public static final double ALGAE_INTAKE_SPEED = -1;
         public static final double ALGAE_OUTTAKE_SPEED = 1;
     }
 
     public static final class ElevatorConstants {
-        public static final int MASTER_ID = 10;
-        public static final int FOLLOWER_ID = 11;
         public static final int CURRENT_LIMIT = 40;
-        public static final int ENCODER_ID = 15;
         public static final double P = 1;
         public static final double I = .1;
         public static final double D = 0;
-        public static final double G = 0;
-        public static final double S = 0;
+        public static final double G = 0.037109375;
         public static final double TOLERANCE = .04;
         public static final double FORWARD_LIMIT = 5.2327880859375;
         public static final double REVERSE_LIMIT = 0;
     }
 
     public static final class ClimberConstants {
-        public static final int MOTOR_ID = 12;
         public static final double CURRENT_LIMIT = 30;
         public static final double CLIMBER_SPEED = .5;
     }
 
     public static final class ArmConstants{
-        public static final int MOTOR_ID = 13;
         public static final int CURRENT_LIMIT = 30;
         public static final double P = 1;
         public static final double I = .5;
@@ -97,11 +82,10 @@ public final class Constants {
         public static final double TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 2.2;
         public static final double REVERSE_LIMIT = .0;
-        public static final int ENCODER_ID = 17;
         public static final double G = 0;
     }
 
-    public static final class Swerve {
+    public static final class SwerveConstants {
         public static final int pigeonID = 0;
 
         public static final COTSTalonFXSwerveConstants chosenModule =
