@@ -7,6 +7,9 @@ import frc.robot.commands.position.SetArmPosition;
 import frc.robot.commands.position.SetElevatorPosition;
 import frc.robot.commands.position.SetIntakePivotPosition;
 import frc.robot.subsystems.intake.IntakePivot;
+import frc.robot.subsystems.superstructure.Arm;
+import frc.robot.subsystems.superstructure.Elevator;
+import frc.robot.subsystems.superstructure.EndEffector;
 
 public class StateMachine extends SubsystemBase {
 

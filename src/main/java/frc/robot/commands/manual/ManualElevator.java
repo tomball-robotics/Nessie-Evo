@@ -1,7 +1,8 @@
 package frc.robot.commands.manual;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.superstructure.Elevator;
+
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;

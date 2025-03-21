@@ -11,23 +11,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.Intake;
 import frc.robot.commands.auto.AutoAlignToReefTagRelative;
 import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
 import frc.robot.commands.climber.ClimberDown;
 import frc.robot.commands.climber.ClimberUp;
+import frc.robot.commands.manual.ManualIntakeRollers;
 import frc.robot.commands.manual.ManualArm;
 import frc.robot.commands.swerve.ChangeSpeedMultiplier;
 import frc.robot.commands.swerve.TeleopSwerve;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.intake.IntakePivot;
 import frc.robot.subsystems.intake.IntakeRollers;
+import frc.robot.subsystems.superstructure.Arm;
+import frc.robot.subsystems.superstructure.Elevator;
+import frc.robot.subsystems.superstructure.EndEffector;
 
 @SuppressWarnings("unused")
 public class RobotContainer {
@@ -58,7 +58,7 @@ public class RobotContainer {
     private final AutoCoralIntake autoCoralIntake;
     private final AutoCoralOuttake autoCoralOuttake;
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
-    private final Intake intake;
+    private final ManualIntakeRollers manualIntakeRollers;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -103,8 +103,8 @@ public class RobotContainer {
         autoCoralOuttake.addRequirements(endEffector);
 
         // intake
-        intake = new Intake(intakeRollers);
-        intake.addRequirements(intakeRollers);
+        manualIntakeRollers = new ManualIntakeRollers(intakeRollers);
+        manualIntakeRollers.addRequirements(intakeRollers);
 
         // swerve
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);

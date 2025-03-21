@@ -1,13 +1,13 @@
-package frc.robot.commands;
+package frc.robot.commands.manual;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeRollers;
 
-public class Intake extends Command {
+public class ManualIntakeRollers extends Command {
 
   private IntakeRollers intakeRollers;
 
-  public Intake(IntakeRollers intakeRollers) {
+  public ManualIntakeRollers(IntakeRollers intakeRollers) {
     this.intakeRollers = intakeRollers;
   }
 
