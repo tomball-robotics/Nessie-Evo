@@ -21,9 +21,9 @@ public class IntakePivot extends SubsystemBase {
   private PIDController controller;
 
   public IntakePivot() {
-    motor = new TalonFX(Constants.ID.ARM_TALONFX_ID);
+    motor = new TalonFX(Constants.ID.INTAKE_PIVOT_ID);
     config = new TalonFXConfiguration();
-    canandmag = new Canandmag(Constants.ID.ARM_ENCODER_ID);
+    canandmag = new Canandmag(Constants.ID.INTAKE_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     canandmagSettings.setInvertDirection(true);
 
@@ -74,7 +74,7 @@ public class IntakePivot extends SubsystemBase {
 
   @Override
   public void periodic() {
-    goTowardsDesiredPosition();
+    //goTowardsDesiredPosition();
     SmartDashboard.putBoolean("IntakePivot/at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("IntakePivot/Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("IntakePivot/Forward Limit", Constants.IntakePivotConstants.FORWARD_LIMIT);

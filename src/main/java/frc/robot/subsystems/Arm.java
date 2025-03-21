@@ -60,7 +60,7 @@ public class Arm extends SubsystemBase {
     double output = controller.calculate(currentPosition);
     setSpeed(output);
   }
-  
+
   public void setSpeed(double desiredSpeed) {
     double currentPosition = canandmag.getPosition();
     double forwardLimit = Constants.ArmConstants.FORWARD_LIMIT;
@@ -87,7 +87,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    goTowardsDesiredPosition();
+    //goTowardsDesiredPosition();
     SmartDashboard.putBoolean("Arm/at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("Arm/Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("Arm/Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);

@@ -18,7 +18,7 @@ public final class Constants {
         public static final int END_EFFECTOR_TALONFX_ID = 9;
         public static final int ELEVATOR_MASTER_TALONFX_ID = 10;
         public static final int ELEVATOR_FOLLOWER_TALONFX_ID = 11;
-        public static final int INTAKE_TALONFX_ID = 12;
+        public static final int INTAKE_PIVOT_ID = 12;
         public static final int CLIMBER_TALONFX_ID = 13;
         public static final int ARM_ENCODER_ID = 14;
         public static final int ELEVATOR_ENCODER_ID = 15;

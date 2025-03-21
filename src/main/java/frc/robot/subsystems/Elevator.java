@@ -88,7 +88,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    goTowardsDesiredPosition();
+    //goTowardsDesiredPosition();
     SmartDashboard.putBoolean("Elevator/at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("Elevator/Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("Elevator/Velocity", canandmag.getVelocity());
