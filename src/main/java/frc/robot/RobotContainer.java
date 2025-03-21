@@ -143,12 +143,12 @@ public class RobotContainer {
 
         // /* operator positions */
 
-        // operator.rightTrigger().onTrue(autoCoralOuttake);
+        operator.rightTrigger().onTrue(autoCoralOuttake);
 
         // operator.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
         // operator.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
 
-        operator.a().whileTrue(intake);
+        //operator.a().whileTrue(intake);
 
     }
 

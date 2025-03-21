@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 
     if(DriverStation.isDSAttached()) {
       SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-      SmartDashboard.putNumber("Driverstation Location", DriverStation.getLocation().getAsInt());
+      SmartDashboard.putBoolean("Correct Driverstation", DriverStation.getLocation().getAsInt() == DriverStation.getLocation().getAsInt());
   
       if(DriverStation.getMatchTime() == 15) {
         robotContainer.driver.setRumble(RumbleType.kBothRumble, .25);
