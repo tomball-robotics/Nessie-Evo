@@ -46,6 +46,8 @@ public class StateMachine extends SubsystemBase {
     this.elevator = elevator;
     this.arm = arm;
     this.IntakePivot = intakePivot;
+
+    currentState = STOW;
   }
 
   public void requestState(NessieState desiredState) {
@@ -61,6 +63,8 @@ public class StateMachine extends SubsystemBase {
     // run others
     new SetElevatorPosition(elevator, desiredState.getElevatorPosition());
     new SetArmPosition(arm, desiredState.getArmPosition());
+
+    currentState = desiredState;
     
   }
 
@@ -78,6 +82,7 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("StateMachine/Extended", getCurrentState().isExtended());
     SmartDashboard.putBoolean("StateMachine/Intake Extended", getCurrentState().isIntakeExtended());
     SmartDashboard.putString("StateMachine/Current State", getCurrentState().getName());
+    SmartDashboard.putBoolean("StateMachine/State Reached", stateReached());
   }
 
 }

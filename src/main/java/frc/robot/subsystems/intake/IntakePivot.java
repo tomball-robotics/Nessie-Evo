@@ -44,17 +44,6 @@ public class IntakePivot extends SubsystemBase {
     canandmag.setPosition(0);
   }
 
-  private double feedforward(double position) {
-    double halfPosition = 1.986328125; // this is what the position reads when the arm is straight up
-    double kG = 0.013671875; // this is js the max feedforward, that theoeretically should be needed to hold the arm up in the .25 progression state
-
-    double currentPosition = canandmag.getPosition();
-    double progression = currentPosition/(halfPosition * 2);
-    double progressionRads = progression * 2 *  Math.PI;
-    double feedforward = kG * Math.sin(progressionRads);
-    return feedforward;
-  }
-
   public void goTowardsDesiredPosition() {
     double currentPosition = canandmag.getPosition();
     double output = controller.calculate(currentPosition);
@@ -66,15 +55,13 @@ public class IntakePivot extends SubsystemBase {
     double forwardLimit = Constants.IntakePivotConstants.FORWARD_LIMIT;
     double reverseLimit = Constants.IntakePivotConstants.REVERSE_LIMIT;
 
-    desiredSpeed = desiredSpeed + feedforward(currentPosition);
-
     if(currentPosition >= forwardLimit && desiredSpeed > 0) {
       desiredSpeed = 0;
     }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
       desiredSpeed = 0;
     }
 
-    motor.set(desiredSpeed + feedforward(currentPosition));
+    motor.set(desiredSpeed);
   }
 
   public boolean atSetpoint() {

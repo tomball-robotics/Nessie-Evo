@@ -24,6 +24,9 @@ public final class Constants {
         public static final int ELEVATOR_ENCODER_ID = 15;
         public static final int INTAKE_ENCODER_ID = 16;
         public static final int ARM_TALONFX_ID = 17;
+        public static final int SMALL_ROLLER = 30;
+        public static final int BIG_ROLLER = 0;
+        public static final int INDEXER_MOTOR = 11;
     }
 
     public static final class IntakePivotConstants {
@@ -35,6 +38,10 @@ public final class Constants {
         public static final double FORWARD_LIMIT = 2.2;
         public static final double REVERSE_LIMIT = .0;
         public static final double G = 0;
+    }
+
+    public static final class IntakeRollerConstants {
+        public static final int CURRENT_LIMIT = 30;
     }
 
     public static final class ControlConstants {
