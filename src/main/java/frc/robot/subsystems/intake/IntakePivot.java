@@ -41,7 +41,6 @@ public class IntakePivot extends SubsystemBase {
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
     canandmag.setSettings(canandmagSettings);
-    canandmag.setPosition(0);
   }
 
   public void goTowardsDesiredPosition() {

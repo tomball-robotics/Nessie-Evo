@@ -24,9 +24,9 @@ public class IntakeRollers extends SubsystemBase {
 
   public IntakeRollers() {
 
-    smallRoller = new TalonFXS(Constants.ID.SMALL_ROLLER);
-    bigRoller = new TalonFX(Constants.ID.BIG_ROLLER);
-    indexerRoller = new TalonFX(Constants.ID.INDEXER_MOTOR);
+    smallRoller = new TalonFXS(Constants.ID.INTAKE_SMALL_ROLLER_ID);
+    bigRoller = new TalonFX(Constants.ID.INTAKE_BIG_ROLLER_ID);
+    indexerRoller = new TalonFX(Constants.ID.INTAKE_INDEXER_ID);
 
     fxsConfig = new TalonFXSConfiguration();
 
@@ -80,5 +80,5 @@ public class IntakeRollers extends SubsystemBase {
  
   @Override
   public void periodic() {}
-
+  
 }

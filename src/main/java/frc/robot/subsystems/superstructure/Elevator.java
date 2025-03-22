@@ -23,10 +23,9 @@ public class Elevator extends SubsystemBase {
   private PIDController controller;
   
   public Elevator() {
-    motor = new TalonFX(Constants.ID.ELEVATOR_MASTER_TALONFX_ID);
-    follower = new TalonFX(Constants.ID.ELEVATOR_FOLLOWER_TALONFX_ID);
+    motor = new TalonFX(Constants.ID.ELEVATOR_MASTER_ID);
+    follower = new TalonFX(Constants.ID.ELEVATOR_FOLLOWER_ID);
     canandmag = new Canandmag(Constants.ID.ELEVATOR_ENCODER_ID);
-    canandmag.setPosition(0);
 
     controller = new PIDController(
       Constants.ElevatorConstants.P,

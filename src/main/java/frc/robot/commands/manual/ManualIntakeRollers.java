@@ -6,16 +6,18 @@ import frc.robot.subsystems.intake.IntakeRollers;
 public class ManualIntakeRollers extends Command {
 
   private IntakeRollers intakeRollers;
+  private double speedSup;
 
-  public ManualIntakeRollers(IntakeRollers intakeRollers) {
+  public ManualIntakeRollers(IntakeRollers intakeRollers, double speedSup) {
     this.intakeRollers = intakeRollers;
+    this.speedSup = speedSup;
   }
 
   @Override
   public void initialize() {
-    intakeRollers.setBigRollerSpeed(.5);
-    intakeRollers.setSmallRollerSpeed(.5);
-    intakeRollers.setIndexerSpeed(.5);
+    intakeRollers.setBigRollerSpeed(speedSup);
+    intakeRollers.setSmallRollerSpeed(speedSup);
+    intakeRollers.setIndexerSpeed(speedSup);
   }
 
   @Override

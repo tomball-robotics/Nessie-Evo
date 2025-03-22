@@ -23,7 +23,7 @@ public class AutoAlignToReefTagRelative extends Command {
   public AutoAlignToReefTagRelative(boolean isRightScore, Swerve swerve) {
     xController = new PIDController(0, 0, 0);  // Vertical movement
     yController = new PIDController(0, 0, 0);  // Horitontal movement
-    rotController = new PIDController(0, 0, 0);  // Rotation
+    rotController = new PIDController(.1, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.swerve = swerve;
     addRequirements(swerve);
@@ -39,7 +39,7 @@ public class AutoAlignToReefTagRelative extends Command {
     rotController.setSetpoint(0);
     rotController.setTolerance(1);
 
-    xController.setSetpoint(-0.34);
+    xController.setSetpoint(-0.34);//
     xController.setTolerance(0.02);
 
     yController.setSetpoint(isRightScore ? 0.16 : -0.16);

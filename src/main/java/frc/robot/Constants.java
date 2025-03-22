@@ -15,18 +15,18 @@ import frc.lib.SwerveModuleConstants;
 public final class Constants {
 
     public static final class ID {
-        public static final int END_EFFECTOR_TALONFX_ID = 9;
-        public static final int ELEVATOR_MASTER_TALONFX_ID = 10;
-        public static final int ELEVATOR_FOLLOWER_TALONFX_ID = 11;
-        public static final int INTAKE_PIVOT_ID = 12;
-        public static final int CLIMBER_TALONFX_ID = 13;
-        public static final int ARM_ENCODER_ID = 14;
-        public static final int ELEVATOR_ENCODER_ID = 15;
-        public static final int INTAKE_ENCODER_ID = 16;
-        public static final int ARM_TALONFX_ID = 17;
-        public static final int SMALL_ROLLER = 30;
-        public static final int BIG_ROLLER = 0;
-        public static final int INDEXER_MOTOR = 11;
+        public static final int ELEVATOR_MASTER_ID = 9;
+        public static final int ELEVATOR_FOLLOWER_ID = 10;
+        public static final int ELEVATOR_ENCODER_ID = 11;
+        public static final int ARM_PIVOT_ID = 12;
+        public static final int ARM_ENCODER_ID = 13;
+        public static final int INTAKE_PIVOT_ID = 14;
+        public static final int INTAKE_ENCODER_ID = 15;
+        public static final int INTAKE_SMALL_ROLLER_ID = 16;
+        public static final int INTAKE_BIG_ROLLER_ID = 17;
+        public static final int INTAKE_INDEXER_ID = 18;
+        public static final int ENDEFFECTOR_ID = 19;
+        public static final int BLINKIN_ID = 0;
     }
 
     public static final class IntakePivotConstants {
@@ -42,6 +42,8 @@ public final class Constants {
 
     public static final class IntakeRollerConstants {
         public static final int CURRENT_LIMIT = 30;
+        public static final double INTAKE_SPEED = -.5;
+        public static final double OUTTAKE_SPEED = .5;
     }
 
     public static final class ControlConstants {

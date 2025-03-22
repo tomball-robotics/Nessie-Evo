@@ -7,6 +7,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -196,10 +197,10 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        poseEstimator.update(getGyroYaw(), getModulePositions());
-        updateVisionMeasurement();
-
         Pose2d currentPose = getPose();
+
+
+        updateOdometry();
 
         field.setRobotPose(currentPose);
 
@@ -208,31 +209,66 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData("Swerve/Field", field);
     }
 
-    @SuppressWarnings("removal")
-    private void updateVisionMeasurement() {
-        LimelightHelpers.SetRobotOrientation("limelight-back", getGyroYaw().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+      @SuppressWarnings("removal")
+    public void updateOdometry() {
 
-        if (mt2 == null) {
-            DriverStation.reportWarning("Vision measurement returned null, check connection to back localization limelight.", false);
-            return;
-        }
+        poseEstimator.update(
+            gyro.getRotation2d(),
+            getModulePositions()
+        );
 
+        boolean useMegaTag2 = false; //set to false to use MegaTag1
         boolean doRejectUpdate = false;
+        if(useMegaTag2 == false)
+        {
+        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
 
-        if (Math.abs(gyro.getRate()) > 720) {
+        if(mt1 == null) {
+            DriverStation.reportWarning("Back Limelight Not Detected", false);
+        }
+        
+        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+        {
+            if(mt1.rawFiducials[0].ambiguity > .7)
+            {
+            doRejectUpdate = true;
+            }
+            if(mt1.rawFiducials[0].distToCamera > 3)
+            {
+            doRejectUpdate = true;
+            }
+        }
+        if(mt1.tagCount == 0)
+        {
             doRejectUpdate = true;
         }
 
-        if (mt2.tagCount == 0) {
+        if(!doRejectUpdate)
+        {
+            poseEstimator.addVisionMeasurement(
+                mt1.pose,
+                mt1.timestampSeconds);
+        }
+        }
+        else if (useMegaTag2 == true)
+        {
+        LimelightHelpers.SetRobotOrientation("limelight-back", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+        if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        {
             doRejectUpdate = true;
         }
-
-        if (!doRejectUpdate) {
+        if(mt2.tagCount == 0)
+        {
+            doRejectUpdate = true;
+        }
+        if(!doRejectUpdate)
+        {
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
             poseEstimator.addVisionMeasurement(
                 mt2.pose,
-                mt2.timestampSeconds
-            );
+                mt2.timestampSeconds);
+        }
         }
     }
 

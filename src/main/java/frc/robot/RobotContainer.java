@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -14,13 +16,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.AutoAlignToReefTagRelative;
 import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
-import frc.robot.commands.climber.ClimberDown;
-import frc.robot.commands.climber.ClimberUp;
 import frc.robot.commands.manual.ManualIntakeRollers;
 import frc.robot.commands.manual.ManualArm;
+import frc.robot.commands.manual.ManualElevator;
+import frc.robot.commands.manual.ManualEndEffector;
+import frc.robot.commands.manual.ManualIntakePivot;
 import frc.robot.commands.swerve.ChangeSpeedMultiplier;
 import frc.robot.commands.swerve.TeleopSwerve;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.RevBlinkin;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.intake.IntakePivot;
@@ -49,16 +52,13 @@ public class RobotContainer {
     private final EndEffector endEffector = new EndEffector();
     private final IntakePivot intakePivot = new IntakePivot();
     private final IntakeRollers intakeRollers = new IntakeRollers();
-    private final Climber climber = new Climber();
     private final StateMachine stateMachine = new StateMachine(elevator, arm, intakePivot, endEffector);
+    private final RevBlinkin revBlinkin = new RevBlinkin();
 
     /* Commands */
-    private final ClimberUp climberUp;
-    private final ClimberDown climberDown;
     private final AutoCoralIntake autoCoralIntake;
     private final AutoCoralOuttake autoCoralOuttake;
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
-    private final ManualIntakeRollers manualIntakeRollers;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -83,28 +83,25 @@ public class RobotContainer {
             )
         );
 
-        // elevator.setDefaultCommand(
-        //     new ManualElevator(
-        //         elevator,
-        //         () -> -operator.getRightY()
-        //     )
-        // );
+        elevator.setDefaultCommand(
+            new ManualElevator(
+                elevator,
+                () -> operator.getRightTriggerAxis() - operator.getLeftTriggerAxis()
+            )
+        );
 
-        // climber
-        climberUp = new ClimberUp(climber);
-        climberUp.addRequirements(climber);
-        climberDown = new ClimberDown(climber);
-        climberDown.addRequirements(climber);
+        intakePivot.setDefaultCommand(
+            new ManualIntakePivot(
+                intakePivot, 
+                () -> -operator.getRightY()
+            )
+        );
 
         // auto
         autoCoralIntake = new AutoCoralIntake(endEffector);
         autoCoralIntake.addRequirements(endEffector);
         autoCoralOuttake = new AutoCoralOuttake(endEffector);
         autoCoralOuttake.addRequirements(endEffector);
-
-        // intake
-        manualIntakeRollers = new ManualIntakeRollers(intakeRollers);
-        manualIntakeRollers.addRequirements(intakeRollers);
 
         // swerve
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
@@ -143,13 +140,22 @@ public class RobotContainer {
 
         // /* operator positions */
 
-        operator.rightTrigger().onTrue(autoCoralOuttake);
+        // operator.rightBumper().onTrue(autoCoralOuttake);
 
-        // operator.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
-        // operator.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
+        operator.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
+        operator.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
 
-        //operator.a().whileTrue(intake);
+        operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
+        operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
+        operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
+        operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
 
+        /* TESTING CONTROLS */
+
+        //operator.leftBumper().onTrue(autoCoralIntake);
+        operator.povUp().whileTrue(new ManualIntakeRollers(intakeRollers, .5)); //intake
+        operator.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_SPEED));
+        operator.povDown().whileTrue(new ManualIntakeRollers(intakeRollers, -.5));
     }
 
     public Command getAutonomousCommand() {

@@ -15,16 +15,16 @@ public class StateMachine extends SubsystemBase {
 
   // nessie's states
 
-  public static final NessieState STOW = new NessieState(
+  public static final NessieState STOW = new NessieState( // done
     "Stow", 0, 0, 0);
   public static final NessieState L1 = new NessieState(
     "L1", 0, 0, 0);
-  public static final NessieState L2 = new NessieState(
-    "L2", 0, 0, 0);
-  public static final NessieState L3 = new NessieState(
-    "L3", 0, 0, 0);
-  public static final NessieState L4 = new NessieState(
-    "L4", 0, 0, 0);
+  public static final NessieState L2 = new NessieState( // done
+    "L2", 1.37799072265625, 0, 0);
+  public static final NessieState L3 = new NessieState( // done
+    "L3", 1.66351318359375, 0.86962890625, 0);
+  public static final NessieState L4 = new NessieState( // done
+    "L4", 1.85430908203125, 4.68536376953125, 0);
   public static final NessieState INTAKE = new NessieState(
     "Intake", 0, 0, 0);
   public static final NessieState ALGAE_TAXI = new NessieState(
@@ -55,17 +55,17 @@ public class StateMachine extends SubsystemBase {
 
   public void requestState(NessieState desiredState) {
 
-    new SetIntakePivotPosition(IntakePivot, desiredState.getIntakePosition());
+    
 
-     // if elevtor needs to run and the arm is gonna hit, give arm clearance
+    new SetIntakePivotPosition(IntakePivot, desiredState.getIntakePosition()).execute();
 
-    if((currentState.getElevatorPosition() != desiredState.getElevatorPosition()) && !(currentState.getArmPosition() < armClearancePosition)) {
-      new SetArmPosition(arm, armClearancePosition);
+    if(currentState.getElevatorPosition() != desiredState.getElevatorPosition()) {
+      new SetArmPosition(arm, armClearancePosition).execute();;
     }
 
     // run others
     new SetElevatorPosition(elevator, desiredState.getElevatorPosition());
-    new SetArmPosition(arm, desiredState.getArmPosition());
+    new SetArmPosition(arm, desiredState.getArmPosition()).execute();;
 
     currentState = desiredState;
     

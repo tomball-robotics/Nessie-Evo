@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
   private PIDController controller;
 
   public Arm() {
-    motor = new TalonFX(Constants.ID.ARM_TALONFX_ID);
+    motor = new TalonFX(Constants.ID.ARM_PIVOT_ID);
     config = new TalonFXConfiguration();
     canandmag = new Canandmag(Constants.ID.ARM_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
@@ -41,12 +41,11 @@ public class Arm extends SubsystemBase {
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
     canandmag.setSettings(canandmagSettings);
-    canandmag.setPosition(0);
   }
 
   private double feedforward(double position) {
     double halfPosition = 1.986328125; // this is what the position reads when the arm is straight up
-    double kG = 0.013671875; // this is js the max feedforward, that theoeretically should be needed to hold the arm up in the .25 progression state
+    double kG = 0.010671875; // this is js the max feedforward, that theoeretically should be needed to hold the arm up in the .25 progression state
 
     double currentPosition = canandmag.getPosition();
     double progression = currentPosition/(halfPosition * 2);
