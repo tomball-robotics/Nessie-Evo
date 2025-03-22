@@ -45,7 +45,7 @@ public class Arm extends SubsystemBase {
 
   private double feedforward(double position) {
     double halfPosition = 1.986328125; // this is what the position reads when the arm is straight up
-    double kG = 0.010671875; // this is js the max feedforward, that theoeretically should be needed to hold the arm up in the .25 progression state
+    double kG = 0.014671875; // this is js the max feedforward, that theoeretically should be needed to hold the arm up in the .25 progression state
 
     double currentPosition = canandmag.getPosition();
     double progression = currentPosition/(halfPosition * 2);
@@ -84,9 +84,13 @@ public class Arm extends SubsystemBase {
     controller.setSetpoint(desiredPosition);
   }
 
+  public void resetEncoder() {
+    canandmag.setPosition(0);
+  }
+
   @Override
   public void periodic() {
-    //goTowardsDesiredPosition();
+    goTowardsDesiredPosition();
     SmartDashboard.putBoolean("Arm/at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("Arm/Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("Arm/Forward Limit", Constants.ArmConstants.FORWARD_LIMIT);

@@ -15,10 +15,11 @@ public class StateMachine extends SubsystemBase {
 
   // nessie's states
 
+  public static final NessieState START = new NessieState("Start", 0, 0, 0);
   public static final NessieState STOW = new NessieState( // done
-    "Stow", 0, 0, 0);
+    "Stow", .3, 0, 0);
   public static final NessieState L1 = new NessieState(
-    "L1", 0, 0, 0);
+    "L1", 1, 0, 0);
   public static final NessieState L2 = new NessieState( // done
     "L2", 1.37799072265625, 0, 0);
   public static final NessieState L3 = new NessieState( // done
@@ -49,23 +50,21 @@ public class StateMachine extends SubsystemBase {
     this.elevator = elevator;
     this.arm = arm;
     this.IntakePivot = intakePivot;
-
-    currentState = STOW;
+   
+    currentState = START;
+    requestState(STOW);
   }
 
   public void requestState(NessieState desiredState) {
-
-    
-
-    new SetIntakePivotPosition(IntakePivot, desiredState.getIntakePosition()).execute();
 
     if(currentState.getElevatorPosition() != desiredState.getElevatorPosition()) {
       new SetArmPosition(arm, armClearancePosition).execute();;
     }
 
-    // run others
     new SetElevatorPosition(elevator, desiredState.getElevatorPosition());
-    new SetArmPosition(arm, desiredState.getArmPosition()).execute();;
+    new SetArmPosition(arm, desiredState.getArmPosition()).execute();
+
+    new SetIntakePivotPosition(IntakePivot, desiredState.getIntakePosition());
 
     currentState = desiredState;
     

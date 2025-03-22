@@ -225,6 +225,7 @@ public class Swerve extends SubsystemBase {
 
         if(mt1 == null) {
             DriverStation.reportWarning("Back Limelight Not Detected", false);
+            return;
         }
         
         if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)

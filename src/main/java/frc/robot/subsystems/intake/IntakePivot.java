@@ -25,7 +25,7 @@ public class IntakePivot extends SubsystemBase {
     config = new TalonFXConfiguration();
     canandmag = new Canandmag(Constants.ID.INTAKE_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
-    canandmagSettings.setInvertDirection(true);
+    canandmagSettings.setInvertDirection(false);
 
     controller = new PIDController(
       Constants.IntakePivotConstants.P,
@@ -50,15 +50,15 @@ public class IntakePivot extends SubsystemBase {
   }
   
   public void setSpeed(double desiredSpeed) {
-    double currentPosition = canandmag.getPosition();
-    double forwardLimit = Constants.IntakePivotConstants.FORWARD_LIMIT;
-    double reverseLimit = Constants.IntakePivotConstants.REVERSE_LIMIT;
+    // double currentPosition = canandmag.getPosition();
+    // double forwardLimit = Constants.IntakePivotConstants.FORWARD_LIMIT;
+    // double reverseLimit = Constants.IntakePivotConstants.REVERSE_LIMIT;
 
-    if(currentPosition >= forwardLimit && desiredSpeed > 0) {
-      desiredSpeed = 0;
-    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
-      desiredSpeed = 0;
-    }
+    // if(currentPosition >= forwardLimit && desiredSpeed > 0) {
+    //   desiredSpeed = 0;
+    // }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
+    //   desiredSpeed = 0;
+    // }
 
     motor.set(desiredSpeed);
   }
@@ -71,9 +71,13 @@ public class IntakePivot extends SubsystemBase {
     controller.setSetpoint(desiredPosition);
   }
 
+  public void resetEncoder() {
+    canandmag.setPosition(0);
+  }
+
   @Override
   public void periodic() {
-    //goTowardsDesiredPosition();
+    goTowardsDesiredPosition();
     SmartDashboard.putBoolean("IntakePivot/at Setpoint", controller.atSetpoint());
     SmartDashboard.putNumber("IntakePivot/Setpoint", controller.getSetpoint());
     SmartDashboard.putNumber("IntakePivot/Forward Limit", Constants.IntakePivotConstants.FORWARD_LIMIT);

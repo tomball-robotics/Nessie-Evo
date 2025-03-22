@@ -17,6 +17,7 @@ import frc.robot.commands.auto.AutoAlignToReefTagRelative;
 import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
 import frc.robot.commands.manual.ManualIntakeRollers;
+import frc.robot.commands.position.SetArmPosition;
 import frc.robot.commands.manual.ManualArm;
 import frc.robot.commands.manual.ManualElevator;
 import frc.robot.commands.manual.ManualEndEffector;
@@ -76,26 +77,26 @@ public class RobotContainer {
             )
         );
 
-        arm.setDefaultCommand(
-            new ManualArm(
-                arm,
-                () -> -operator.getLeftY()
-            )
-        );
+        // arm.setDefaultCommand(
+        //     new ManualArm(
+        //         arm,
+        //         () -> -operator.getLeftY()
+        //     )
+        // );
 
-        elevator.setDefaultCommand(
-            new ManualElevator(
-                elevator,
-                () -> operator.getRightTriggerAxis() - operator.getLeftTriggerAxis()
-            )
-        );
+        // elevator.setDefaultCommand(
+        //     new ManualElevator(
+        //         elevator,
+        //         () -> operator.getRightTriggerAxis() - operator.getLeftTriggerAxis()
+        //     )
+        // );
 
-        intakePivot.setDefaultCommand(
-            new ManualIntakePivot(
-                intakePivot, 
-                () -> -operator.getRightY()
-            )
-        );
+        // intakePivot.setDefaultCommand(
+        //     new ManualIntakePivot(
+        //         intakePivot, 
+        //         () -> -operator.getRightY()
+        //     )
+        // );
 
         // auto
         autoCoralIntake = new AutoCoralIntake(endEffector);
@@ -134,28 +135,15 @@ public class RobotContainer {
         // /* driver controls */
 
         // driver.b().onTrue(changeSpeedMultiplier);
+
         // driver.leftBumper().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
-        // driver.leftBumper().whileTrue(autoCoralIntake);
+        // driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_SPEED));
         // driver.leftBumper().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
 
         // /* operator positions */
 
-        // operator.rightBumper().onTrue(autoCoralOuttake);
+        operator.a().onTrue(new SetArmPosition(arm, 1));
 
-        operator.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
-        operator.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
-
-        operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-        operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
-        operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-        operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-
-        /* TESTING CONTROLS */
-
-        //operator.leftBumper().onTrue(autoCoralIntake);
-        operator.povUp().whileTrue(new ManualIntakeRollers(intakeRollers, .5)); //intake
-        operator.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_SPEED));
-        operator.povDown().whileTrue(new ManualIntakeRollers(intakeRollers, -.5));
     }
 
     public Command getAutonomousCommand() {
