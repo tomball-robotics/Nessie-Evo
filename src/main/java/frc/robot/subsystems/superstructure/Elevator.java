@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -22,6 +23,7 @@ public class Elevator extends SubsystemBase {
   private TalonFX follower;
   private TalonFXConfiguration config;
   private PositionVoltage positionVoltage;
+  private NeutralOut neutralOut;
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private double desiredPosition;
@@ -31,6 +33,7 @@ public class Elevator extends SubsystemBase {
     follower = new TalonFX(Constants.ID.ELEVATOR_FOLLOWER_ID);
     config = new TalonFXConfiguration();
     positionVoltage = new PositionVoltage(0).withSlot(0);
+    neutralOut = new NeutralOut();
     canandmag = new Canandmag(Constants.ID.ELEVATOR_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     canandmagSettings.setInvertDirection(true);
@@ -75,6 +78,10 @@ public class Elevator extends SubsystemBase {
   public void resetEncoder() {
     canandmag.setPosition(0);
     motor.setPosition(canandmag.getPosition());
+  }
+
+  public void disengage() {
+    motor.setControl(neutralOut);
   }
 
   @Override

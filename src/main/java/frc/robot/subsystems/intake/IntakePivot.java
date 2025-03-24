@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -22,12 +23,14 @@ public class IntakePivot extends SubsystemBase {
   private PositionVoltage positionVoltage;
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
+  private NeutralOut neutralOut;
   private double desiredPosition;
 
   public IntakePivot() {
     motor = new TalonFX(Constants.ID.INTAKE_PIVOT_ID);
     config = new TalonFXConfiguration();
     positionVoltage = new PositionVoltage(0).withSlot(0);
+    neutralOut = new NeutralOut();
     canandmag = new Canandmag(Constants.ID.INTAKE_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     canandmagSettings.getDisableZeroButton();
@@ -62,6 +65,10 @@ public class IntakePivot extends SubsystemBase {
       positionVoltage
         .withPosition(desiredPosition*23.92268334280841)
     );
+  }
+
+  public void disengage() {
+    motor.setControl(neutralOut);
   }
 
   public boolean isFinished() {

@@ -103,6 +103,7 @@ public class RobotContainer {
         SmartDashboard.putData("Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
         SmartDashboard.putData("Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
         SmartDashboard.putData("Request Start State", new InstantCommand(() -> stateMachine.requestState(StateMachine.START)));
+        SmartDashboard.putData("Request Disengaged State", new InstantCommand(() -> stateMachine.requestState(StateMachine.DISENGAGED)));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);

@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,7 +20,8 @@ public class Arm extends SubsystemBase {
 
   private TalonFX motor;
   private TalonFXConfiguration config;
-  private PositionVoltage m_positionVoltage;
+  private PositionVoltage positionVoltage;
+  private NeutralOut neutralOut;
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
   private double desiredPosition;
@@ -27,7 +29,8 @@ public class Arm extends SubsystemBase {
   public Arm() {
     motor = new TalonFX(Constants.ID.ARM_PIVOT_ID);
     config = new TalonFXConfiguration();
-    m_positionVoltage = new PositionVoltage(0).withSlot(0);
+    positionVoltage = new PositionVoltage(0).withSlot(0);
+    neutralOut = new NeutralOut();
     canandmag = new Canandmag(Constants.ID.ARM_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     canandmagSettings.setInvertDirection(true);
@@ -69,7 +72,7 @@ public class Arm extends SubsystemBase {
 
   public void setPosition(double desiredPosition) {
     motor.setControl(
-      m_positionVoltage
+      positionVoltage
         .withPosition(desiredPosition*25)
         .withFeedForward(feedforward())
     );
@@ -82,6 +85,10 @@ public class Arm extends SubsystemBase {
   public void resetEncoder() {
     canandmag.setPosition(0);
     motor.setPosition(canandmag.getPosition());
+  }
+
+  public void disengage() {
+    motor.setControl(neutralOut);
   }
 
   @Override

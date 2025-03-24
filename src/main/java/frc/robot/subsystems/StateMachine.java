@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.NessieState;
 import frc.robot.commands.position.SetArmPosition;
@@ -38,30 +39,39 @@ public class StateMachine extends SubsystemBase {
     "Algae Intake High", 0, 0, 0);
   public static final NessieState ALGAE_PROCESS = new NessieState(
     "Algae Process", 0, 0, 0);
+  public static final NessieState DISENGAGED = new NessieState(
+    "Disengaged", -1, -1, -1);
 
   private NessieState currentState;
 
   private Elevator elevator;
   private Arm arm;
-  private IntakePivot IntakePivot;
+  private IntakePivot intakePivot;
 
   public StateMachine(Elevator elevator, Arm arm, IntakePivot intakePivot) {
     this.elevator = elevator;
     this.arm = arm;
-    this.IntakePivot = intakePivot;
+    this.intakePivot = intakePivot;
 
     currentState = START;
   }
 
   public void requestState(NessieState desiredState) {
-    new SetArmPosition(arm, desiredState.getArmPosition()).schedule();
-    new SetElevatorPosition(elevator, desiredState.getElevatorPosition()).schedule();
-    new SetIntakePivotPosition(IntakePivot, desiredState.getIntakePosition()).schedule();
+    if(desiredState == DISENGAGED) {
+      new InstantCommand(() -> arm.disengage()).schedule();
+      new InstantCommand(() -> elevator.disengage()).schedule();
+      new InstantCommand(() -> intakePivot.disengage()).schedule();
+    }else {
+      new SetArmPosition(arm, desiredState.getArmPosition()).schedule();
+      new SetElevatorPosition(elevator, desiredState.getElevatorPosition()).schedule();
+      new SetIntakePivotPosition(intakePivot, desiredState.getIntakePosition()).schedule();
+    }
+    
     currentState = desiredState;
   }
 
   public boolean stateReached() {
-    return elevator.isFinished() && arm.isFinished() && IntakePivot.isFinished();
+    return elevator.isFinished() && arm.isFinished() && intakePivot.isFinished();
   }
 
   @Override

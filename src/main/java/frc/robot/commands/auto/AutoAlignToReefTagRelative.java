@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -39,7 +35,7 @@ public class AutoAlignToReefTagRelative extends Command {
     rotController.setSetpoint(0);
     rotController.setTolerance(1);
 
-    xController.setSetpoint(-0.34);//
+    xController.setSetpoint(-0.34);
     xController.setTolerance(0.02);
 
     yController.setSetpoint(isRightScore ? 0.16 : -0.16);
