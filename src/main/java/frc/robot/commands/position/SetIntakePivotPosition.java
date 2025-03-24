@@ -20,7 +20,7 @@ public class SetIntakePivotPosition extends Command {
 
   @Override
   public void execute() {
-    intakePivot.setSetpoint(position);
+    intakePivot.setPosition(position);
   }
 
   @Override
@@ -28,6 +28,6 @@ public class SetIntakePivotPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return intakePivot.atSetpoint();
+    return intakePivot.isFinished();
   }
 }

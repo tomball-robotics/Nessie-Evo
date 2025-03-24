@@ -16,7 +16,7 @@ public class SetElevatorPosition extends Command {
 
   @Override
   public void initialize() {
-    elevator.setSetpoint(position);
+    elevator.setPosition(position);
   }
 
   @Override
@@ -27,6 +27,6 @@ public class SetElevatorPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return elevator.atSetpoint();
+    return elevator.isFinished();
   }
 }

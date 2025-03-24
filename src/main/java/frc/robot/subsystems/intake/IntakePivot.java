@@ -1,13 +1,16 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;;
@@ -16,77 +19,71 @@ public class IntakePivot extends SubsystemBase {
 
   private TalonFX motor;
   private TalonFXConfiguration config;
+  private PositionVoltage positionVoltage;
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
-  private PIDController controller;
+  private double desiredPosition;
 
   public IntakePivot() {
     motor = new TalonFX(Constants.ID.INTAKE_PIVOT_ID);
     config = new TalonFXConfiguration();
+    positionVoltage = new PositionVoltage(0).withSlot(0);
     canandmag = new Canandmag(Constants.ID.INTAKE_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
+    canandmagSettings.getDisableZeroButton();
     canandmagSettings.setInvertDirection(false);
 
-    controller = new PIDController(
-      Constants.IntakePivotConstants.P,
-      Constants.IntakePivotConstants.I,
-      Constants.IntakePivotConstants.D);
-    controller.setTolerance(Constants.IntakePivotConstants.TOLERANCE);
+    config.Slot0.kP = 1.2; // An error of 1 rotation results in 2.4 V output
+    config.Slot0.kI = 0; // No output for integrated error
+    config.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
+    // Peak output of 8 V
+    config.Voltage.withPeakForwardVoltage(Volts.of(8))
+      .withPeakReverseVoltage(Volts.of(-8));
 
     config.CurrentLimits.SupplyCurrentLimit = Constants.IntakePivotConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.IntakePivotConstants.FORWARD_LIMIT*23.92268334280841;
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.IntakePivotConstants.REVERSE_LIMIT*23.92268334280841;
+
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
     canandmag.setSettings(canandmagSettings);
+
+    motor.setPosition(canandmag.getPosition()*23.92268334280841);
   }
 
-  public void goTowardsDesiredPosition() {
-    double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition);
-    setSpeed(output);
-  }
-  
-  public void setSpeed(double desiredSpeed) {
-    // double currentPosition = canandmag.getPosition();
-    // double forwardLimit = Constants.IntakePivotConstants.FORWARD_LIMIT;
-    // double reverseLimit = Constants.IntakePivotConstants.REVERSE_LIMIT;
-
-    // if(currentPosition >= forwardLimit && desiredSpeed > 0) {
-    //   desiredSpeed = 0;
-    // }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
-    //   desiredSpeed = 0;
-    // }
-
-    motor.set(desiredSpeed);
+  public void setPosition(double desiredPosition) {
+    motor.setControl(
+      positionVoltage
+        .withPosition(desiredPosition*23.92268334280841)
+    );
   }
 
-  public boolean atSetpoint() {
-    return controller.atSetpoint();
-  }
-
-  public void setSetpoint(double desiredPosition) {
-    controller.setSetpoint(desiredPosition);
+  public boolean isFinished() {
+    return MathUtil.isNear(desiredPosition, motor.getPosition().getValueAsDouble(), Constants.IntakePivotConstants.TOLERANCE);
   }
 
   public void resetEncoder() {
     canandmag.setPosition(0);
+    motor.setPosition(canandmag.getPosition());
   }
 
   @Override
   public void periodic() {
-    goTowardsDesiredPosition();
-    SmartDashboard.putBoolean("IntakePivot/at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("IntakePivot/Setpoint", controller.getSetpoint());
-    SmartDashboard.putNumber("IntakePivot/Forward Limit", Constants.IntakePivotConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("IntakePivot/Reverse Limit", Constants.IntakePivotConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("IntakePivot/Setpoint", desiredPosition);
+    SmartDashboard.putBoolean("IntakePivot/Is Finished", isFinished());
     SmartDashboard.putNumber("IntakePivot/Velocity", canandmag.getVelocity());
     SmartDashboard.putNumber("IntakePivot/Position", canandmag.getPosition());
     SmartDashboard.putNumber("IntakePivot/Motor/Velocity", motor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("IntakePivot/Motor/Applied Output", motor.get());
     SmartDashboard.putNumber("IntakePivot/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("IntakePivot/Motor/Position", motor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakePivot/Motor/Output Voltage", motor.getMotorVoltage().getValueAsDouble());
   }
 
 }

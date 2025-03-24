@@ -7,17 +7,21 @@ public class ManualIntakeRollers extends Command {
 
   private IntakeRollers intakeRollers;
   private double speedSup;
+  private boolean index;
 
-  public ManualIntakeRollers(IntakeRollers intakeRollers, double speedSup) {
+  public ManualIntakeRollers(IntakeRollers intakeRollers, double speedSup, boolean index) {
     this.intakeRollers = intakeRollers;
     this.speedSup = speedSup;
+    this.index = index;
   }
 
   @Override
   public void initialize() {
     intakeRollers.setBigRollerSpeed(speedSup);
-    intakeRollers.setSmallRollerSpeed(speedSup);
-    intakeRollers.setIndexerSpeed(speedSup);
+    if(index) {
+      intakeRollers.setSmallRollerSpeed(speedSup);
+      intakeRollers.setIndexerSpeed(speedSup);
+    }
   }
 
   @Override

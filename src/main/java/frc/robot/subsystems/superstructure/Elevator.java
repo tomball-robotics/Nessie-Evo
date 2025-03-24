@@ -1,106 +1,93 @@
 package frc.robot.subsystems.superstructure;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 import com.reduxrobotics.sensors.canandmag.CanandmagSettings;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants;;
 
 public class Elevator extends SubsystemBase {
 
   private TalonFX motor;
   private TalonFX follower;
   private TalonFXConfiguration config;
+  private PositionVoltage positionVoltage;
   private Canandmag canandmag;
   private CanandmagSettings canandmagSettings;
-  private PIDController controller;
-  
+  private double desiredPosition;
+
   public Elevator() {
     motor = new TalonFX(Constants.ID.ELEVATOR_MASTER_ID);
     follower = new TalonFX(Constants.ID.ELEVATOR_FOLLOWER_ID);
-    canandmag = new Canandmag(Constants.ID.ELEVATOR_ENCODER_ID);
-
-    controller = new PIDController(
-      Constants.ElevatorConstants.P,
-      Constants.ElevatorConstants.I,
-      Constants.ElevatorConstants.D);
-    controller.setTolerance(Constants.ElevatorConstants.TOLERANCE);
-
     config = new TalonFXConfiguration();
-
+    positionVoltage = new PositionVoltage(0).withSlot(0);
+    canandmag = new Canandmag(Constants.ID.ELEVATOR_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
+    canandmagSettings.setInvertDirection(true);
 
-    canandmagSettings.setInvertDirection(false);
+    config.Slot0.kP = 1.2; // An error of 1 rotation results in 2.4 V output
+    config.Slot0.kI = 0; // No output for integrated error
+    config.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
+    // Peak output of 8 V
+    config.Voltage.withPeakForwardVoltage(Volts.of(8))
+      .withPeakReverseVoltage(Volts.of(-8));
 
     config.CurrentLimits.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    follower.getConfigurator().apply(config);
-
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.FORWARD_LIMIT*9;
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.ElevatorConstants.REVERSE_LIMIT*9;
+ 
     motor.getConfigurator().apply(config);
-
+    motor.setNeutralMode(NeutralModeValue.Brake);
     canandmag.setSettings(canandmagSettings);
 
-    motor.setNeutralMode(NeutralModeValue.Brake);
-    follower.setNeutralMode(NeutralModeValue.Brake);
+    follower.setControl(new Follower(motor.getDeviceID(), true));
 
-    follower.setControl(new Follower(10, true));
+    motor.setPosition(canandmag.getPosition()*9);
   }
 
-  public void goTowardsDesiredPosition() {
-    double currentPosition = canandmag.getPosition();
-    double output = controller.calculate(currentPosition);
-    setSpeed(output);
+  public void setPosition(double desiredPosition) {
+    motor.setControl(
+      positionVoltage
+        .withPosition(desiredPosition*9)
+    );
   }
 
-  public void setSetpoint(double desiredPosition) {
-    controller.setSetpoint(desiredPosition);
-  }
-
-  public void setSpeed(double desiredSpeed) {
-    double currentPosition = canandmag.getPosition();
-    double forwardLimit = Constants.ElevatorConstants.FORWARD_LIMIT;
-    double reverseLimit = Constants.ElevatorConstants.REVERSE_LIMIT;
-
-    if(currentPosition >= forwardLimit && desiredSpeed > 0) {
-      desiredSpeed = 0;
-    }else if(currentPosition <= reverseLimit && desiredSpeed < 0) {
-      desiredSpeed = 0;
-    }
-
-    motor.set(desiredSpeed + Constants.ElevatorConstants.G);
-  }
-
-  public boolean atSetpoint() {
-    return controller.atSetpoint();
+  public boolean isFinished() {
+    return MathUtil.isNear(desiredPosition, motor.getPosition().getValueAsDouble(), Constants.ElevatorConstants.TOLERANCE);
   }
 
   public void resetEncoder() {
     canandmag.setPosition(0);
+    motor.setPosition(canandmag.getPosition());
   }
 
   @Override
   public void periodic() {
-    goTowardsDesiredPosition();
-    SmartDashboard.putBoolean("Elevator/at Setpoint", controller.atSetpoint());
-    SmartDashboard.putNumber("Elevator/Setpoint", controller.getSetpoint());
+    SmartDashboard.putNumber("Elevator/Setpoint", desiredPosition);
+    SmartDashboard.putBoolean("Elevator/Is Finished", isFinished());
     SmartDashboard.putNumber("Elevator/Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Elevator/Motor Output", motor.get());
     SmartDashboard.putNumber("Elevator/Position", canandmag.getPosition());
-    SmartDashboard.putNumber("Elevator/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator/Forward Limit", Constants.ElevatorConstants.FORWARD_LIMIT);
-    SmartDashboard.putNumber("Elevator/Reverse Limit", Constants.ElevatorConstants.REVERSE_LIMIT);
+    SmartDashboard.putNumber("Elevator/Motor/Velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Motor/Applied Output", motor.get());
+    SmartDashboard.putNumber("Elevator/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Motor/Position", motor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Motor/Output Voltage", motor.getMotorVoltage().getValueAsDouble());
   }
 
 }
- 

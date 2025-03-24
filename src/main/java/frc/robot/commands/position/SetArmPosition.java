@@ -16,7 +16,7 @@ public class SetArmPosition extends Command {
 
   @Override
   public void initialize() {
-    arm.setSetpoint(position);
+    arm.setPosition(position);
   }
 
   @Override
@@ -27,6 +27,6 @@ public class SetArmPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return arm.atSetpoint();
+    return arm.isFinished();
   }
 }

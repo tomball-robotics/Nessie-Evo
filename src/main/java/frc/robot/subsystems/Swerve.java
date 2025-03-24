@@ -35,7 +35,6 @@ public class Swerve extends SubsystemBase {
     private SwerveModule[] swerveModules;
     private Pigeon2 gyro;
     private double speedMultiplier;
-    public String desiredAlignment = "center";
     private StructPublisher<Pose2d> posePublisher;
 
     public Swerve() {
@@ -82,10 +81,6 @@ public class Swerve extends SubsystemBase {
             Elastic.sendNotification(new Notification(Notification.NotificationLevel.ERROR, "Failed to configure AutoBuilder", "The AutoBuilder could not be configured. " + e.getMessage()));
         }
 
-    }
-
-    public void setDesiredAlignment(String desiredAlignment) {
-        this.desiredAlignment = desiredAlignment;
     }
 
     public double getSpeedMultiplier() {
@@ -198,7 +193,6 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         Pose2d currentPose = getPose();
-
 
         updateOdometry();
 

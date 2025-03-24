@@ -92,6 +92,17 @@ public final class Constants {
         public static final double FORWARD_LIMIT = 2.2;
         public static final double REVERSE_LIMIT = .0;
         public static final double G = 0;
+        public static final double VELOCITY_TOLERANCE = 0;
+        public static final double MOTION_MAGIC_KS = 0;
+        public static final double MOTION_MAGIC_KV = 0;
+        public static final double MOTION_MAGIC_KA = 0;
+        public static final double MOTION_MAGIC_KP = 0;
+        public static final double MOTION_MAGIC_KI = 0;
+        public static final double MOTION_MAGIC_CRUISE_VELOCITY = 0;
+        public static final double MOTION_MAGIC_ACCELERATION = 0;
+        public static final double MOTION_MAGIC_JERK = 0;
+        public static final double KG = 0;
+        public static double MOTION_MAGIC_KD;
     }
 
     public static final class SwerveConstants {

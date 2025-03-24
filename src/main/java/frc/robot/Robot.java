@@ -6,16 +6,16 @@ package frc.robot;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.Elastic;
 import frc.lib.Elastic.Notification;
+import frc.robot.subsystems.RevBlinkin;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   private Command auto;
   private RobotContainer robotContainer;
   private double batteryLowStartTime = -1;
+  public static RevBlinkin revBlinkin = new RevBlinkin();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     CanandEventLoop.getInstance();
     robotContainer = new RobotContainer();
+    revBlinkin.redSolidColor();
   }
 
   /**
@@ -78,39 +80,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     CommandScheduler.getInstance().run();
 
-    if(DriverStation.isDSAttached()) {
-      SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-      SmartDashboard.putBoolean("Correct Driverstation", DriverStation.getLocation().getAsInt() == DriverStation.getLocation().getAsInt());
-  
-      if(DriverStation.getMatchTime() == 15) {
-        robotContainer.driver.setRumble(RumbleType.kBothRumble, .25);
-        robotContainer.operator.setRumble(RumbleType.kBothRumble, .25);
-      }else if(DriverStation.getMatchTime() == 14) {
-        robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
-        robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
-      }
-  
-      if(DriverStation.getMatchTime() == 10) {
-        robotContainer.driver.setRumble(RumbleType.kBothRumble, .50);
-        robotContainer.operator.setRumble(RumbleType.kBothRumble, .50);
-      }else if(DriverStation.getMatchTime() == 9) {
-        robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
-        robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
-      }
-  
-      if(DriverStation.getMatchTime() == 5) {
-        robotContainer.driver.setRumble(RumbleType.kBothRumble, 1);
-        robotContainer.operator.setRumble(RumbleType.kBothRumble, 1);
-      }else if(DriverStation.getMatchTime() == 4) {
-        robotContainer.driver.setRumble(RumbleType.kBothRumble, 0);
-        robotContainer.operator.setRumble(RumbleType.kBothRumble, 0);
-      }
-    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    revBlinkin.redSolidColor();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -132,6 +108,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    revBlinkin.breathRedPattern();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -139,6 +116,7 @@ public class Robot extends TimedRobot {
     if (auto != null) {
       auto.cancel();
     }
+    new InstantCommand().schedule();
   }
 
   /** This function is called periodically during operator control. */
