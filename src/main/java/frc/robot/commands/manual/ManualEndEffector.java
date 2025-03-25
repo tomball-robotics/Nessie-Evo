@@ -6,16 +6,16 @@ import frc.robot.subsystems.superstructure.EndEffector;
 public class ManualEndEffector extends Command {
 
   private EndEffector endEffector;
-  private double speedSup;
+  private double voltageSup;
 
-  public ManualEndEffector(EndEffector endEffector, double speedSup) {
+  public ManualEndEffector(EndEffector endEffector, double voltageSup) {
     this.endEffector = endEffector;
-    this.speedSup = speedSup;
+    this.voltageSup = voltageSup;
   }
 
   @Override
   public void initialize() {
-    endEffector.setSpeed(speedSup);
+    endEffector.setVoltage(voltageSup);
   }
 
   @Override

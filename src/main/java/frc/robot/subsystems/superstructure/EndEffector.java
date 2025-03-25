@@ -1,6 +1,8 @@
 package frc.robot.subsystems.superstructure;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -13,8 +15,13 @@ public class EndEffector extends SubsystemBase {
 
   private TalonFX motor;
   private TalonFXConfiguration config;
+  private VoltageOut voltageOut;
+  private NeutralOut neutralOut;
 
   public EndEffector() {
+    voltageOut = new VoltageOut(0);
+    neutralOut = new NeutralOut();
+
     motor = new TalonFX(Constants.ID.ENDEFFECTOR_ID);
     config = new TalonFXConfiguration();
     config.CurrentLimits.SupplyCurrentLimit = Constants.EndEffectorConstants.CURRENT_LIMIT;
@@ -25,12 +32,12 @@ public class EndEffector extends SubsystemBase {
     motor.getConfigurator().apply(config);
   }
 
-  public void setSpeed(double speed) {
-    motor.set(speed);
+  public void setVoltage(double desiredVoltage) {
+    motor.setControl(voltageOut.withOutput(desiredVoltage));
   }
 
   public void stop() {
-    motor.stopMotor();
+    motor.setControl(neutralOut);
   }
 
   @Override

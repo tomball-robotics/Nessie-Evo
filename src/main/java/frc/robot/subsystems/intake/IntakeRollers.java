@@ -6,6 +6,8 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
@@ -21,8 +23,13 @@ public class IntakeRollers extends SubsystemBase {
   private TalonFX bigRoller;
   private TalonFX indexerRoller;
   private TalonFXConfiguration fxConfig;
+  private VoltageOut voltageOut;
+  private NeutralOut neutralOut;
 
   public IntakeRollers() {
+
+    voltageOut = new VoltageOut(0);
+    neutralOut = new NeutralOut();
 
     smallRoller = new TalonFXS(Constants.ID.INTAKE_SMALL_ROLLER_ID);
     bigRoller = new TalonFX(Constants.ID.INTAKE_BIG_ROLLER_ID);
@@ -48,34 +55,34 @@ public class IntakeRollers extends SubsystemBase {
 
   }
 
-  public void setBigRollerSpeed(double DesiredSpeed) {
-    bigRoller.set(-DesiredSpeed);
+  public void setBigRollerSpeed(double desiredVoltage) {
+    bigRoller.setControl(voltageOut.withOutput(desiredVoltage));
   }
 
-  public void setSmallRollerSpeed(double desiredSpeed) {
-    smallRoller.set(desiredSpeed);
+  public void setSmallRollerSpeed(double desiredVoltage) {
+    smallRoller.setControl(voltageOut.withOutput(desiredVoltage));
   }
 
-  public void setIndexerSpeed(double desiredSpeed) {
-    indexerRoller.set(desiredSpeed);
+  public void setIndexerSpeed(double desiredVoltage) {
+    indexerRoller.setControl(voltageOut.withOutput(desiredVoltage));
   }
 
   public void stopAllMotors() {
-    bigRoller.stopMotor();
-    smallRoller.stopMotor();
-    indexerRoller.stopMotor();
+    stopBigRoller();
+    stopSmallRoller();
+    stopIndexerRoller();
   }
 
   public void stopBigRoller() {
-    bigRoller.stopMotor();
+    bigRoller.setControl(neutralOut);
   }
 
   public void stopSmallRoller() {
-    smallRoller.stopMotor();
+    smallRoller.setControl(neutralOut);
   }
 
   public void stopIndexerRoller() {
-    indexerRoller.stopMotor();
+    indexerRoller.setControl(neutralOut);
   }
  
   @Override

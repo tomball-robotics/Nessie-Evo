@@ -149,6 +149,10 @@ public class Swerve extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
+    public void resetHeading() {
+        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), getPose());
+    }
+
     public void resetPose(Pose2d pose) {
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }

@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     CanandEventLoop.getInstance();
     robotContainer = new RobotContainer();
     revBlinkin.redSolidColor();
+    SmartDashboard.putBoolean("Align/Aligned", false);
   }
 
   /**

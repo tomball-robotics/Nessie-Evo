@@ -36,10 +36,9 @@ public class IntakePivot extends SubsystemBase {
     canandmagSettings.getDisableZeroButton();
     canandmagSettings.setInvertDirection(false);
 
-    config.Slot0.kP = 1.2; // An error of 1 rotation results in 2.4 V output
-    config.Slot0.kI = 0; // No output for integrated error
-    config.Slot0.kD = 0.1; // A velocity of 1 rps results in 0.1 V output
-    // Peak output of 8 V
+    config.Slot0.kP = .8;
+    config.Slot0.kI = 0;
+    config.Slot0.kD = 0.1;
     config.Voltage.withPeakForwardVoltage(Volts.of(8))
       .withPeakReverseVoltage(Volts.of(-8));
 
@@ -85,7 +84,7 @@ public class IntakePivot extends SubsystemBase {
     SmartDashboard.putNumber("IntakePivot/Setpoint", desiredPosition);
     SmartDashboard.putBoolean("IntakePivot/Is Finished", isFinished());
     SmartDashboard.putNumber("IntakePivot/Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("IntakePivot/Position", canandmag.getPosition());
+    SmartDashboard.putNumber("IntakePivot/Position", Double.parseDouble(String.format("%.2f", canandmag.getPosition())));
     SmartDashboard.putNumber("IntakePivot/Motor/Velocity", motor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("IntakePivot/Motor/Applied Output", motor.get());
     SmartDashboard.putNumber("IntakePivot/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());

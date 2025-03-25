@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.auto.AutoAlgaeIntakeHold;
 import frc.robot.commands.auto.AutoAlignToReefTagRelative;
 import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
@@ -59,6 +60,7 @@ public class RobotContainer {
     private final AutoCoralIntake autoCoralIntake;
     private final AutoCoralOuttake autoCoralOuttake;
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
+    private final AutoAlgaeIntakeHold autoAlgaeIntakeHold;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -72,7 +74,7 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(leftX), 
                 () -> -driver.getRawAxis(rightX), 
                 () -> driver.getHID().getXButton(),
-                () -> false
+                () -> driver.getHID().getRightBumperButton()
             )
         );
 
@@ -80,6 +82,8 @@ public class RobotContainer {
         autoCoralIntake.addRequirements(endEffector);
         autoCoralOuttake = new AutoCoralOuttake(endEffector);
         autoCoralOuttake.addRequirements(endEffector);
+        autoAlgaeIntakeHold = new AutoAlgaeIntakeHold(endEffector);
+        autoAlgaeIntakeHold.addRequirements(endEffector);
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
         changeSpeedMultiplier.addRequirements(swerve);
 
@@ -89,7 +93,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("L3", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
         NamedCommands.registerCommand("L4", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
         NamedCommands.registerCommand("Algae Intake Low", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
-        NamedCommands.registerCommand("Algae Intake Hiigh", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
+        NamedCommands.registerCommand("Algae Intake High", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         NamedCommands.registerCommand("Algae Taxi", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
         NamedCommands.registerCommand("Algae Shoot", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         NamedCommands.registerCommand("Algae Process", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
@@ -119,9 +123,11 @@ public class RobotContainer {
         driver.b().onTrue(changeSpeedMultiplier);
 
         driver.leftBumper().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
-        driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_SPEED));
-        driver.leftBumper().whileTrue(new ManualIntakeRollers(intakeRollers, .35, true));
+        driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE));
+        driver.leftBumper().whileTrue(new ManualIntakeRollers(intakeRollers, .25, true));
         driver.leftBumper().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+
+        driver.start().onTrue(new InstantCommand(() -> swerve.resetHeading()));
 
         /* operator positions */
 
@@ -138,12 +144,20 @@ public class RobotContainer {
         operator.povLeft().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
         operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
 
-        operator.leftBumper().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
-        operator.leftBumper().whileTrue(new ManualIntakeRollers(intakeRollers, .2, false));
-        operator.leftBumper().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)).andThen(new WaitCommand(1)).andThen(new ManualIntakeRollers(intakeRollers, -.2, true)).withTimeout(2));
+        operator.leftStick().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
+        operator.leftStick().whileTrue(new ManualIntakeRollers(intakeRollers, .2, false));
+        operator.leftStick().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
+
+        operator.rightStick().whileTrue(new ManualIntakeRollers(intakeRollers, -.2, false));
+        operator.rightStick().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
 
         operator.rightTrigger().onTrue(autoCoralOuttake);
         operator.leftTrigger().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+
+        operator.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.ALGAE_INTAKE_VOLTAGE));
+        operator.leftBumper().onFalse(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.ALGAE_HOLD_VOLTAGE));
+
+        operator.rightBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.ALGAE_OUTTAKE_SPEED));
     }
 
     public Command getAutonomousCommand() {

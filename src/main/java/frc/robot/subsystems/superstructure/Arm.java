@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean("Arm/Is Finished", isFinished());
     SmartDashboard.putNumber("Arm/Feedforward", feedforward());
     SmartDashboard.putNumber("Arm/Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Arm/Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Arm/Position", Double.parseDouble(String.format("%.2f", canandmag.getPosition())));
     SmartDashboard.putNumber("Arm/Motor/Velocity", motor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Arm/Motor/Applied Output", motor.get());
     SmartDashboard.putNumber("Arm/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());

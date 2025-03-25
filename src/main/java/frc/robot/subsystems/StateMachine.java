@@ -53,7 +53,7 @@ public class StateMachine extends SubsystemBase {
     this.arm = arm;
     this.intakePivot = intakePivot;
 
-    currentState = START;
+    currentState = DISENGAGED;
   }
 
   public void requestState(NessieState desiredState) {

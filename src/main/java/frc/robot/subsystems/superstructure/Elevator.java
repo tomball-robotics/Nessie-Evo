@@ -89,7 +89,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Setpoint", desiredPosition);
     SmartDashboard.putBoolean("Elevator/Is Finished", isFinished());
     SmartDashboard.putNumber("Elevator/Velocity", canandmag.getVelocity());
-    SmartDashboard.putNumber("Elevator/Position", canandmag.getPosition());
+    SmartDashboard.putNumber("Elevator/Position", Double.parseDouble(String.format("%.2f", canandmag.getPosition())));
     SmartDashboard.putNumber("Elevator/Motor/Velocity", motor.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/Motor/Applied Output", motor.get());
     SmartDashboard.putNumber("Elevator/Motor/Supply Current", motor.getSupplyCurrent().getValueAsDouble());

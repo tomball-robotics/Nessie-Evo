@@ -68,6 +68,9 @@ public class AutoAlignToReefTagRelative extends Command {
           !yController.atSetpoint() ||
           !xController.atSetpoint()) {
         stopTimer.reset();
+        SmartDashboard.putBoolean("Align/Aligned", false);
+      }else {
+        SmartDashboard.putBoolean("Align/Aligned", true);
       }
 
     } else {
@@ -94,7 +97,6 @@ public class AutoAlignToReefTagRelative extends Command {
 
   @Override
   public boolean isFinished() {
-    // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
     return this.dontSeeTagTimer.hasElapsed(1) ||
         stopTimer.hasElapsed(.3);
   }

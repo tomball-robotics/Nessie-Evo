@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.superstructure.EndEffector;
 
-public class AutoCoralIntake extends Command {
+public class AutoAlgaeIntakeHold extends Command {
   
   private EndEffector endEffector;
   private Timer timer;
 
-  public AutoCoralIntake(EndEffector endEffector) {
+  public AutoAlgaeIntakeHold(EndEffector endEffector) {
     this.endEffector = endEffector;
     timer = new Timer();
 
@@ -25,12 +25,12 @@ public class AutoCoralIntake extends Command {
 
   @Override
   public void execute() {
-    endEffector.setVoltage(Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE);
+    endEffector.setVoltage(Constants.EndEffectorConstants.ALGAE_INTAKE_VOLTAGE);
   }
 
   @Override
   public void end(boolean interrupted) {
-    endEffector.stop();
+    endEffector.setVoltage(Constants.EndEffectorConstants.ALGAE_HOLD_VOLTAGE);;
   }
 
   @Override

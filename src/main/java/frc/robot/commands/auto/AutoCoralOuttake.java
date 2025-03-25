@@ -25,7 +25,7 @@ public class AutoCoralOuttake extends Command {
 
   @Override
   public void execute() {
-    endEffector.setSpeed(Constants.EndEffectorConstants.CORAL_OUTTAKE_SPEED);
+    endEffector.setVoltage(Constants.EndEffectorConstants.CORAL_OUTTAKE_VOLTAGE);
   }
 
   @Override
