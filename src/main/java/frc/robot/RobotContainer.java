@@ -118,6 +118,9 @@ public class RobotContainer {
         SmartDashboard.putData("Commands/Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
         SmartDashboard.putData("Commands/Request Start State", new InstantCommand(() -> stateMachine.requestState(StateMachine.START)));
         SmartDashboard.putData("Commands/Request Disengaged State", new InstantCommand(() -> stateMachine.requestState(StateMachine.DISENGAGED)));
+        SmartDashboard.putData("Commands/Enable Vision Localization", new InstantCommand(() -> swerve.enableVisionLocalization()));
+        SmartDashboard.putData("Commands/Disable Vision Localization", new InstantCommand(() -> swerve.disableVisionLocalization()));
+
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);

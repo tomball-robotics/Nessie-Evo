@@ -37,6 +37,7 @@ public class Swerve extends SubsystemBase {
     private double speedMultiplier;
     private StructPublisher<Pose2d> posePublisher;
     private boolean isBlueAlliance;
+    private boolean useVisionMeasurement = true;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "cani");
@@ -61,6 +62,7 @@ public class Swerve extends SubsystemBase {
             getModulePositions(),
             new Pose2d()
         );
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.1,.1,1));
 
         try {
             RobotConfig config;
@@ -222,74 +224,38 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putBoolean("Swerve/Fast Mode", speedMultiplier == 1.0);
         SmartDashboard.putData("Swerve/Field", field);
+        SmartDashboard.putBoolean("Swerve/Using Vision Measurements", useVisionMeasurement);
     }
 
-      @SuppressWarnings("removal")
-    public void updateOdometry() {
+    public void enableVisionLocalization() {
+        useVisionMeasurement = true;
+    }
 
+    public void disableVisionLocalization() {
+        useVisionMeasurement = false;
+    }
+
+    @SuppressWarnings("removal")
+    public void updateOdometry() {
         poseEstimator.update(
             gyro.getRotation2d(),
             getModulePositions()
         );
-
-        boolean useMegaTag2 = true; //set to false to use MegaTag1
-        boolean doRejectUpdate = false;
-        if(useMegaTag2 == false)
-        {
-        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
-
-        if(mt1 == null) {
-            DriverStation.reportWarning("Back Limelight Not Detected", false);
-            return;
-        }
         
-        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-        {
-            if(mt1.rawFiducials[0].ambiguity > .7)
-            {
-            doRejectUpdate = true;
-            }
-            if(mt1.rawFiducials[0].distToCamera > 3)
-            {
-            doRejectUpdate = true;
-            }
-        }
-        if(mt1.tagCount == 0)
-        {
-            doRejectUpdate = true;
-        }
+        if(useVisionMeasurement) {
+            LimelightHelpers.SetRobotOrientation("limelight-back", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+            LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
 
-        if(!doRejectUpdate)
-        {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.1,.1,1));
-            poseEstimator.addVisionMeasurement(
-                mt1.pose,
-                mt1.timestampSeconds);
-        }
-        }
-        else if (useMegaTag2 == true)
-        {
-        LimelightHelpers.SetRobotOrientation("limelight-back", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
-        if(mt2 == null) {
-            return;
-        }
-        if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-        {
-            doRejectUpdate = true;
-        }
-        if(mt2.tagCount == 0)
-        {
-            doRejectUpdate = true;
-        }
-        if(!doRejectUpdate)
-        {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.1,.1,1));
-            poseEstimator.addVisionMeasurement(
-                mt2.pose,
-                mt2.timestampSeconds);
-        }
+            if(mt2 == null) {
+                DriverStation.reportWarning("Back Limelight Not Detected", null);
+                return;
+            }
+
+            if(!(Math.abs(gyro.getRate()) > 720 || mt2.tagCount == 0)) {
+                poseEstimator.addVisionMeasurement(
+                    mt2.pose,
+                    mt2.timestampSeconds);
+            }
         }
     }
-
 }
