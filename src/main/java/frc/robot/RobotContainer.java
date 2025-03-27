@@ -77,7 +77,10 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(leftX), 
                 () -> -driver.getRawAxis(rightX), 
                 () -> driver.getHID().getXButton(),
-                () -> driver.getHID().getRightBumperButton()
+                () -> driver.getHID().getRightBumperButton(),
+                () -> driver.getHID().getLeftTriggerAxis() > .25,
+                () -> driver.getHID().getRightTriggerAxis() > .25,
+                () -> driver.getHID().getYButton()
             )
         );
 
