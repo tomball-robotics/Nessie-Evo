@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.AutoAlgaeIntakeHold;
+import frc.robot.commands.auto.AutoAlgaeShoot;
 import frc.robot.commands.auto.AutoAlignToReefTagRelative;
 import frc.robot.commands.auto.AutoCoralIntake;
 import frc.robot.commands.auto.AutoCoralOuttake;
@@ -61,6 +63,7 @@ public class RobotContainer {
     private final AutoCoralOuttake autoCoralOuttake;
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
     private final AutoAlgaeIntakeHold autoAlgaeIntakeHold;
+    private final AutoAlgaeShoot autoAlgaeShoot;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -84,30 +87,34 @@ public class RobotContainer {
         autoCoralOuttake.addRequirements(endEffector);
         autoAlgaeIntakeHold = new AutoAlgaeIntakeHold(endEffector);
         autoAlgaeIntakeHold.addRequirements(endEffector);
+        autoAlgaeShoot = new AutoAlgaeShoot(endEffector);
+        autoAlgaeShoot.addRequirements(endEffector);
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
         changeSpeedMultiplier.addRequirements(swerve);
 
         /* register commands & autos */
-        NamedCommands.registerCommand("L1", new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-        NamedCommands.registerCommand("L2", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
-        NamedCommands.registerCommand("L3", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-        NamedCommands.registerCommand("L4", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-        NamedCommands.registerCommand("Algae Intake Low", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
-        NamedCommands.registerCommand("Algae Intake High", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
-        NamedCommands.registerCommand("Algae Taxi", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
-        NamedCommands.registerCommand("Algae Shoot", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
-        NamedCommands.registerCommand("Algae Process", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
-        NamedCommands.registerCommand("Stow", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        NamedCommands.registerCommand("L1 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
+        NamedCommands.registerCommand("L2 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
+        NamedCommands.registerCommand("L3 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
+        NamedCommands.registerCommand("L4 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
+        NamedCommands.registerCommand("Algae Intake Low Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
+        NamedCommands.registerCommand("Algae Intake High Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
+        NamedCommands.registerCommand("Algae Taxi Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
+        NamedCommands.registerCommand("Algae Shoot Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
+        NamedCommands.registerCommand("Algae Process Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
+        NamedCommands.registerCommand("Stow Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
         NamedCommands.registerCommand("Align Right", new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
         NamedCommands.registerCommand("Align Left", new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
-        NamedCommands.registerCommand("Shoot", autoCoralOuttake);
-        NamedCommands.registerCommand("Intake", autoCoralIntake);
+        NamedCommands.registerCommand("Shoot Coral", autoCoralOuttake);
+        NamedCommands.registerCommand("Outtake Coral", new ManualIntakeRollers(intakeRollers, -.2, false).withTimeout(.5));
+        NamedCommands.registerCommand("Intake Algae & Hold", autoAlgaeIntakeHold);
+        NamedCommands.registerCommand("Shoot Algae", autoAlgaeShoot);
 
-        SmartDashboard.putData("Zero Intake Pivot Encoder", new InstantCommand(() -> intakePivot.resetEncoder()));
-        SmartDashboard.putData("Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
-        SmartDashboard.putData("Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
-        SmartDashboard.putData("Request Start State", new InstantCommand(() -> stateMachine.requestState(StateMachine.START)));
-        SmartDashboard.putData("Request Disengaged State", new InstantCommand(() -> stateMachine.requestState(StateMachine.DISENGAGED)));
+        SmartDashboard.putData("Commands/Zero Intake Pivot Encoder", new InstantCommand(() -> intakePivot.resetEncoder()));
+        SmartDashboard.putData("Commands/Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
+        SmartDashboard.putData("Commands/Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
+        SmartDashboard.putData("Commands/Request Start State", new InstantCommand(() -> stateMachine.requestState(StateMachine.START)));
+        SmartDashboard.putData("Commands/Request Disengaged State", new InstantCommand(() -> stateMachine.requestState(StateMachine.DISENGAGED)));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);
@@ -122,17 +129,21 @@ public class RobotContainer {
 
         driver.b().onTrue(changeSpeedMultiplier);
 
-        driver.leftBumper().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
-        driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE));
-        driver.leftBumper().whileTrue(new ManualIntakeRollers(intakeRollers, .25, true));
-        driver.leftBumper().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        driver.leftBumper().onTrue(
+            new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
+            .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
+        );
 
-        driver.start().onTrue(new InstantCommand(() -> swerve.resetHeading()));
+        driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE));
+        driver.leftBumper().onFalse(
+            new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE_CLEARANCE))
+            .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
+        );
+
+        driver.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
+        driver.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
 
         /* operator positions */
-
-        operator.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
-        operator.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
 
         operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
         operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
@@ -145,19 +156,18 @@ public class RobotContainer {
         operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
 
         operator.leftStick().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
-        operator.leftStick().whileTrue(new ManualIntakeRollers(intakeRollers, .2, false));
+        operator.leftStick().whileTrue(new ManualIntakeRollers(intakeRollers, -6, false));
         operator.leftStick().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
 
-        operator.rightStick().whileTrue(new ManualIntakeRollers(intakeRollers, -.2, false));
+        operator.rightStick().whileTrue(new ManualIntakeRollers(intakeRollers, 4, false));
         operator.rightStick().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
 
         operator.rightTrigger().onTrue(autoCoralOuttake);
         operator.leftTrigger().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
 
-        operator.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.ALGAE_INTAKE_VOLTAGE));
-        operator.leftBumper().onFalse(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.ALGAE_HOLD_VOLTAGE));
+        operator.leftBumper().whileTrue(autoAlgaeIntakeHold);
 
-        operator.rightBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.ALGAE_OUTTAKE_SPEED));
+        operator.rightBumper().whileTrue(autoAlgaeShoot);
     }
 
     public Command getAutonomousCommand() {

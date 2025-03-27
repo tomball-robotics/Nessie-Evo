@@ -17,9 +17,9 @@ public class AutoAlignToReefTagRelative extends Command {
   private double tagID = -1;
 
   public AutoAlignToReefTagRelative(boolean isRightScore, Swerve swerve) {
-    xController = new PIDController(0, 0, 0);  // Vertical movement
-    yController = new PIDController(0, 0, 0);  // Horitontal movement
-    rotController = new PIDController(.1, 0, 0);  // Rotation
+    xController = new PIDController(.6, 0, 0);  // Vertical movement
+    yController = new PIDController(1, 0, 0);  // Horitontal movement
+    rotController = new PIDController(.01, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.swerve = swerve;
     addRequirements(swerve);
@@ -35,10 +35,10 @@ public class AutoAlignToReefTagRelative extends Command {
     rotController.setSetpoint(0);
     rotController.setTolerance(1);
 
-    xController.setSetpoint(-0.34);
+    xController.setSetpoint(-0.31961580231078157);
     xController.setTolerance(0.02);
 
-    yController.setSetpoint(isRightScore ? 0.16 : -0.16);
+    yController.setSetpoint(isRightScore ? 0.14479634513709055 : -0.14479634513709055);
     yController.setTolerance(0.02);
 
     tagID = LimelightHelpers.getFiducialID("limelight-front");
@@ -51,6 +51,7 @@ public class AutoAlignToReefTagRelative extends Command {
 
       double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-front");
       SmartDashboard.putNumber("Align/X Position", postions[2]);
+      SmartDashboard.putNumber("Align/Y Position", postions[0]);
 
       double xSpeed = xController.calculate(postions[2]);
       SmartDashboard.putNumber("Align/X Speed", xSpeed);

@@ -36,6 +36,7 @@ public class Swerve extends SubsystemBase {
     private Pigeon2 gyro;
     private double speedMultiplier;
     private StructPublisher<Pose2d> posePublisher;
+    private boolean isBlueAlliance;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "cani");
@@ -81,6 +82,16 @@ public class Swerve extends SubsystemBase {
             Elastic.sendNotification(new Notification(Notification.NotificationLevel.ERROR, "Failed to configure AutoBuilder", "The AutoBuilder could not be configured. " + e.getMessage()));
         }
 
+        autoHeadingFix();
+
+        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+            isBlueAlliance = true;
+        }else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+            isBlueAlliance = false;
+        }else {
+            DriverStation.reportWarning("Driverstation could not instantize alliance side.", true);
+        }
+
     }
 
     public double getSpeedMultiplier() {
@@ -92,13 +103,14 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+
         SwerveModuleState[] swerveModuleStates =
             Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     translation.getX() * speedMultiplier,
                     translation.getY() * speedMultiplier,
                     rotation * speedMultiplier,
-                    getHeading()
+                    isBlueAlliance ? getHeading() : getHeading().rotateBy(new Rotation2d(Math.toRadians(180)))
                 )
                 : new ChassisSpeeds(
                     translation.getX() * speedMultiplier,
@@ -150,7 +162,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetHeading() {
-        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), getPose());
+        poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose());
     }
 
     public void resetPose(Pose2d pose) {
@@ -202,7 +214,12 @@ public class Swerve extends SubsystemBase {
 
         field.setRobotPose(currentPose);
 
-        posePublisher.set(new Pose2d(currentPose.getX(), currentPose.getY(), new Rotation2d(currentPose.getRotation().getDegrees())));
+        posePublisher.set(new Pose2d(
+            currentPose.getX(),
+            currentPose.getY(),
+            currentPose.getRotation()
+        ));
+
         SmartDashboard.putBoolean("Swerve/Fast Mode", speedMultiplier == 1.0);
         SmartDashboard.putData("Swerve/Field", field);
     }
@@ -215,7 +232,7 @@ public class Swerve extends SubsystemBase {
             getModulePositions()
         );
 
-        boolean useMegaTag2 = false; //set to false to use MegaTag1
+        boolean useMegaTag2 = true; //set to false to use MegaTag1
         boolean doRejectUpdate = false;
         if(useMegaTag2 == false)
         {
@@ -244,6 +261,7 @@ public class Swerve extends SubsystemBase {
 
         if(!doRejectUpdate)
         {
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.1,.1,1));
             poseEstimator.addVisionMeasurement(
                 mt1.pose,
                 mt1.timestampSeconds);
@@ -253,6 +271,9 @@ public class Swerve extends SubsystemBase {
         {
         LimelightHelpers.SetRobotOrientation("limelight-back", poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+        if(mt2 == null) {
+            return;
+        }
         if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
         {
             doRejectUpdate = true;
@@ -263,7 +284,7 @@ public class Swerve extends SubsystemBase {
         }
         if(!doRejectUpdate)
         {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.1,.1,1));
             poseEstimator.addVisionMeasurement(
                 mt2.pose,
                 mt2.timestampSeconds);

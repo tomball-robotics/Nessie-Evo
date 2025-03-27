@@ -61,11 +61,11 @@ public final class Constants {
 
     public static final class EndEffectorConstants {
         public static final double CURRENT_LIMIT = 40;
-        public static final double CORAL_INTAKE_VOLTAGE = -.5;
-        public static final double CORAL_OUTTAKE_VOLTAGE = .5;
-        public static final double ALGAE_INTAKE_VOLTAGE = -1;
-        public static final double ALGAE_OUTTAKE_SPEED = 1;
-        public static final double ALGAE_HOLD_VOLTAGE = 0;
+        public static final double CORAL_INTAKE_VOLTAGE = -5;
+        public static final double CORAL_OUTTAKE_VOLTAGE = 6;
+        public static final double ALGAE_INTAKE_VOLTAGE = 8;
+        public static final double ALGAE_OUTTAKE_SPEED = -16;
+        public static final double ALGAE_HOLD_VOLTAGE = 1;
     }
 
     public static final class ElevatorConstants {

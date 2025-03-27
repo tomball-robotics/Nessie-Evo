@@ -19,8 +19,8 @@ public class ManualIntakeRollers extends Command {
   public void initialize() {
     intakeRollers.setBigRollerSpeed(voltageSup);
     if(index) {
-      intakeRollers.setSmallRollerSpeed(voltageSup);
-      intakeRollers.setIndexerSpeed(voltageSup);
+      intakeRollers.setSmallRollerSpeed(-voltageSup);
+      intakeRollers.setIndexerSpeed(-voltageSup);
     }
   }
 

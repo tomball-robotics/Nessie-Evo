@@ -20,7 +20,7 @@ public class StateMachine extends SubsystemBase {
   public static final NessieState STOW = new NessieState( // done
     "Stow", .5, 0, 0);
   public static final NessieState L1 = new NessieState(
-    "L1", .3, 0, .15);
+    "L1", .3, 0, .08);
   public static final NessieState L2 = new NessieState( // done
     "L2", 1.37799072265625, 0, 0);
   public static final NessieState L3 = new NessieState( // done
@@ -28,15 +28,17 @@ public class StateMachine extends SubsystemBase {
   public static final NessieState L4 = new NessieState( // done
     "L4", 1.85430908203125, 4.68536376953125, 0);
   public static final NessieState INTAKE = new NessieState(
-    "Intake", .248, 0, .31);
+    "Intake", 0.12, 0, 0);
+  public static final NessieState INTAKE_CLEARANCE = new NessieState(
+    "Intake Clearance", .12, 1.86, 0);
   public static final NessieState ALGAE_TAXI= new NessieState(
-    "Algae Stow", 0, 0, 0);
+    "Algae Stow", 1.93, 0, 0);
   public static final NessieState ALGAE_SHOOT = new NessieState(
-    "Algae Shoot", 0, 0, 0);
+    "Algae Shoot", 1.93, 5.0327880859375, 0);
   public static final NessieState ALGAE_INTAKE_LOW = new NessieState(
-    "Algae Intake Low", 0, 0, 0);
+    "Algae Intake Low", .83, 0, 0);
   public static final NessieState ALGAE_INTAKE_HIGH = new NessieState(
-    "Algae Intake High", 0, 0, 0);
+    "Algae Intake High", 1.01, 1.41, 0);
   public static final NessieState ALGAE_PROCESS = new NessieState(
     "Algae Process", 0, 0, 0);
   public static final NessieState DISENGAGED = new NessieState(
@@ -76,7 +78,8 @@ public class StateMachine extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString("Current State", currentState.getName());
+    SmartDashboard.putString("StateMachine/Current State", currentState.getName());
+    SmartDashboard.putBoolean("StateMachine/State Reached", stateReached());
   }
 
 }

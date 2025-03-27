@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Off The Line Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow Position"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Off The Line",
+  "choreoAuto": false
+}

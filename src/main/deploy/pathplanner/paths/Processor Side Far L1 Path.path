@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9288068181818185,
-        "y": 5.346235795454545
+        "x": 7.269289772727273,
+        "y": 0.67953125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.171888134822299,
-        "y": 5.404643615995378
+        "x": 8.269289772727273,
+        "y": 0.6795312500000001
       },
       "isLocked": false,
-      "linkedName": "top far left coral"
+      "linkedName": "Processor Side Starting Position"
     },
     {
       "anchor": {
-        "x": 3.6396306818131956,
-        "y": 5.475866477267741
+        "x": 3.769261363636364,
+        "y": 2.76359375
       },
       "prevControl": {
-        "x": 3.7294937773834653,
-        "y": 5.242575620064702
+        "x": 2.612556818181818,
+        "y": 1.6766903409090912
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -58.51253063578604
+    "rotation": 59.19855402386318
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Basic L1 Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.6973192795119
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
