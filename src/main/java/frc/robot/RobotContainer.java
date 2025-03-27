@@ -133,15 +133,14 @@ public class RobotContainer {
             new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
         );
-
         driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE));
         driver.leftBumper().onFalse(
             new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE_CLEARANCE))
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
         );
 
-        driver.back().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
-        driver.start().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
+        driver.leftTrigger().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
+        driver.rightTrigger().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
 
         /* operator positions */
 
@@ -153,14 +152,7 @@ public class RobotContainer {
         operator.povUp().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         operator.povRight().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         operator.povLeft().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
-        operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
-
-        operator.leftStick().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE)));
-        operator.leftStick().whileTrue(new ManualIntakeRollers(intakeRollers, -6, false));
-        operator.leftStick().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-
-        operator.rightStick().whileTrue(new ManualIntakeRollers(intakeRollers, 4, false));
-        operator.rightStick().onFalse(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
 
         operator.rightTrigger().onTrue(autoCoralOuttake);
         operator.leftTrigger().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
