@@ -37,6 +37,7 @@ public class Elevator extends SubsystemBase {
     canandmag = new Canandmag(Constants.ID.ELEVATOR_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     canandmagSettings.setInvertDirection(true);
+    canandmag.setPosition(0);
 
     config.Slot0.kP = 1.2; // An error of 1 rotation results in 2.4 V output
     config.Slot0.kI = 0; // No output for integrated error
@@ -49,6 +50,11 @@ public class Elevator extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    config.HardwareLimitSwitch.ForwardLimitEnable = false;
+    config.HardwareLimitSwitch.ReverseLimitEnable = false;
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
  
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
@@ -64,6 +70,7 @@ public class Elevator extends SubsystemBase {
       positionVoltage
         .withPosition(desiredPosition*9)
     );
+    this.desiredPosition = desiredPosition;
   }
 
   public boolean isFinished() {

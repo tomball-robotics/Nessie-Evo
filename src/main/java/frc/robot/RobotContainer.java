@@ -108,6 +108,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Algae Shoot Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         NamedCommands.registerCommand("Algae Process Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
         NamedCommands.registerCommand("Stow Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        //NamedCommands.registerCommand("Score Left L4",new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)).andThen(scoreLeft) );
 
         SmartDashboard.putData("Commands/Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
         SmartDashboard.putData("Commands/Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
@@ -145,12 +146,24 @@ public class RobotContainer {
         driver.rightTrigger().onTrue(scoreRight);
         driver.leftTrigger().onTrue(scoreLeft);
 
+        driver.back().onTrue(new AlignToReefTagRelative("left", swerve).withTimeout(3));
+        driver.start().onTrue(new AlignToReefTagRelative("right", swerve).withTimeout(3));
+
+        driver.povUp().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+
+
         /* operator positions */
 
-        operator.a().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L1)));
-        operator.b().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L2)));
-        operator.y().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L3)));
-        operator.x().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)));
+        // operator.a().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L1)));
+        // operator.b().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L2)));
+        // operator.y().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L3)));
+        // operator.x().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)));
+
+        operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
+        operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
+        operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
+        operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
+
 
         operator.povUp().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         operator.povRight().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
@@ -163,6 +176,9 @@ public class RobotContainer {
 
         operator.leftBumper().whileTrue(intakeAndHoldAlgae);
         operator.rightBumper().whileTrue(shootAlgae);
+        operator.start().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
+        operator.back().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
+
 
     }
 

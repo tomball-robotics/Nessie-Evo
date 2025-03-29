@@ -34,6 +34,7 @@ public class Arm extends SubsystemBase {
     canandmag = new Canandmag(Constants.ID.ARM_ENCODER_ID);
     canandmagSettings = new CanandmagSettings();
     canandmagSettings.setInvertDirection(true);
+    canandmag.setPosition(0);
 
     config.Slot0.kP = 2.4; // An error of 1 rotation results in 2.4 V output
     config.Slot0.kI = 0; // No output for integrated error
@@ -76,6 +77,7 @@ public class Arm extends SubsystemBase {
         .withPosition(desiredPosition*25)
         .withFeedForward(feedforward())
     );
+    this.desiredPosition = desiredPosition;
   }
 
   public boolean isFinished() {

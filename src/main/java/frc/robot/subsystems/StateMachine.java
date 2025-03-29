@@ -22,7 +22,7 @@ public class StateMachine extends SubsystemBase {
   public static final NessieState L3 = new NessieState( // done
     "L3", 1.66351318359375, 0.86962890625, 0);
   public static final NessieState L4 = new NessieState( // done
-    "L4", 1.47430908203125, 5.26, 0);
+    "L4", 1.67, 5.71, 0);
   public static final NessieState INTAKE = new NessieState(
     "Intake", 0.12, 0, 0);
   public static final NessieState INTAKE_CLEARANCE = new NessieState(
@@ -41,7 +41,7 @@ public class StateMachine extends SubsystemBase {
     "Disengaged", -1, -1, -1);
 
   private NessieState currentState;
-  public NessieState desiredLevel = L1;
+  public NessieState desiredLevel = L4;
 
   private Elevator elevator;
   private Arm arm;
