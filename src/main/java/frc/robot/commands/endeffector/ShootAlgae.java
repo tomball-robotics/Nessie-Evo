@@ -1,32 +1,25 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.endeffector;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.superstructure.EndEffector;
 
-public class AutoCoralIntake extends Command {
-  
+public class ShootAlgae extends Command {
+
   private EndEffector endEffector;
-  private Timer timer;
 
-  public AutoCoralIntake(EndEffector endEffector) {
+  public ShootAlgae(EndEffector endEffector) {
     this.endEffector = endEffector;
-    timer = new Timer();
-
     addRequirements(endEffector);
   }
 
   @Override
   public void initialize() {
-    timer.reset();
-    timer.start();
+    endEffector.setVoltage(Constants.EndEffectorConstants.ALGAE_OUTTAKE_SPEED);
   }
 
   @Override
-  public void execute() {
-    endEffector.setVoltage(Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE);
-  }
+  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
@@ -35,6 +28,6 @@ public class AutoCoralIntake extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > .6;
+    return false;
   }
 }

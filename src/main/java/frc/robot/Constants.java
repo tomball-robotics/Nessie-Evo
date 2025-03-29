@@ -29,6 +29,27 @@ public final class Constants {
         public static final int BLINKIN_ID = 0;
     }
 
+    public static final class AlignmentConstants {
+
+        public static final double X_REEF_ALIGNMENT_P = 1;
+        public static final double Y_REEF_ALIGNMENT_P = 1;
+        public static final double ROT_REEF_ALIGNMENT_P = 0.01;
+
+        public static final double ROT_SETPOINT = 0;  // Rotation
+        public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 1;
+        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.7;
+        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.07;
+
+        public static final double DONT_SEE_TAG_WAIT_TIME = 1;
+        public static final double POSE_VALIDATION_TIME = 0.3;
+        public static final double X_SETPOINT_FAR = -.8;
+        public static final double Y_SETPOINT_LEFT = -.15;
+        public static final double X_SETPOINT_CLOSE = -.47;
+        public static final double Y_SETPOINT_RIGHT = .14;
+        public static final double Y_SETPOINT_CENTER = 0;
+
+    }
+
     public static final class IntakePivotConstants {
         public static final int CURRENT_LIMIT = 30;
         public static final double P = 1;
@@ -63,9 +84,10 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 40;
         public static final double CORAL_INTAKE_VOLTAGE = -5;
         public static final double CORAL_OUTTAKE_VOLTAGE = 6;
-        public static final double ALGAE_INTAKE_VOLTAGE = 8;
-        public static final double ALGAE_OUTTAKE_SPEED = -16;
-        public static final double ALGAE_HOLD_VOLTAGE = 1;
+        public static final double CORAL_HOLD_VOLTAGE = -.25;
+        public static final double ALGAE_INTAKE_VOLTAGE = 3;
+        public static final double ALGAE_OUTTAKE_SPEED = -12;
+        public static final double ALGAE_HOLD_VOLTAGE = .25;
     }
 
     public static final class ElevatorConstants {
@@ -79,31 +101,11 @@ public final class Constants {
         public static final double REVERSE_LIMIT = 0;
     }
 
-    public static final class ClimberConstants {
-        public static final double CURRENT_LIMIT = 30;
-        public static final double CLIMBER_SPEED = .5;
-    }
-
     public static final class ArmConstants{
         public static final int CURRENT_LIMIT = 30;
-        public static final double P = 1;
-        public static final double I = .5;
-        public static final double D = 0;
         public static final double TOLERANCE = .01;
         public static final double FORWARD_LIMIT = 2.2;
         public static final double REVERSE_LIMIT = .0;
-        public static final double G = 0;
-        public static final double VELOCITY_TOLERANCE = 0;
-        public static final double MOTION_MAGIC_KS = 0;
-        public static final double MOTION_MAGIC_KV = 0;
-        public static final double MOTION_MAGIC_KA = 0;
-        public static final double MOTION_MAGIC_KP = 0;
-        public static final double MOTION_MAGIC_KI = 0;
-        public static final double MOTION_MAGIC_CRUISE_VELOCITY = 0;
-        public static final double MOTION_MAGIC_ACCELERATION = 0;
-        public static final double MOTION_MAGIC_JERK = 0;
-        public static final double KG = 0;
-        public static double MOTION_MAGIC_KD;
     }
 
     public static final class SwerveConstants {

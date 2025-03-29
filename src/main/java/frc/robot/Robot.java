@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.Elastic;
 import frc.lib.Elastic.Notification;
+import frc.lib.LimelightHelpers;
 import frc.robot.subsystems.RevBlinkin;
 
 /**
@@ -80,7 +81,16 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     CommandScheduler.getInstance().run();
-
+    double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-front");
+    SmartDashboard.putNumber("Alignment/x", postions[2]);
+    SmartDashboard.putNumber("Alignment/y", postions[0]);
+    SmartDashboard.putNumber("Alignment/rot", postions[4]);
+    SmartDashboard.putBoolean("Alignment/Valid Tag", LimelightHelpers.getTV("limelight-front"));
+    if(LimelightHelpers.getTV("limelight-front")) {
+      revBlinkin.strobeRedPattern();
+    }else {
+      revBlinkin.redSolidColor();
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -109,7 +119,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    revBlinkin.breathRedPattern();
+    revBlinkin.redSolidColor();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

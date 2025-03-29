@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import javax.swing.JViewport;
+
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -15,23 +17,21 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.auto.AutoAlgaeIntakeHold;
-import frc.robot.commands.auto.AutoAlgaeShoot;
-import frc.robot.commands.auto.AutoAlignToReefTagRelative;
-import frc.robot.commands.auto.AutoCoralIntake;
-import frc.robot.commands.auto.AutoCoralOuttake;
-import frc.robot.commands.manual.ManualIntakeRollers;
+import frc.robot.commands.AutoShootCoral;
+import frc.robot.commands.ScoreLeft;
+import frc.robot.commands.ScoreRight;
+import frc.robot.commands.endeffector.IntakeAndHoldAlgae;
+import frc.robot.commands.endeffector.IntakeAndHoldCoral;
+import frc.robot.commands.endeffector.ShootAlgae;
+import frc.robot.commands.endeffector.ShootCoral;
 import frc.robot.commands.position.SetArmPosition;
 import frc.robot.commands.position.SetElevatorPosition;
-import frc.robot.commands.position.SetIntakePivotPosition;
-import frc.robot.commands.manual.ManualEndEffector;
+import frc.robot.commands.swerve.AlignToReefTagRelative;
 import frc.robot.commands.swerve.ChangeSpeedMultiplier;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.subsystems.RevBlinkin;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.intake.IntakePivot;
-import frc.robot.subsystems.intake.IntakeRollers;
 import frc.robot.subsystems.superstructure.Arm;
 import frc.robot.subsystems.superstructure.Elevator;
 import frc.robot.subsystems.superstructure.EndEffector;
@@ -54,16 +54,17 @@ public class RobotContainer {
     private final Arm arm = new Arm();
     private final Elevator elevator = new Elevator();
     private final EndEffector endEffector = new EndEffector();
-    private final IntakePivot intakePivot = new IntakePivot();
-    private final IntakeRollers intakeRollers = new IntakeRollers();
-    private final StateMachine stateMachine = new StateMachine(elevator, arm, intakePivot);
+    private final StateMachine stateMachine = new StateMachine(elevator, arm);
 
     /* Commands */
-    private final AutoCoralIntake autoCoralIntake;
-    private final AutoCoralOuttake autoCoralOuttake;
+    private final IntakeAndHoldCoral intakeAndHoldCoral;
+    private final IntakeAndHoldAlgae intakeAndHoldAlgae;
+    private final ShootAlgae shootAlgae;
+    private final ShootCoral shootCoral;
+    private final AutoShootCoral autoShootCoral;
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
-    private final AutoAlgaeIntakeHold autoAlgaeIntakeHold;
-    private final AutoAlgaeShoot autoAlgaeShoot;
+    private final ScoreLeft scoreLeft;
+    private final ScoreRight scoreRight;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -77,21 +78,22 @@ public class RobotContainer {
                 () -> -driver.getRawAxis(leftX), 
                 () -> -driver.getRawAxis(rightX), 
                 () -> driver.getHID().getXButton(),
-                () -> driver.getHID().getRightBumperButton(),
-                () -> driver.getHID().getLeftTriggerAxis() > .25,
-                () -> driver.getHID().getRightTriggerAxis() > .25,
-                () -> driver.getHID().getYButton()
+                () -> driver.getHID().getRightBumperButton()
             )
         );
 
-        autoCoralIntake = new AutoCoralIntake(endEffector);
-        autoCoralIntake.addRequirements(endEffector);
-        autoCoralOuttake = new AutoCoralOuttake(endEffector);
-        autoCoralOuttake.addRequirements(endEffector);
-        autoAlgaeIntakeHold = new AutoAlgaeIntakeHold(endEffector);
-        autoAlgaeIntakeHold.addRequirements(endEffector);
-        autoAlgaeShoot = new AutoAlgaeShoot(endEffector);
-        autoAlgaeShoot.addRequirements(endEffector);
+        intakeAndHoldAlgae = new IntakeAndHoldAlgae(endEffector);
+        intakeAndHoldAlgae.addRequirements(endEffector);
+        intakeAndHoldCoral = new IntakeAndHoldCoral(endEffector);
+        intakeAndHoldCoral.addRequirements(endEffector);
+        shootAlgae = new ShootAlgae(endEffector);
+        shootAlgae.addRequirements(endEffector);
+        shootCoral = new ShootCoral(endEffector);
+        shootCoral.addRequirements(endEffector);
+        autoShootCoral = new AutoShootCoral(endEffector);
+        autoShootCoral.addRequirements(endEffector);
+        scoreLeft = new ScoreLeft(stateMachine, swerve, endEffector);
+        scoreRight = new ScoreRight(stateMachine, swerve, endEffector);
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
         changeSpeedMultiplier.addRequirements(swerve);
 
@@ -106,21 +108,16 @@ public class RobotContainer {
         NamedCommands.registerCommand("Algae Shoot Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         NamedCommands.registerCommand("Algae Process Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
         NamedCommands.registerCommand("Stow Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
-        NamedCommands.registerCommand("Align Right", new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
-        NamedCommands.registerCommand("Align Left", new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
-        NamedCommands.registerCommand("Shoot Coral", autoCoralOuttake);
-        NamedCommands.registerCommand("Outtake Coral", new ManualIntakeRollers(intakeRollers, -.2, false).withTimeout(.5));
-        NamedCommands.registerCommand("Intake Algae & Hold", autoAlgaeIntakeHold);
-        NamedCommands.registerCommand("Shoot Algae", autoAlgaeShoot);
 
-        SmartDashboard.putData("Commands/Zero Intake Pivot Encoder", new InstantCommand(() -> intakePivot.resetEncoder()));
         SmartDashboard.putData("Commands/Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
         SmartDashboard.putData("Commands/Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
         SmartDashboard.putData("Commands/Request Start State", new InstantCommand(() -> stateMachine.requestState(StateMachine.START)));
         SmartDashboard.putData("Commands/Request Disengaged State", new InstantCommand(() -> stateMachine.requestState(StateMachine.DISENGAGED)));
-        SmartDashboard.putData("Commands/Enable Vision Localization", new InstantCommand(() -> swerve.enableVisionLocalization()));
-        SmartDashboard.putData("Commands/Disable Vision Localization", new InstantCommand(() -> swerve.disableVisionLocalization()));
 
+        SmartDashboard.putData("Commands/Request L1 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
+        SmartDashboard.putData("Commands/Request L2 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
+        SmartDashboard.putData("Commands/Request L3 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
+        SmartDashboard.putData("Commands/Request L4 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);
@@ -139,33 +136,34 @@ public class RobotContainer {
             new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
         );
-        driver.leftBumper().whileTrue(new ManualEndEffector(endEffector, Constants.EndEffectorConstants.CORAL_INTAKE_VOLTAGE));
+        driver.leftBumper().whileTrue(intakeAndHoldCoral);
         driver.leftBumper().onFalse(
             new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE_CLEARANCE))
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
         );
 
-        driver.leftTrigger().onTrue(new AutoAlignToReefTagRelative(false, swerve).withTimeout(3));
-        driver.rightTrigger().onTrue(new AutoAlignToReefTagRelative(true, swerve).withTimeout(3));
+        driver.rightTrigger().onTrue(scoreRight);
+        driver.leftTrigger().onTrue(scoreLeft);
 
         /* operator positions */
 
-        operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-        operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
-        operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-        operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
+        operator.a().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L1)));
+        operator.b().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L2)));
+        operator.y().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L3)));
+        operator.x().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)));
 
         operator.povUp().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         operator.povRight().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         operator.povLeft().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
         operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
 
-        operator.rightTrigger().onTrue(autoCoralOuttake);
+        operator.rightTrigger().whileTrue(shootCoral);
+
         operator.leftTrigger().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
 
-        operator.leftBumper().whileTrue(autoAlgaeIntakeHold);
+        operator.leftBumper().whileTrue(intakeAndHoldAlgae);
+        operator.rightBumper().whileTrue(shootAlgae);
 
-        operator.rightBumper().whileTrue(autoAlgaeShoot);
     }
 
     public Command getAutonomousCommand() {

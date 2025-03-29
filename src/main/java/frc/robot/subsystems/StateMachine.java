@@ -6,14 +6,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.NessieState;
 import frc.robot.commands.position.SetArmPosition;
 import frc.robot.commands.position.SetElevatorPosition;
-import frc.robot.commands.position.SetIntakePivotPosition;
-import frc.robot.subsystems.intake.IntakePivot;
 import frc.robot.subsystems.superstructure.Arm;
 import frc.robot.subsystems.superstructure.Elevator;
 
 public class StateMachine extends SubsystemBase {
-
-  // nessie's states
 
   public static final NessieState START = new NessieState(
     "Start", 0, 0, 0);
@@ -34,7 +30,7 @@ public class StateMachine extends SubsystemBase {
   public static final NessieState ALGAE_TAXI= new NessieState(
     "Algae Stow", 1.93, 0, 0);
   public static final NessieState ALGAE_SHOOT = new NessieState(
-    "Algae Shoot", 1.93, 5.0327880859375, 0);
+    "Algae Shoot", 1.7, 5.2027880859375, 0);
   public static final NessieState ALGAE_INTAKE_LOW = new NessieState(
     "Algae Intake Low", .83, 0, 0);
   public static final NessieState ALGAE_INTAKE_HIGH = new NessieState(
@@ -45,41 +41,47 @@ public class StateMachine extends SubsystemBase {
     "Disengaged", -1, -1, -1);
 
   private NessieState currentState;
+  public NessieState desiredLevel = L1;
 
   private Elevator elevator;
   private Arm arm;
-  private IntakePivot intakePivot;
 
-  public StateMachine(Elevator elevator, Arm arm, IntakePivot intakePivot) {
+  public StateMachine(Elevator elevator, Arm arm) {
     this.elevator = elevator;
     this.arm = arm;
-    this.intakePivot = intakePivot;
 
     currentState = DISENGAGED;
+  }
+
+  public void setDesiredLevel(NessieState desiredLevel) {
+    this.desiredLevel = desiredLevel;
+  }
+
+  public NessieState getDesiredLevel() {
+    return desiredLevel;
   }
 
   public void requestState(NessieState desiredState) {
     if(desiredState == DISENGAGED) {
       new InstantCommand(() -> arm.disengage()).schedule();
       new InstantCommand(() -> elevator.disengage()).schedule();
-      new InstantCommand(() -> intakePivot.disengage()).schedule();
     }else {
       new SetArmPosition(arm, desiredState.getArmPosition()).schedule();
       new SetElevatorPosition(elevator, desiredState.getElevatorPosition()).schedule();
-      new SetIntakePivotPosition(intakePivot, desiredState.getIntakePosition()).schedule();
     }
     
     currentState = desiredState;
   }
 
   public boolean stateReached() {
-    return elevator.isFinished() && arm.isFinished() && intakePivot.isFinished();
+    return elevator.isFinished() && arm.isFinished();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putString("StateMachine/Current State", currentState.getName());
     SmartDashboard.putBoolean("StateMachine/State Reached", stateReached());
+    SmartDashboard.putString("StateMachine/Desired Level", desiredLevel.getName());
   }
 
 }
