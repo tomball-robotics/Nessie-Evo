@@ -187,8 +187,9 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         odometry.setRobotPose(swerveOdometry.getPoseMeters());
         swerveOdometry.update(getGyroYaw(), getModulePositions());   
-        SmartDashboard.putData(odometry);
-        SmartDashboard.putBoolean("Fast Mode", speedMultiplier == 1.00);
+        SmartDashboard.putData("Swerve/Odometry", odometry);
+        SmartDashboard.putBoolean("Swerve/Fast Mode", speedMultiplier == 1.00);
+        
     }
 
     public double getSpeedMultiplier() {

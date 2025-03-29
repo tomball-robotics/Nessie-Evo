@@ -17,30 +17,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "L4 Position"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align Right"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "L4 to Algae Start"

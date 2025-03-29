@@ -32,19 +32,19 @@ public final class Constants {
     public static final class AlignmentConstants {
 
         public static final double X_REEF_ALIGNMENT_P = 1;
-        public static final double Y_REEF_ALIGNMENT_P = 1;
+        public static final double Y_REEF_ALIGNMENT_P = 1.5;
         public static final double ROT_REEF_ALIGNMENT_P = 0.01;
 
         public static final double ROT_SETPOINT = 0;  // Rotation
         public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 1;
-        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.7;
-        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.07;
+        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.1;
+        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.1;
 
         public static final double DONT_SEE_TAG_WAIT_TIME = 1;
         public static final double POSE_VALIDATION_TIME = 0.3;
         public static final double X_SETPOINT_FAR = -.8;
         public static final double Y_SETPOINT_LEFT = -.15;
-        public static final double X_SETPOINT_CLOSE = -.47;
+        public static final double X_SETPOINT_CLOSE = -.475;
         public static final double Y_SETPOINT_RIGHT = .14;
         public static final double Y_SETPOINT_CENTER = 0;
 
@@ -97,7 +97,7 @@ public final class Constants {
         public static final double D = 0;
         public static final double G = 0.037109375;
         public static final double TOLERANCE = .04;
-        public static final double FORWARD_LIMIT = 5.2327880859375;
+        public static final double FORWARD_LIMIT = -5.26;
         public static final double REVERSE_LIMIT = 0;
     }
 

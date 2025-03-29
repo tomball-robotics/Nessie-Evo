@@ -79,7 +79,7 @@ public class AlignToReefTagRelative extends Command {
       double rotValue = -rotController.calculate(postions[4]);
 
       swerve.drive(
-        new Translation2d(xSpeed, ySpeed).times(Constants.SwerveConstants.maxSpeed), 
+        new Translation2d(xSpeed, ySpeed).times(Constants.SwerveConstants.maxSpeed).times(.5), 
         rotValue * Constants.SwerveConstants.maxAngularVelocity, 
         false, 
         true

@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.reduxrobotics.canand.CanandEventLoop;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -43,7 +44,8 @@ public class Robot extends TimedRobot {
     CanandEventLoop.getInstance();
     robotContainer = new RobotContainer();
     revBlinkin.redSolidColor();
-    SmartDashboard.putBoolean("Align/Aligned", false);
+    SmartDashboard.putBoolean("Alignment/Valid Tag", false);
+
   }
 
   /**
@@ -81,16 +83,20 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     CommandScheduler.getInstance().run();
-    double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-front");
-    SmartDashboard.putNumber("Alignment/x", postions[2]);
-    SmartDashboard.putNumber("Alignment/y", postions[0]);
-    SmartDashboard.putNumber("Alignment/rot", postions[4]);
-    SmartDashboard.putBoolean("Alignment/Valid Tag", LimelightHelpers.getTV("limelight-front"));
-    if(LimelightHelpers.getTV("limelight-front")) {
-      revBlinkin.strobeRedPattern();
-    }else {
-      revBlinkin.redSolidColor();
+    double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-front");
+    if(positions.length > 0) {
+      SmartDashboard.putNumber("Alignment/x", positions[2]);
+      SmartDashboard.putNumber("Alignment/y", positions[0]);
+      SmartDashboard.putNumber("Alignment/rot", positions[4]);
+      SmartDashboard.putBoolean("Alignment/Valid Tag", LimelightHelpers.getTV("limelight-front"));
+      
+      if(LimelightHelpers.getTV("limelight-front")) {
+        revBlinkin.strobeRedPattern();
+      }else {
+        revBlinkin.redSolidColor();
+      }
     }
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

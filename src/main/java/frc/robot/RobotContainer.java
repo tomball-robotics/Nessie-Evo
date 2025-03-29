@@ -92,8 +92,8 @@ public class RobotContainer {
         shootCoral.addRequirements(endEffector);
         autoShootCoral = new AutoShootCoral(endEffector);
         autoShootCoral.addRequirements(endEffector);
-        scoreLeft = new ScoreLeft(stateMachine, swerve, endEffector);
-        scoreRight = new ScoreRight(stateMachine, swerve, endEffector);
+        scoreLeft = new ScoreLeft(stateMachine, arm, elevator, swerve, endEffector);
+        scoreRight = new ScoreRight(stateMachine, arm, elevator, swerve, endEffector);
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
         changeSpeedMultiplier.addRequirements(swerve);
 

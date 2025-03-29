@@ -49,11 +49,6 @@ public class Elevator extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.FORWARD_LIMIT*9;
-    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.ElevatorConstants.REVERSE_LIMIT*9;
  
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
