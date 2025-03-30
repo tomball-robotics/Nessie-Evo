@@ -49,6 +49,7 @@ public class AlignToReefTagRelative extends Command {
       case "right":
         xController.setSetpoint(Constants.AlignmentConstants.X_SETPOINT_CLOSE);
         yController.setSetpoint(Constants.AlignmentConstants.Y_SETPOINT_RIGHT);
+        rotController.setSetpoint(2);
         break;
       case "center":
         xController.setSetpoint(Constants.AlignmentConstants.X_SETPOINT_CLOSE);

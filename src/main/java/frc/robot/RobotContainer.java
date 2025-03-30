@@ -106,8 +106,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("Algae Intake High Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         NamedCommands.registerCommand("Algae Taxi Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
         NamedCommands.registerCommand("Algae Shoot Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
-        NamedCommands.registerCommand("Algae Process Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
         NamedCommands.registerCommand("Stow Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        NamedCommands.registerCommand("Align Right", new AlignToReefTagRelative("right", swerve).withTimeout(3));
+        NamedCommands.registerCommand("Align Left", new AlignToReefTagRelative("left", swerve).withTimeout(3));
+        NamedCommands.registerCommand("Shoot Coral", autoShootCoral);
+
         //NamedCommands.registerCommand("Score Left L4",new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)).andThen(scoreLeft) );
 
         SmartDashboard.putData("Commands/Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
@@ -143,11 +146,8 @@ public class RobotContainer {
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
         );
 
-        driver.rightTrigger().onTrue(scoreRight);
-        driver.leftTrigger().onTrue(scoreLeft);
-
-        driver.back().onTrue(new AlignToReefTagRelative("left", swerve).withTimeout(3));
-        driver.start().onTrue(new AlignToReefTagRelative("right", swerve).withTimeout(3));
+        driver.leftTrigger().onTrue(new AlignToReefTagRelative("left", swerve).withTimeout(3));
+        driver.rightTrigger().onTrue(new AlignToReefTagRelative("right", swerve).withTimeout(3));
 
         driver.povUp().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
@@ -176,9 +176,6 @@ public class RobotContainer {
 
         operator.leftBumper().whileTrue(intakeAndHoldAlgae);
         operator.rightBumper().whileTrue(shootAlgae);
-        operator.start().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-        operator.back().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-
 
     }
 

@@ -45,7 +45,7 @@ public final class Constants {
         public static final double X_SETPOINT_FAR = -.8;
         public static final double Y_SETPOINT_LEFT = -.15;
         public static final double X_SETPOINT_CLOSE = -.475;
-        public static final double Y_SETPOINT_RIGHT = .15;
+        public static final double Y_SETPOINT_RIGHT = .14;
         public static final double Y_SETPOINT_CENTER = 0;
 
     }
