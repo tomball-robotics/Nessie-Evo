@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.LimelightHelpers;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
+import frc.robot.commands.auto.AutoIntake;
 import frc.robot.commands.auto.AutoShootCoral;
 import frc.robot.commands.endeffector.IntakeAndHoldAlgae;
 import frc.robot.commands.endeffector.IntakeAndHoldCoral;
@@ -66,6 +67,7 @@ public class RobotContainer {
     private final ChangeSpeedMultiplier changeSpeedMultiplier;
     private final ScoreLeft scoreLeft;
     private final ScoreRight scoreRight;
+    private final AutoIntake autoIntake;
 
     /* Autos */
     private final SendableChooser<Command> autoChooser;
@@ -97,6 +99,8 @@ public class RobotContainer {
         scoreRight = new ScoreRight(stateMachine, arm, elevator, swerve, endEffector);
         changeSpeedMultiplier = new ChangeSpeedMultiplier(swerve);
         changeSpeedMultiplier.addRequirements(swerve);
+        autoIntake = new AutoIntake(stateMachine, endEffector);
+        autoIntake.addRequirements(stateMachine, endEffector);
 
         /* register commands & autos */
         NamedCommands.registerCommand("Algae Intake Low Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
@@ -105,6 +109,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Stow Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
         NamedCommands.registerCommand("Score Left", scoreLeft.onlyIf(() -> LimelightHelpers.getTV("limelight-left")));
         NamedCommands.registerCommand("Score Right", scoreRight.onlyIf(() -> LimelightHelpers.getTV("limelight-right")));
+        NamedCommands.registerCommand("Intake", autoIntake);
 
         SmartDashboard.putData("Commands/Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
         SmartDashboard.putData("Commands/Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
