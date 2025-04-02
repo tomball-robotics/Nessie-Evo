@@ -1,12 +1,7 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,13 +24,10 @@ public class AlignToReefTagRelative extends Command {
     this.desiredAlignment = desiredAlignment;
     this.swerve = swerve;
     addRequirements(swerve);
-    System.out.print("fuck ===============================================");
   }
 
   @Override
   public void initialize() {
-    DriverStation.reportError("fuck rlgkjdflkgbnsdklbnsdflkjnbslkjfdnbkjfdnbkjlsfdnb", false);
-
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
