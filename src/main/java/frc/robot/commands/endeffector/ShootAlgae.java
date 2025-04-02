@@ -15,7 +15,7 @@ public class ShootAlgae extends Command {
 
   @Override
   public void initialize() {
-    endEffector.setVoltage(Constants.EndEffectorConstants.ALGAE_OUTTAKE_SPEED);
+    endEffector.setVoltage(Constants.EndEffectorConstants.ALGAE_OUTTAKE_VOLTAGE);
   }
 
   @Override

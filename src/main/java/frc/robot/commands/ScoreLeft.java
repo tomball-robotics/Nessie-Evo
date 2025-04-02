@@ -3,8 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.endeffector.IntakeAndHoldCoral;
-import frc.robot.commands.endeffector.ShootCoral;
+import frc.robot.commands.auto.AutoCoralIntake;
+import frc.robot.commands.auto.AutoShootCoral;
 import frc.robot.commands.swerve.AlignToReefTagRelative;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Swerve;
@@ -17,15 +17,18 @@ public class ScoreLeft extends SequentialCommandGroup {
   public ScoreLeft(StateMachine stateMachine, Arm arm, Elevator elevator, Swerve swerve, EndEffector endEffector) {
 
     addCommands(
-      new AlignToReefTagRelative("back", swerve).withTimeout(2),
+      new AlignToReefTagRelative("left back", swerve).withTimeout(1),
+      new WaitCommand(.5),
       new InstantCommand(() -> stateMachine.requestState(stateMachine.desiredLevel)),
-      new WaitCommand(2),
-      new AlignToReefTagRelative("left", swerve),
-      new IntakeAndHoldCoral(endEffector),
+      new WaitCommand(.5),
+      new AlignToReefTagRelative("left forward", swerve).withTimeout(1),
       new WaitCommand(1),
-      new ShootCoral(endEffector),
-      new WaitCommand(1),
-      new AlignToReefTagRelative("back", swerve),
+      new AutoCoralIntake(endEffector),
+      new WaitCommand(.5),
+      new AutoShootCoral(endEffector),
+      new WaitCommand(.5),
+      new AlignToReefTagRelative("left back", swerve).withTimeout(1),
+      new WaitCommand(.5),
       new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
     );
 

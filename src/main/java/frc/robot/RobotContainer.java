@@ -17,9 +17,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.AutoShootCoral;
+import frc.lib.LimelightHelpers;
 import frc.robot.commands.ScoreLeft;
 import frc.robot.commands.ScoreRight;
+import frc.robot.commands.auto.AutoShootCoral;
 import frc.robot.commands.endeffector.IntakeAndHoldAlgae;
 import frc.robot.commands.endeffector.IntakeAndHoldCoral;
 import frc.robot.commands.endeffector.ShootAlgae;
@@ -122,6 +123,9 @@ public class RobotContainer {
         SmartDashboard.putData("Commands/Request L2 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
         SmartDashboard.putData("Commands/Request L3 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
         SmartDashboard.putData("Commands/Request L4 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
+        SmartDashboard.putData("right pos", new AlignToReefTagRelative("right forward", swerve));
+        SmartDashboard.putData("left pos", new AlignToReefTagRelative("left forward", swerve));
+
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);
@@ -136,6 +140,8 @@ public class RobotContainer {
 
         driver.b().onTrue(changeSpeedMultiplier);
 
+        // intake
+        
         driver.leftBumper().onTrue(
             new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
@@ -146,33 +152,45 @@ public class RobotContainer {
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
         );
 
-        driver.leftTrigger().onTrue(new AlignToReefTagRelative("left", swerve).withTimeout(3));
-        driver.rightTrigger().onTrue(new AlignToReefTagRelative("right", swerve).withTimeout(3));
+        // // intake L1
+        // driver.rightBumper().onTrue(
+        //     new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
+        //     .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
+        // );
+        // driver.leftBumper().whileTrue(intakeAndHoldCoral);
+
+        // // shoot L1
+        // driver.rightTrigger().onTrue(autoShootCoral);
+        // driver.rightTrigger().onFalse(
+        //     new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE_CLEARANCE))
+        //     .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
+        // );
 
         driver.povUp().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
+        /* operator controls */
 
-        /* operator positions */
+        driver.leftTrigger().onTrue(scoreLeft.onlyIf(() -> LimelightHelpers.getTV("limelight-left")));
+        driver.rightTrigger().onTrue(scoreRight.onlyIf(() -> LimelightHelpers.getTV("limelight-right")));
 
-        // operator.a().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L1)));
-        // operator.b().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L2)));
-        // operator.y().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L3)));
-        // operator.x().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)));
+        operator.a().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L1)));
+        operator.b().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L2)));
+        operator.y().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L3)));
+        operator.x().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)));
 
-        operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-        operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
-        operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-        operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-
+        // operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
+        // operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
+        // operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
+        // operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
 
         operator.povUp().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         operator.povRight().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         operator.povLeft().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
         operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
 
-        operator.rightTrigger().whileTrue(shootCoral);
+        operator.start().whileTrue(shootCoral);
 
-        operator.leftTrigger().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        operator.back().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
 
         operator.leftBumper().whileTrue(intakeAndHoldAlgae);
         operator.rightBumper().whileTrue(shootAlgae);

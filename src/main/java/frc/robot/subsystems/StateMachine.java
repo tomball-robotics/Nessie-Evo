@@ -20,7 +20,7 @@ public class StateMachine extends SubsystemBase {
   public static final NessieState L2 = new NessieState( // done
     "L2", 1.37799072265625, 0, 0);
   public static final NessieState L3 = new NessieState( // done
-    "L3", 1.76351318359375, 0.86962890625, 0);
+    "L3", 1.72351318359375, 0.86962890625, 0);
   public static final NessieState L4 = new NessieState( // done
     "L4", 1.70, 5.71, 0);
   public static final NessieState INTAKE = new NessieState(

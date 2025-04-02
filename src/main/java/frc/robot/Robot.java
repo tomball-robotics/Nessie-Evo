@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import com.reduxrobotics.canand.CanandEventLoop;
@@ -19,12 +15,6 @@ import frc.lib.Elastic.Notification;
 import frc.lib.LimelightHelpers;
 import frc.robot.subsystems.RevBlinkin;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
 
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
@@ -33,36 +23,17 @@ public class Robot extends TimedRobot {
   private double batteryLowStartTime = -1;
   public static RevBlinkin revBlinkin = new RevBlinkin();
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
     CanandEventLoop.getInstance();
     robotContainer = new RobotContainer();
     revBlinkin.redSolidColor();
     SmartDashboard.putBoolean("Alignment/Valid Tag", false);
-
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
   @Override
   public void robotPeriodic() {       
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-
-    /* elastic low voltage warning (<11.5v) */
+    CommandScheduler.getInstance().run();
     if (RobotController.getBatteryVoltage() < Constants.NotificationConstants.BATTERY_LOW_VOLTAGE) {
       if (batteryLowStartTime == -1) {
           batteryLowStartTime = Timer.getFPGATimestamp();
@@ -82,24 +53,32 @@ public class Robot extends TimedRobot {
     }
 
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-    CommandScheduler.getInstance().run();
-    double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-front");
+    
+    double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-left");
     if(positions.length > 0) {
-      SmartDashboard.putNumber("Alignment/x", positions[2]);
-      SmartDashboard.putNumber("Alignment/y", positions[0]);
-      SmartDashboard.putNumber("Alignment/rot", positions[4]);
-      SmartDashboard.putBoolean("Alignment/Valid Tag", LimelightHelpers.getTV("limelight-front"));
-      
-      if(LimelightHelpers.getTV("limelight-front")) {
-        revBlinkin.strobeRedPattern();
-      }else {
-        revBlinkin.redSolidColor();
-      }
+      SmartDashboard.putNumber("Alignment/Left/X", positions[2]);
+      SmartDashboard.putNumber("Alignment/Left/Y", positions[0]);
+      SmartDashboard.putNumber("Alignment/Left/Rotation", positions[4]);
+      SmartDashboard.putBoolean("Alignment/Left/Valid Tag", LimelightHelpers.getTV("limelight-left"));
     }
+
+    positions = LimelightHelpers.getBotPose_TargetSpace("limelight-right");
+    if(positions.length > 0) {
+      SmartDashboard.putNumber("Alignment/Right x", positions[2]);
+      SmartDashboard.putNumber("Alignment/Right y", positions[0]);
+      SmartDashboard.putNumber("Alignment/Right rot", positions[4]);
+      SmartDashboard.putBoolean("Alignment/Right Valid Tag", LimelightHelpers.getTV("limelight-right"));
+    }
+
+    if(LimelightHelpers.getTV("limelight-right") || LimelightHelpers.getTV("limelight-right")) {
+      revBlinkin.strobeRedPattern();
+    }else {
+      revBlinkin.redSolidColor();
+    }
+
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
   }
 
-  /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
     revBlinkin.redSolidColor();
@@ -108,45 +87,35 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     auto = robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
     if (auto != null) {
       auto.schedule();
     }
   }
 
-  /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() {
     revBlinkin.redSolidColor();
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
     if (auto != null) {
       auto.cancel();
     }
     new InstantCommand().schedule();
   }
 
-  /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
-    // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
 
-  /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
 }

@@ -25,7 +25,7 @@ public class AutoShootAlgae extends Command {
 
   @Override
   public void execute() {
-    endEffector.setVoltage(Constants.EndEffectorConstants.CORAL_OUTTAKE_VOLTAGE);
+    endEffector.setVoltage(Constants.EndEffectorConstants.ALGAE_OUTTAKE_VOLTAGE);
   }
 
   @Override

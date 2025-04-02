@@ -30,11 +30,11 @@ public class AutoCoralIntake extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    endEffector.stop();
+    endEffector.setVoltage(Constants.EndEffectorConstants.CORAL_HOLD_VOLTAGE);
   }
 
   @Override
   public boolean isFinished() {
-    return timer.get() > .6;
+    return timer.get() > .2;
   }
 }

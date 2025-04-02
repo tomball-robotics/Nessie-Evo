@@ -6,6 +6,7 @@ package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,65 +20,87 @@ public class AlignToReefTagRelative extends Command {
   private Timer dontSeeTagTimer, stopTimer;
   private Swerve swerve;
   private double tagID = -1;
+  private String limelightName = "limelight-left";
 
-  public AlignToReefTagRelative(String desiredAlignment, Swerve drivebase) {
-    xController = new PIDController(Constants.AlignmentConstants.X_REEF_ALIGNMENT_P, 0.0, 0);  // Vertical movement
-    yController = new PIDController(Constants.AlignmentConstants.Y_REEF_ALIGNMENT_P, 0.0, 0);  // Horitontal movement
-    rotController = new PIDController(Constants.AlignmentConstants.ROT_REEF_ALIGNMENT_P, 0, 0);  // Rotation
+  public AlignToReefTagRelative(String desiredAlignment, Swerve swerve) {
+    xController = new PIDController(Constants.AlignmentConstants.X_P, 0.0, 0);  // Vertical movement
+    yController = new PIDController(Constants.AlignmentConstants.Y_P, 0.0, 0);  // Horitontal movement
+    rotController = new PIDController(Constants.AlignmentConstants.ROT_P, 0, 0);  // Rotation
     this.desiredAlignment = desiredAlignment;
-    this.swerve = drivebase;
-    addRequirements(drivebase);
+    this.swerve = swerve;
+    addRequirements(swerve);
+    System.out.print("fuck ===============================================");
   }
 
   @Override
   public void initialize() {
+    DriverStation.reportError("fuck rlgkjdflkgbnsdklbnsdflkjnbslkjfdnbkjfdnbkjlsfdnb", false);
+
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
     this.dontSeeTagTimer.start();
 
-    rotController.setSetpoint(Constants.AlignmentConstants.ROT_SETPOINT);
-    rotController.setTolerance(Constants.AlignmentConstants.ROT_TOLERANCE_REEF_ALIGNMENT);
-    xController.setTolerance(Constants.AlignmentConstants.X_TOLERANCE_REEF_ALIGNMENT);
-    yController.setTolerance(Constants.AlignmentConstants.Y_TOLERANCE_REEF_ALIGNMENT);
+    rotController.setTolerance(Constants.AlignmentConstants.ROT_TOLERANCE);
+    xController.setTolerance(Constants.AlignmentConstants.X_TOLERANCE);
+    yController.setTolerance(Constants.AlignmentConstants.Y_TOLERANCE);
 
     switch(desiredAlignment) {
-      case "left":
-        xController.setSetpoint(Constants.AlignmentConstants.X_SETPOINT_CLOSE);
-        yController.setSetpoint(Constants.AlignmentConstants.Y_SETPOINT_LEFT);
+      case "left forward":
+        xController.setSetpoint(Constants.AlignmentConstants.LEFT_X_FORWARD);
+        yController.setSetpoint(Constants.AlignmentConstants.LEFT_Y);
+        rotController.setSetpoint(Constants.AlignmentConstants.LEFT_ROT);
+        limelightName = "limelight-left";
         break;
-      case "right":
-        xController.setSetpoint(Constants.AlignmentConstants.X_SETPOINT_CLOSE);
-        yController.setSetpoint(Constants.AlignmentConstants.Y_SETPOINT_RIGHT);
-        rotController.setSetpoint(2);
+      case "right forward":
+        xController.setSetpoint(Constants.AlignmentConstants.RIGHT_X_FORWARD);
+        yController.setSetpoint(Constants.AlignmentConstants.RIGHT_Y);
+        rotController.setSetpoint(Constants.AlignmentConstants.RIGHT_ROT);
+        limelightName = "limelight-right";
         break;
-      case "center":
-        xController.setSetpoint(Constants.AlignmentConstants.X_SETPOINT_CLOSE);
-        yController.setSetpoint(Constants.AlignmentConstants.Y_SETPOINT_CENTER);
+      case "left back":
+        xController.setSetpoint(Constants.AlignmentConstants.LEFT_X_BACK);
+        yController.setSetpoint(Constants.AlignmentConstants.LEFT_Y);
+        rotController.setSetpoint(Constants.AlignmentConstants.LEFT_ROT);
+        limelightName = "limelight-left";
         break;
-      case "back":
-        xController.setSetpoint(Constants.AlignmentConstants.X_SETPOINT_FAR);
-        yController.setSetpoint(Constants.AlignmentConstants.Y_SETPOINT_CENTER);
+      case "right back":
+        xController.setSetpoint(Constants.AlignmentConstants.RIGHT_X_BACK);
+        yController.setSetpoint(Constants.AlignmentConstants.RIGHT_Y);
+        rotController.setSetpoint(Constants.AlignmentConstants.RIGHT_ROT);
+        limelightName = "limelight-right";
+        break;
+      case "center forward":
+        xController.setSetpoint(Constants.AlignmentConstants.CENTER_X_FORWARD);
+        yController.setSetpoint(Constants.AlignmentConstants.CENTER_Y);
+        rotController.setSetpoint(Constants.AlignmentConstants.CENTER_ROT);
+        break;
+      case "center back":
+        xController.setSetpoint(Constants.AlignmentConstants.CENTER_X_BACK);
+        yController.setSetpoint(Constants.AlignmentConstants.CENTER_Y);
+        rotController.setSetpoint(Constants.AlignmentConstants.CENTER_ROT);
         break;
     }
+    SmartDashboard.putNumber("X Setpoint", xController.getSetpoint());
+    SmartDashboard.putNumber("Y Setpoint", yController.getSetpoint());
+    SmartDashboard.putNumber("Rot Setpoint", rotController.getSetpoint());
 
-    tagID = LimelightHelpers.getFiducialID("limelight-front");
+    tagID = LimelightHelpers.getFiducialID(limelightName);
   }
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight-front") && LimelightHelpers.getFiducialID("limelight-front") == tagID) {
+    if (LimelightHelpers.getTV(limelightName) && LimelightHelpers.getFiducialID(limelightName) == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-front");
-      SmartDashboard.putNumber("Alignment/x", postions[2]);
-      SmartDashboard.putNumber("Alignment/y", postions[0]);
-      SmartDashboard.putNumber("Alignment/rot", postions[4]);
-
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace(limelightName);
 
       double xSpeed = xController.calculate(postions[2]);
       double ySpeed = -yController.calculate(postions[0]);
       double rotValue = -rotController.calculate(postions[4]);
+      if(limelightName.equals("limelight-left")) {
+        rotValue = -rotValue;
+      }
 
       swerve.drive(
         new Translation2d(xSpeed, ySpeed).times(Constants.SwerveConstants.maxSpeed).times(.5), 
@@ -86,16 +109,14 @@ public class AlignToReefTagRelative extends Command {
         true
       );
 
-      if (!rotController.atSetpoint() ||
-          !yController.atSetpoint() ||
-          !xController.atSetpoint()) {
+      if (!rotController.atSetpoint() || !yController.atSetpoint() || !xController.atSetpoint()) {
         stopTimer.reset();
       }
     }else {
       swerve.drive(new Translation2d(), 0, false, true);
     }
 
-    SmartDashboard.putNumber("Alignment/poseValidTimer", stopTimer.get());
+    SmartDashboard.putNumber("Alignment/Pose Valid Timer", stopTimer.get());
   }
 
   @Override
@@ -105,8 +126,7 @@ public class AlignToReefTagRelative extends Command {
 
   @Override
   public boolean isFinished() {
-    // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
     return this.dontSeeTagTimer.hasElapsed(Constants.AlignmentConstants.DONT_SEE_TAG_WAIT_TIME) ||
-        stopTimer.hasElapsed(Constants.AlignmentConstants.POSE_VALIDATION_TIME);
+      stopTimer.hasElapsed(Constants.AlignmentConstants.POSE_VALIDATION_TIME);
   }
 }

@@ -31,23 +31,39 @@ public final class Constants {
 
     public static final class AlignmentConstants {
 
-        public static final double X_REEF_ALIGNMENT_P = 1;
-        public static final double Y_REEF_ALIGNMENT_P = 1.5;
-        public static final double ROT_REEF_ALIGNMENT_P = 0.01;
+        /* pid gains */
 
-        public static final double ROT_SETPOINT = 0;  // Rotation
-        public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 1;
-        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.1;
-        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.1;
+        public static final double X_P = 1;
+        public static final double Y_P = 1.5;
+        public static final double ROT_P = 0.01;
+
+        /* tolerances */
+
+        public static final double ROT_TOLERANCE = 1;
+        public static final double X_TOLERANCE = 0.1;
+        public static final double Y_TOLERANCE = 0.1;
+
+        /* timing */ 
 
         public static final double DONT_SEE_TAG_WAIT_TIME = 1;
         public static final double POSE_VALIDATION_TIME = 0.3;
-        public static final double X_SETPOINT_FAR = -.8;
-        public static final double Y_SETPOINT_LEFT = -.15;
-        public static final double X_SETPOINT_CLOSE = -.475;
-        public static final double Y_SETPOINT_RIGHT = .14;
-        public static final double Y_SETPOINT_CENTER = 0;
 
+        /* setpoints */
+
+        public static final double LEFT_X_FORWARD = 0.1788915605010106;
+        public static final double LEFT_X_BACK = -.3308;
+        public static final double LEFT_Y = 0.02602441270831135;
+        public static final double LEFT_ROT = -20.3848;
+
+        public static final double RIGHT_X_FORWARD = -0.44276;
+        public static final double RIGHT_X_BACK = -.9326;
+        public static final double RIGHT_Y = .20283;
+        public static final double RIGHT_ROT = -21.358181;
+
+        public static final double CENTER_X_FORWARD = 0;
+        public static final double CENTER_X_BACK = 0;
+        public static final double CENTER_Y = 0;
+        public static final double CENTER_ROT = 0;
     }
 
     public static final class IntakePivotConstants {
@@ -83,10 +99,10 @@ public final class Constants {
     public static final class EndEffectorConstants {
         public static final double CURRENT_LIMIT = 40;
         public static final double CORAL_INTAKE_VOLTAGE = -5;
-        public static final double CORAL_OUTTAKE_VOLTAGE = 6;
+        public static final double CORAL_OUTTAKE_VOLTAGE = 4;
         public static final double CORAL_HOLD_VOLTAGE = -.25;
         public static final double ALGAE_INTAKE_VOLTAGE = 3;
-        public static final double ALGAE_OUTTAKE_SPEED = -12;
+        public static final double ALGAE_OUTTAKE_VOLTAGE = -12;
         public static final double ALGAE_HOLD_VOLTAGE = 1;
     }
 
