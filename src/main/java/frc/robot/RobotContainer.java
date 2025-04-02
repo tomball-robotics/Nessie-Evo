@@ -99,33 +99,27 @@ public class RobotContainer {
         changeSpeedMultiplier.addRequirements(swerve);
 
         /* register commands & autos */
-        NamedCommands.registerCommand("L1 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-        NamedCommands.registerCommand("L2 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
-        NamedCommands.registerCommand("L3 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-        NamedCommands.registerCommand("L4 Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
         NamedCommands.registerCommand("Algae Intake Low Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
         NamedCommands.registerCommand("Algae Intake High Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
-        NamedCommands.registerCommand("Algae Taxi Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_TAXI)));
         NamedCommands.registerCommand("Algae Shoot Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         NamedCommands.registerCommand("Stow Position", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
-        NamedCommands.registerCommand("Align Right", new AlignToReefTagRelative("right", swerve).withTimeout(3));
-        NamedCommands.registerCommand("Align Left", new AlignToReefTagRelative("left", swerve).withTimeout(3));
-        NamedCommands.registerCommand("Shoot Coral", autoShootCoral);
-
-        //NamedCommands.registerCommand("Score Left L4",new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)).andThen(scoreLeft) );
+        NamedCommands.registerCommand("Score Left", scoreLeft.onlyIf(() -> LimelightHelpers.getTV("limelight-left")));
+        NamedCommands.registerCommand("Score Right", scoreRight.onlyIf(() -> LimelightHelpers.getTV("limelight-right")));
 
         SmartDashboard.putData("Commands/Zero Elevator Encoder", new InstantCommand(() -> elevator.resetEncoder()));
         SmartDashboard.putData("Commands/Zero Arm Encoder", new InstantCommand(() -> arm.resetEncoder()));
+
         SmartDashboard.putData("Commands/Request Start State", new InstantCommand(() -> stateMachine.requestState(StateMachine.START)));
         SmartDashboard.putData("Commands/Request Disengaged State", new InstantCommand(() -> stateMachine.requestState(StateMachine.DISENGAGED)));
-
+        SmartDashboard.putData("Commands/Request Stow State", new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
         SmartDashboard.putData("Commands/Request L1 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
         SmartDashboard.putData("Commands/Request L2 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
         SmartDashboard.putData("Commands/Request L3 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
         SmartDashboard.putData("Commands/Request L4 Sate", new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-        SmartDashboard.putData("right pos", new AlignToReefTagRelative("right forward", swerve));
-        SmartDashboard.putData("left pos", new AlignToReefTagRelative("left forward", swerve));
-
+        SmartDashboard.putData("Right Forward Position", new AlignToReefTagRelative("right forward", swerve));
+        SmartDashboard.putData("Left Forward Position", new AlignToReefTagRelative("left forward", swerve));
+        SmartDashboard.putData("Right Back Position", new AlignToReefTagRelative("right back", swerve));
+        SmartDashboard.putData("Left Back Position", new AlignToReefTagRelative("left back", swerve));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto", autoChooser);
@@ -139,8 +133,10 @@ public class RobotContainer {
         /* driver controls */
 
         driver.b().onTrue(changeSpeedMultiplier);
+        driver.povUp().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
-        // intake
+        driver.leftTrigger().onTrue(scoreLeft.onlyIf(() -> LimelightHelpers.getTV("limelight-left")));
+        driver.rightTrigger().onTrue(scoreRight.onlyIf(() -> LimelightHelpers.getTV("limelight-right")));
         
         driver.leftBumper().onTrue(
             new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
@@ -152,48 +148,23 @@ public class RobotContainer {
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
         );
 
-        // // intake L1
-        // driver.rightBumper().onTrue(
-        //     new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
-        //     .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
-        // );
-        // driver.leftBumper().whileTrue(intakeAndHoldCoral);
-
-        // // shoot L1
-        // driver.rightTrigger().onTrue(autoShootCoral);
-        // driver.rightTrigger().onFalse(
-        //     new InstantCommand(() -> stateMachine.requestState(StateMachine.INTAKE_CLEARANCE))
-        //     .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.STOW))
-        // );
-
-        driver.povUp().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
-
         /* operator controls */
-
-        driver.leftTrigger().onTrue(scoreLeft.onlyIf(() -> LimelightHelpers.getTV("limelight-left")));
-        driver.rightTrigger().onTrue(scoreRight.onlyIf(() -> LimelightHelpers.getTV("limelight-right")));
 
         operator.a().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L1)));
         operator.b().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L2)));
         operator.y().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L3)));
         operator.x().onTrue(new InstantCommand(() -> stateMachine.setDesiredLevel(StateMachine.L4)));
 
-        // operator.a().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L1)));
-        // operator.b().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L2)));
-        // operator.y().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L3)));
-        // operator.x().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.L4)));
-
         operator.povUp().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_SHOOT)));
         operator.povRight().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_HIGH)));
         operator.povLeft().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_INTAKE_LOW)));
         operator.povDown().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.ALGAE_PROCESS)));
 
-        operator.start().whileTrue(shootCoral);
-
-        operator.back().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
-
         operator.leftBumper().whileTrue(intakeAndHoldAlgae);
         operator.rightBumper().whileTrue(shootAlgae);
+
+        operator.leftTrigger().onTrue(new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW)));
+        operator.rightTrigger().whileTrue(shootCoral);
 
     }
 
