@@ -1,10 +1,5 @@
 package frc.robot;
 
-import java.util.function.DoubleSupplier;
-
-import javax.swing.JViewport;
-
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -14,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.LimelightHelpers;
@@ -26,12 +20,9 @@ import frc.robot.commands.endeffector.IntakeAndHoldAlgae;
 import frc.robot.commands.endeffector.IntakeAndHoldCoral;
 import frc.robot.commands.endeffector.ShootAlgae;
 import frc.robot.commands.endeffector.ShootCoral;
-import frc.robot.commands.position.SetArmPosition;
-import frc.robot.commands.position.SetElevatorPosition;
 import frc.robot.commands.swerve.AlignToReefTagRelative;
 import frc.robot.commands.swerve.ChangeSpeedMultiplier;
 import frc.robot.commands.swerve.TeleopSwerve;
-import frc.robot.subsystems.RevBlinkin;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.superstructure.Arm;
@@ -140,9 +131,14 @@ public class RobotContainer {
         driver.b().onTrue(changeSpeedMultiplier);
         driver.povUp().onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
-        driver.leftTrigger().onTrue(scoreLeft.onlyIf(() -> LimelightHelpers.getTV("limelight-left")));
-        driver.rightTrigger().onTrue(scoreRight.onlyIf(() -> LimelightHelpers.getTV("limelight-right")));
-        
+        driver.leftTrigger().onTrue(
+            new ScoreLeft(stateMachine, arm, elevator, swerve, endEffector)
+                .onlyIf(() -> LimelightHelpers.getTV("limelight-left"))
+        );
+        driver.rightTrigger().onTrue(
+            new ScoreRight(stateMachine, arm, elevator, swerve, endEffector)
+                .onlyIf(() -> LimelightHelpers.getTV("limelight-right"))
+        );
         driver.leftBumper().onTrue(
             new InstantCommand(() -> stateMachine.requestState(StateMachine.STOW))
             .andThen(new WaitCommand(.2)).andThen(() -> stateMachine.requestState(StateMachine.INTAKE))
