@@ -8,8 +8,8 @@
 
 Long believed to be nothing more than a story whispered across calm waters and cluttered pits, **Nessie** has awakened once more — no longer a fable, no longer a crude collection of wires and willpower. What began as a high school robotics project is now a war machine of code, control, and calculated chaos.
 
-This is not a fork.  
-This is not a patch.  
+This is not a fork.
+This is not a patch.
 This is a resurrection.
 
 ---
