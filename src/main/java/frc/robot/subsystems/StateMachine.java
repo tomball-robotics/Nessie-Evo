@@ -14,27 +14,27 @@ public class StateMachine extends SubsystemBase {
   public static final NessieState START = new NessieState(
     "Start", 0, 0, 0);
   public static final NessieState STOW = new NessieState( // done
-    "Stow", .5, 0, 0);
+    "Stow", 4.5, 0, 0);
   public static final NessieState L1 = new NessieState(
-    "L1", .3, 0, .08);
+    "L1", 2.7, 0, .08);
   public static final NessieState L2 = new NessieState( // done
-    "L2", 1.37799072265625, 0, 0);
+    "L2", 12.40191650390625, 0, 0);
   public static final NessieState L3 = new NessieState( // done
-    "L3", 1.72351318359375, 0.86962890625, 0);
+    "L3", 15.51161865234375, 7.82666015625, 0);
   public static final NessieState L4 = new NessieState( // done
-    "L4", 1.70, 5.71, 0);
+    "L4", 15.3, 51.39, 0);
   public static final NessieState INTAKE = new NessieState(
-    "Intake", 0.12, 0, 0);
+    "Intake", 1.08, 0, 0);
   public static final NessieState INTAKE_CLEARANCE = new NessieState(
-    "Intake Clearance", .12, 1.86, 0);
-  public static final NessieState ALGAE_TAXI= new NessieState(
-    "Algae Stow", 1.93, 0, 0);
+    "Intake Clearance", 1.08, 16.74, 0);
+  public static final NessieState ALGAE_TAXI = new NessieState(
+    "Algae Stow", 17.37, 0, 0);
   public static final NessieState ALGAE_SHOOT = new NessieState(
-    "Algae Shoot", 1.7, 5.2027880859375, 0);
+    "Algae Shoot", 15.3, 46.8250927734375, 0);
   public static final NessieState ALGAE_INTAKE_LOW = new NessieState(
-    "Algae Intake Low", .83, 0, 0);
+    "Algae Intake Low", 7.47, 0, 0);
   public static final NessieState ALGAE_INTAKE_HIGH = new NessieState(
-    "Algae Intake High", 1.01, 1.41, 0);
+    "Algae Intake High", 9.09, 12.69, 0);
   public static final NessieState ALGAE_PROCESS = new NessieState(
     "Algae Process", 0, 0, 0);
   public static final NessieState DISENGAGED = new NessieState(

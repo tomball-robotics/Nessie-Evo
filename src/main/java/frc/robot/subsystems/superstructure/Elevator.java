@@ -51,10 +51,10 @@ public class Elevator extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    config.HardwareLimitSwitch.ForwardLimitEnable = false;
-    config.HardwareLimitSwitch.ReverseLimitEnable = false;
-    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.FORWARD_LIMIT;
+    config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
  
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
@@ -62,13 +62,13 @@ public class Elevator extends SubsystemBase {
 
     follower.setControl(new Follower(motor.getDeviceID(), true));
 
-    motor.setPosition(canandmag.getPosition()*9);
+    motor.setPosition(canandmag.getPosition());
   }
 
   public void setPosition(double desiredPosition) {
     motor.setControl(
       positionVoltage
-        .withPosition(desiredPosition*9)
+        .withPosition(desiredPosition)
     );
     this.desiredPosition = desiredPosition;
   }

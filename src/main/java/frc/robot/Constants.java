@@ -113,6 +113,7 @@ public final class Constants {
         public static final double D = 0;
         public static final double G = 0.037109375;
         public static final double TOLERANCE = .04;
+        public static final double FORWARD_LIMIT = 0;
     }
 
     public static final class ArmConstants{
