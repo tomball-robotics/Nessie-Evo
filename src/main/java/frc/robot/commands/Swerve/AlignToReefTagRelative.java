@@ -1,4 +1,4 @@
-package frc.robot.commands.swerve;
+package frc.robot.commands.Swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;

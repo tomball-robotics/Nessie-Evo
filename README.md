@@ -1,68 +1,96 @@
-# 🐉 Nessie Evo
+# NESSIE
 
-> _“Do not go looking for monsters in the depths… unless you brought one.”_
-
-Welcome to **Nessie Evo** — the evolution, the uprising, the inevitable reckoning.
-
-This is **not** just robot code. This is not just motors, controllers, and PID loops.  
-This is a creature born in the dark trenches of Git commits, hardened by build errors, baptized by blue banners, and awakened by a need for vengeance.
-
-This repo is **the sequel Nessie was afraid of**. Nessie was a myth. **Nessie Evo is a warning.**
+> **“It returned from the depths not as a myth — but as a machine.”**
 
 ---
 
-## 🧬 Origins
+## 🌊 The Return of the Legend
 
-Once upon a regional, we wrote code — and it worked.
+Long believed to be nothing more than a story whispered across calm waters and cluttered pits, **Nessie** has awakened once more — no longer a fable, no longer a crude collection of wires and willpower. What began as a high school robotics project is now a war machine of code, control, and calculated chaos.
 
-Then it failed.
-
-Then it worked again, but only if you didn’t touch the intake command during auto while simultaneously holding A and sacrificing a USB cable to the driver station gods.
-
-We named it *Nessie* — a creature of legend. But we needed more. Something scalable. Maintainable. Modular. Less “spaghetti”, more “sashimi.”  
-We needed a monster with purpose.
-
-And so we plunged into the abyss and summoned:
-
-### **Nessie Evo**
+This is not a fork.  
+This is not a patch.  
+This is a resurrection.
 
 ---
 
-## ⚙️ What Is This?
+## 🐉 Born in Myth, Rebuilt in Metal
 
-This is not your average “command-based template.”
+Where others see tangled wires, we see sinew.  
+Where others write functions, we forge instincts.  
+Where others debug, we **summon**.
 
-This is:
-- A rearchitected control system
-- A smarter autonomous engine
-- A streamlined subsystem framework
-- A drivebase that bites back
-- Logs so detailed they could narrate a David Attenborough documentary
+**Nessie** is the culmination of every mistake, every spark, every line of rushed code written on a competition floor five minutes before a match. But this time... it’s intentional. It's clean. It's scalable. It's ready to dominate.
 
-Every line in here has been rewritten, refined, or ritually purified.  
-Gone are the sins of blocking commands.  
-Banished are the demons of infinite loops.  
-Here lies structure. Intent. Power.
+Whether it's auto routines with god-tier precision, subsystems more stable than your WiFi, or controls tighter than a pit crew caffeine schedule, **Nessie** is back — and she’s pissed.
 
 ---
 
-## 🧠 Tech Stack
+## 🧠 Architecture of a Beast
 
-| System | Beast Mode |
-|--------|------------|
-| Java   | Yes        |
-| WPILib | Obviously  |
-| PathPlanner | Feeds the Nessie Evo directions |
-| Phoenix 6 | For the smooth torque dropkick |
-| Shuffleboard | Only to flex |
-| Logging | Beyond reason |
-| Drivebase | Eats tank bots for breakfast |
+### ⚙️ Subsystems
+Decoupled. Modular. Refactored. No longer duct-taped together by desperation and hope. From drivetrain to manipulator, every system has a mind of its own — and a shared mission: **devour the field**.
 
-> And yeah, we split everything into packages. And yeah, we wrote our own motion profiling wrapper. You’re welcome.
+### 🎯 Autonomous Logic
+Paths that don’t miss. Sensors that don’t lie. A decision engine sharper than your driver’s reflexes. When the buzzer sounds, Nessie moves with purpose, grace, and occasionally... terrifying aggression.
+
+### 🕹️ Operator Interface
+Designed for speed, clarity, and complete control. Drivers don't just operate Nessie — they **unleash** her.
+
+### 🔥 Utilities
+Logging, tuning, fail-safes. Built not just for matches but for meltdowns. When the world goes sideways, Nessie keeps crawling forward.
 
 ---
 
-## 🚀 How to Deploy
+## 🧙‍♂️ Summon the Monster
+
+You want to wield her power? Here's how you wake the beast:
 
 ```bash
-./gradlew deploy
+git clone https://github.com/yourusername/nessie.git
+cd nessie
+./build.sh      # or ./deploy.sh depending on your setup
+```
+
+> Warning: side effects may include sudden dominance, loud applause, and alliance captains asking for your secrets.
+
+---
+
+## 🛠️ Built With
+
+- **WPILib** — The sacred scrolls.
+- **REV/CANSpark/Falcon/CTRE APIs** — Offerings to the hardware gods.
+- **PathPlanner / Trajectories** — Because the field is not a suggestion.
+- **Your blood, sweat, and Mountain Dew.**
+
+---
+
+## 🤝 Join the Hunt
+
+This isn’t a solo story — it's a **legend in the making**, and legends are written by the brave:
+
+- Submit issues, not excuses.
+- Fork, improve, and contribute with honor.
+- Document like you’re leaving instructions for future archaeologists.
+
+If you add something awesome, Nessie will remember you. Forever.
+
+---
+
+## 🐾 The Legacy Continues
+
+The old Nessie may have been a jank pile of bolts with dreams. But this Nessie?  
+She’s sleek.  
+She’s furious.  
+She’s alive.
+
+And she’s coming for the gold.
+
+So whether you're here to contribute, clone, or just stare in awe, remember:
+
+> **You are not working on a robot. You are taming a myth.**
+
+---
+
+**Nessie**  
+_The legend resurfaces._
